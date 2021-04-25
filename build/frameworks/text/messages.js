@@ -1,0 +1,22 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.warnNothingToPublish = exports.warnMissingContractWhenGeneratingFile = exports.warnMissingPathToLocalTests = exports.warnMissingPathToLocalContracts = exports.warnMissingConsumerTestData = exports.errorMissingPublishEndpoint = exports.errorMissingTestsForService = exports.errorMissingTestsContracts = exports.msgSuccessfullyPublished = exports.msgTestingService = exports.msgContractFileNotFound = exports.msgTestFailed = exports.msgTestPassed = void 0;
+const msgTestPassed = (serviceName, version, consumerName) => `✅ Successfully tested ${serviceName}@${version} with ${consumerName}`;
+exports.msgTestPassed = msgTestPassed;
+const msgTestFailed = (serviceName, version, consumerName) => `❌ Did not pass test for ${serviceName}@${version} with ${consumerName}`;
+exports.msgTestFailed = msgTestFailed;
+const msgContractFileNotFound = (serviceName, version) => `⚠️ Could not find any contracts for ${serviceName}@${version}!`;
+exports.msgContractFileNotFound = msgContractFileNotFound;
+const msgTestingService = (serviceName, version) => `Testing ${serviceName}@${version}...`;
+exports.msgTestingService = msgTestingService;
+exports.msgSuccessfullyPublished = `Successfully published contracts and tests`;
+exports.errorMissingTestsContracts = `❌ Missing consumer tests and/or provider contracts!`;
+exports.errorMissingTestsForService = `❌ No consumer tests found for this service!`;
+exports.errorMissingPublishEndpoint = `❌ Missing endpoint when trying to publish!`;
+exports.warnMissingConsumerTestData = `⚠️ Missing consumer test data! Skipping tests...`;
+exports.warnMissingPathToLocalContracts = `⚠️ Missing path to local contracts, skipping publishing these...`;
+exports.warnMissingPathToLocalTests = `⚠️ Missing path to local tests, skipping publishing these...`;
+const warnMissingContractWhenGeneratingFile = (serviceName, version) => `⚠️ No contracts present when running generateContractFile() for ${serviceName}@${version}!`;
+exports.warnMissingContractWhenGeneratingFile = warnMissingContractWhenGeneratingFile;
+exports.warnNothingToPublish = `⚠️ Attempting to publish, but there is nothing to publish: The configuration has disabled both publishing local tests and contracts.\nExiting...`;
+//# sourceMappingURL=messages.js.map
