@@ -1,3 +1,4 @@
+#! node
 import { TripleCheckController } from './controllers/TripleCheckController';
 
 import { initConfig } from './frameworks/config/initConfig';
