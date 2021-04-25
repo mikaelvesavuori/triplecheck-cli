@@ -247,6 +247,7 @@ export class TripleCheck {
       await this.callStub(callInput);
       console.log(msgTestPassed(serviceName, version, consumerName));
     } catch (error) {
+      console.log('error', error);
       console.error(msgTestFailed(serviceName, version, consumerName));
       console.log(`\n`);
       consoleOutput('TestsFailed');
@@ -260,12 +261,10 @@ export class TripleCheck {
   private async callStub(callInput: CallInput) {
     const { serviceName, version, payload } = callInput;
 
-    const FULL_CONTRACT_FILEPATH = `${this.contractFilePath}-${serviceName}-${version}.ts`;
-    const contract = await import(`${process.cwd()}/${FULL_CONTRACT_FILEPATH}`);
-    const { Convert } = contract;
-
+    const FULL_CONTRACT_FILEPATH = `${this.contractFilePath}-${serviceName}-${version}.js`;
+    const contract = await loadDataLocal(FULL_CONTRACT_FILEPATH);
     // Attempt to convert and cross-check the contract with the payload
-    Convert.toContract(JSON.stringify(payload));
+    contract.toContract(JSON.stringify(payload));
   }
 
   /**
@@ -304,7 +303,7 @@ export class TripleCheck {
     }
 
     // Create and load the local, converted contract file
-    const FULL_CONTRACT_FILEPATH = `${this.contractFilePath}-${serviceName}-${version}.ts`;
+    const FULL_CONTRACT_FILEPATH = `${this.contractFilePath}-${serviceName}-${version}.js`;
     await createContractFile(contract, FULL_CONTRACT_FILEPATH);
     return true;
   }

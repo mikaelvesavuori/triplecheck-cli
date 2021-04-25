@@ -167,6 +167,7 @@ class TripleCheck {
                 console.log(messages_1.msgTestPassed(serviceName, version, consumerName));
             }
             catch (error) {
+                console.log('error', error);
                 console.error(messages_1.msgTestFailed(serviceName, version, consumerName));
                 console.log(`\n`);
                 consoleOutput_1.consoleOutput('TestsFailed');
@@ -177,10 +178,9 @@ class TripleCheck {
     callStub(callInput) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
             const { serviceName, version, payload } = callInput;
-            const FULL_CONTRACT_FILEPATH = `${this.contractFilePath}-${serviceName}-${version}.ts`;
-            const contract = yield Promise.resolve().then(() => tslib_1.__importStar(require(`${process.cwd()}/${FULL_CONTRACT_FILEPATH}`)));
-            const { Convert } = contract;
-            Convert.toContract(JSON.stringify(payload));
+            const FULL_CONTRACT_FILEPATH = `${this.contractFilePath}-${serviceName}-${version}.js`;
+            const contract = yield loadDataLocal_1.loadDataLocal(FULL_CONTRACT_FILEPATH);
+            contract.toContract(JSON.stringify(payload));
         });
     }
     generateContractFile(serviceName, version, contracts) {
@@ -194,7 +194,7 @@ class TripleCheck {
                 console.warn(messages_1.msgContractFileNotFound(serviceName, version));
                 return false;
             }
-            const FULL_CONTRACT_FILEPATH = `${this.contractFilePath}-${serviceName}-${version}.ts`;
+            const FULL_CONTRACT_FILEPATH = `${this.contractFilePath}-${serviceName}-${version}.js`;
             yield createContractFile_1.createContractFile(contract, FULL_CONTRACT_FILEPATH);
             return true;
         });

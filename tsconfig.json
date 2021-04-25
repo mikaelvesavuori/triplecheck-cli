@@ -5,7 +5,7 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "importHelpers": true,
-    "lib": ["esnext"],
+    "lib": ["esnext", "dom"],
     "module": "commonjs",
     "moduleResolution": "node",
     "noEmitOnError": true,
@@ -22,5 +22,6 @@
     "target": "es6",
   },
   "include": ["./src/", "__tests__/"],
-  "exclude": ["./__tests__/", "**/*.test.ts", "./__testdata__/", "./node_modules", "./build/", "./quicktype/*"]
+  "exclude": ["./__tests__/", "**/*.test.ts", "./__testdata__/", "./node_modules/", "./build/", "./dist/", "./quicktype/*"]
+
 }

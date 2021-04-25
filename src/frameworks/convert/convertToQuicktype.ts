@@ -11,7 +11,7 @@ import {
  * @see https://blog.dennisokeeffe.com/blog/2020-09-20-generating-types-with-quicktype/
  */
 export async function convertToQuicktype(schema: string) {
-  const targetLanguage = 'typescript';
+  const targetLanguage = 'javascript';
   const name = 'Contract'; // Short-use, ugly type name
   const inputData = new InputData();
 

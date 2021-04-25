@@ -5,7 +5,7 @@ const tslib_1 = require("tslib");
 const quicktype_core_1 = require("quicktype-core");
 function convertToQuicktype(schema) {
     return tslib_1.__awaiter(this, void 0, void 0, function* () {
-        const targetLanguage = 'typescript';
+        const targetLanguage = 'javascript';
         const name = 'Contract';
         const inputData = new quicktype_core_1.InputData();
         if (JSON.parse(schema).hasOwnProperty('properties')) {

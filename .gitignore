@@ -2,6 +2,7 @@
 !build/
 
 # Quicktype-generated files
+__quicktype-*.js
 __quicktype-*.ts
 
 # Tests
