@@ -1,7 +1,7 @@
 {
   "name": "triplecheck-cli",
   "version": "0.0.1",
-  "description": "TODO",
+  "description": "The easiest and fastest way to do contract testing.",
   "main": "build/index.js",
   "keywords": [
     "triplecheck",

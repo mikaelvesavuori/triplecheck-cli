@@ -50,15 +50,15 @@ TODO.
 - Support any kind of infra and data sources
 - First-grade support for modern CI tools and serverless
 - Removes the need for a heavyweight broker
-- Lightweight: no need to mock or make actual requests, Compact will compare static typed contracts
-- Note: Compared to Pact, Compact does not make it possible to make deep asserts (like an expected response), it only ensures type and schema consistency
+- Lightweight: no need to mock or make actual requests, TripleCheck will compare static typed contracts
+- Note: Compared to Pact, TripleCheck does not make it possible to make deep asserts (like an expected response), it only ensures type and schema consistency
 
 ## Features
 
 - Explicit testing: you test your contracts as you do with any regular test
 - Implicit testing: if you provide your use patterns, dynamic testing can be done and both ways (provider and consumer) can be validated without any formal test
 - Examples for pushing/pulling data to AWS S3, GCP bucket, Azure bucket incl permissions in pipeline
-- Compact will only use, merge, test data and download it - it will not upload it
+- TripleCheck will only use, merge, test data and download it - it will not upload it
 - Provide ready pipeline examples (and steps/actions?) for AWS CodePipeline, Github, Bitbucket, Cloud Build, Azure DevOps
 - One step deploy a visualizer to Cloudflare Pages or Netlify or Vercel
 
