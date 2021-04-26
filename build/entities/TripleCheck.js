@@ -1,8 +1,19 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TripleCheck = exports.createNewTripleCheck = void 0;
-const tslib_1 = require("tslib");
-const node_fetch_1 = tslib_1.__importDefault(require("node-fetch"));
+const node_fetch_1 = __importDefault(require("node-fetch"));
 const validateConfig_1 = require("../frameworks/config/validateConfig");
 const getContract_1 = require("../frameworks/convert/getContract");
 const trimData_1 = require("../frameworks/data/trimData");
@@ -12,7 +23,7 @@ const loadDataRemote_1 = require("../frameworks/load/loadDataRemote");
 const createContractFile_1 = require("../frameworks/convert/createContractFile");
 const consoleOutput_1 = require("../frameworks/text/consoleOutput");
 const messages_1 = require("../frameworks/text/messages");
-const createNewTripleCheck = (config) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
+const createNewTripleCheck = (config) => __awaiter(void 0, void 0, void 0, function* () {
     const tripleCheck = new TripleCheck(config);
     yield tripleCheck.init();
     return tripleCheck;
@@ -30,7 +41,7 @@ class TripleCheck {
         this.config = config;
     }
     init() {
-        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+        return __awaiter(this, void 0, void 0, function* () {
             try {
                 const { resources } = this.config;
                 const loadedData = yield this.loadData(resources);
@@ -46,7 +57,7 @@ class TripleCheck {
         });
     }
     loadData(resources) {
-        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+        return __awaiter(this, void 0, void 0, function* () {
             try {
                 const { testsLocal, testsCollection, contractsLocal, contractsCollection } = resources;
                 let consumerTests = {};
@@ -77,7 +88,7 @@ class TripleCheck {
         });
     }
     getData(onlyLocalData) {
-        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+        return __awaiter(this, void 0, void 0, function* () {
             const { tests } = this.config;
             const { testScope, excludeScope, skipTestingRemoteResources, skipTestingLocalResources } = tests;
             const providerContracts = this.contracts;
@@ -119,14 +130,14 @@ class TripleCheck {
         });
     }
     test() {
-        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+        return __awaiter(this, void 0, void 0, function* () {
             try {
                 const { contracts, tests } = yield this.getData();
                 consoleOutput_1.consoleOutput('StartTests');
-                const _consumerTests = tests.map((test) => tslib_1.__awaiter(this, void 0, void 0, function* () {
+                const _consumerTests = tests.map((test) => __awaiter(this, void 0, void 0, function* () {
                     const serviceName = Object.keys(test)[0];
                     const versions = Object.keys(test[serviceName]);
-                    const _versions = versions.map((version) => tslib_1.__awaiter(this, void 0, void 0, function* () {
+                    const _versions = versions.map((version) => __awaiter(this, void 0, void 0, function* () {
                         const serviceTests = test[serviceName][version];
                         if (!serviceTests)
                             throw new Error(messages_1.errorMissingTestsForService);
@@ -134,7 +145,7 @@ class TripleCheck {
                         const generated = yield this.generateContractFile(serviceName, version, contracts);
                         if (!generated)
                             return;
-                        const _serviceTests = serviceTests.map((serviceTest) => tslib_1.__awaiter(this, void 0, void 0, function* () {
+                        const _serviceTests = serviceTests.map((serviceTest) => __awaiter(this, void 0, void 0, function* () {
                             const service = Object.entries(serviceTest)[0];
                             const consumerName = service[0];
                             const payload = service[1];
@@ -160,7 +171,7 @@ class TripleCheck {
         });
     }
     call(callInput) {
-        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+        return __awaiter(this, void 0, void 0, function* () {
             const { serviceName, version, consumerName } = callInput;
             try {
                 yield this.callStub(callInput);
@@ -176,7 +187,7 @@ class TripleCheck {
         });
     }
     callStub(callInput) {
-        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+        return __awaiter(this, void 0, void 0, function* () {
             const { serviceName, version, payload } = callInput;
             const FULL_CONTRACT_FILEPATH = `${this.contractFilePath}-${serviceName}-${version}.js`;
             const contract = yield loadDataLocal_1.loadDataLocal(FULL_CONTRACT_FILEPATH);
@@ -184,7 +195,7 @@ class TripleCheck {
         });
     }
     generateContractFile(serviceName, version, contracts) {
-        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+        return __awaiter(this, void 0, void 0, function* () {
             if (!contracts || contracts.length === 0) {
                 console.warn(messages_1.warnMissingContractWhenGeneratingFile);
                 return false;
@@ -200,7 +211,7 @@ class TripleCheck {
         });
     }
     publish() {
-        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+        return __awaiter(this, void 0, void 0, function* () {
             const name = this.serviceName;
             const version = this.serviceVersion;
             const type = this.serviceType;
