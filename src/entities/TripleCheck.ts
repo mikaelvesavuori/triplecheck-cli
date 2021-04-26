@@ -262,7 +262,9 @@ export class TripleCheck {
     const { serviceName, version, payload } = callInput;
 
     const FULL_CONTRACT_FILEPATH = `${this.contractFilePath}-${serviceName}-${version}.js`;
-    const contract = await loadDataLocal(FULL_CONTRACT_FILEPATH);
+    console.log('--->', `${process.cwd()}/${FULL_CONTRACT_FILEPATH}`);
+    //const contract = require(`${process.cwd()}/${FULL_CONTRACT_FILEPATH}`); //await loadDataLocal(FULL_CONTRACT_FILEPATH);
+    const contract = await import(`${process.cwd()}/${FULL_CONTRACT_FILEPATH}`);
     // Attempt to convert and cross-check the contract with the payload
     contract.toContract(JSON.stringify(payload));
   }

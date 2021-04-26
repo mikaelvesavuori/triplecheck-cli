@@ -29,16 +29,26 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.loadDataLocal = void 0;
+const fs = __importStar(require("fs"));
 function loadDataLocal(filePath) {
     return __awaiter(this, void 0, void 0, function* () {
         const path = `${process.cwd()}/${filePath}`;
         console.log(`Loading file from ${path}...`);
-        const file = yield Promise.resolve().then(() => __importStar(require(path)));
-        const data = file.default || file;
-        if (!data)
+        let file = fs.readFileSync(path, 'utf8');
+        file = isJsonString(file) ? JSON.parse(file) : file;
+        if (!file)
             throw new Error('No data loaded!');
-        return data;
+        return file;
     });
 }
 exports.loadDataLocal = loadDataLocal;
+const isJsonString = (str) => {
+    try {
+        JSON.parse(str);
+    }
+    catch (e) {
+        return false;
+    }
+    return true;
+};
 //# sourceMappingURL=loadDataLocal.js.map
