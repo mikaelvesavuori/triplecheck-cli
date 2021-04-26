@@ -70,3 +70,4 @@ TODO.
 - https://docs.pact.io/5-minute-getting-started-guide/
 - https://github.com/pact-foundation/pact-js/tree/master/examples/e2e
 - https://blog.dennisokeeffe.com/blog/2020-09-20-generating-types-with-quicktype/
+- https://json-schema.org/understanding-json-schema/structuring.html

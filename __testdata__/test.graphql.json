@@ -1,0 +1,16 @@
+[
+  {
+    "graphql-book-api": {
+      "1.0.0": [
+        {
+          "Get a book": {
+            "books": {
+              "title": "Jurassic Park",
+              "author": "Michael Crichton"
+            }
+          }
+        }
+      ]
+    }
+  }
+]

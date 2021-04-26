@@ -1,0 +1,24 @@
+[
+  {
+    "graphql-book-api": {
+      "1.0.0": {
+        "definitions": {
+          "books": {
+            "type": "object",
+            "properties": {
+              "title": { "type": "string" },
+              "author": { "type": "string" }
+            },
+            "required": ["title", "author"]
+          }
+        },
+        "$id": "http://example.com/common.json",
+        "type": "object",
+        "title": "The root schema",
+        "properties": {
+          "books": { "$ref": "#/definitions/books" }
+        }
+      }
+    }
+  }
+]

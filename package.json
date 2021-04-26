@@ -1,7 +1,7 @@
 {
   "name": "triplecheck-cli",
   "main": "build/index.js",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "The easiest and fastest way to do contract testing.",
   "keywords": [
     "triplecheck",
@@ -19,7 +19,8 @@
   "scripts": {
     "start": "npm run clean && npx ts-node src/index.ts && npm run clean",
     "clean": "rm -f __quicktype-*.ts",
-    "build": "npm run clean && tsc",
+    "clean:build": "rm -rf build/",
+    "build": "npm run clean:build && tsc",
     "build:watch": "onchange 'src/**/*.ts' -- npm run build",
     "test": "jest --coverage && npm run clean",
     "test:watch": "jest --coverage --watchAll",

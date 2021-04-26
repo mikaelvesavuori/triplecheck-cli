@@ -1,0 +1,37 @@
+[
+  {
+    "sensor-api": {
+      "1.0.0": {
+        "definitions": {},
+        "$id": "http://example.com/common.json",
+        "servers": [
+          {
+            "url": "https://abcde12345.execute-api.eu-north-1.amazonaws.com/{basePath}",
+            "variables": {
+              "basePath": {
+                "default": "/dev"
+              }
+            }
+          }
+        ],
+        "type": "object",
+        "title": "The root schema",
+        "required": ["temperature", "timestamp"],
+        "properties": {
+          "temperature": {
+            "type": "string",
+            "title": "The temperature schema",
+            "description": "Temperature in celsius",
+            "default": "0.0"
+          },
+          "timestamp": {
+            "type": "string",
+            "title": "The timestamp schema",
+            "description": "Unix timestamp",
+            "default": "0"
+          }
+        }
+      }
+    }
+  }
+]
