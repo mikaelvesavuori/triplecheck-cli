@@ -1,0 +1,22 @@
+[
+  {
+    "demo-schema": {
+      "1.0.0": [
+        {
+          "Basic test": {
+            "billing_address": {
+              "street_address": "some street 123",
+              "city": "sometown",
+              "state": "someplace"
+            },
+            "shipping_address": {
+              "street_address": "some street 123",
+              "city": "sometown",
+              "state": "someplace"
+            }
+          }
+        }
+      ]
+    }
+  }
+]

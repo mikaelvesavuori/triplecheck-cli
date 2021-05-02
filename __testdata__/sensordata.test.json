@@ -1,0 +1,14 @@
+[
+  {
+    "sensor-data": {
+      "1.0.0": [
+        {
+          "Get current temperature in celsius": {
+            "Temperature": "18.2",
+            "Timestamp": "1619430941"
+          }
+        }
+      ]
+    }
+  }
+]
