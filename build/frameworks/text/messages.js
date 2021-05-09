@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.warnNothingToPublish = exports.warnMissingContractWhenGeneratingFile = exports.warnMissingPathToLocalTests = exports.warnMissingPathToLocalContracts = exports.warnMissingConsumerTestData = exports.errorMissingPublishEndpoint = exports.errorMissingTestsForService = exports.errorMissingTestsContracts = exports.msgSuccessfullyPublished = exports.msgTestingService = exports.msgContractFileNotFound = exports.msgTestFailed = exports.msgTestPassed = exports.msgJobCompleteInitStopped = exports.msgJobCompleteInit = void 0;
+exports.warnPublishingWithNoEndpoint = exports.warnPublishingWithNoLocals = exports.warnNothingToPublish = exports.warnMissingContractWhenGeneratingFile = exports.warnMissingPathToLocalTests = exports.warnMissingPathToLocalContracts = exports.warnMissingConsumerTestData = exports.errorMissingPublishEndpoint = exports.errorMissingTestsForService = exports.errorMissingTestsContracts = exports.msgSuccessfullyPublished = exports.msgTestingService = exports.msgContractFileNotFound = exports.msgTestFailed = exports.msgTestPassed = exports.msgJobCompleteInitStopped = exports.msgJobCompleteInit = void 0;
 exports.msgJobCompleteInit = `✅ Created a configuration file you --> triplecheck.config.json`;
 exports.msgJobCompleteInitStopped = `⚠️ Skipping generation of configuration file since one was already present...`;
 const msgTestPassed = (serviceName, version, consumerName) => `✅ Successfully tested ${serviceName}@${version} with ${consumerName}`;
@@ -21,4 +21,6 @@ exports.warnMissingPathToLocalTests = `⚠️ Missing path to local tests, skipp
 const warnMissingContractWhenGeneratingFile = (serviceName, version) => `⚠️ No contracts present when running generateContractFile() for ${serviceName}@${version}!`;
 exports.warnMissingContractWhenGeneratingFile = warnMissingContractWhenGeneratingFile;
 exports.warnNothingToPublish = `⚠️ Attempting to publish, but there is nothing to publish: The configuration has disabled both publishing local tests and contracts.\nExiting...`;
+exports.warnPublishingWithNoLocals = `⚠️ Attempting to publish, but you are missing "resources.local" (and the required "resources.local.contractsPath" and "resources.local.testsPath") in your configuration. You can only publish local contracts/tests.`;
+exports.warnPublishingWithNoEndpoint = `⚠️ Attempting to publish, but you are missing "resources.remote" (and the required "resources.remote.brokerEndpoint") in your configuration.`;
 //# sourceMappingURL=messages.js.map

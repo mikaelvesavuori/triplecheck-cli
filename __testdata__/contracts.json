@@ -5,7 +5,10 @@
         "name": "123",
         "email": "apsodj",
         "totalPrice": 123412,
-        "somethingElse": false
+        "somethingElse": {
+          "asdf": 123,
+          "isOn": true
+        }
       },
       "1.0.0": {
         "definitions": {},

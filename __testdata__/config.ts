@@ -15,17 +15,16 @@ export const config = {
   },
   requestOptions: {},
   resources: {
-    contractsLocal: '__testdata__/contracts.ts',
-    contractsCollection: 'https://triplecheck-data-service.mikaelvesavuori.workers.dev/contracts',
-    testsLocal: '__testdata__/tests.ts',
-    testsCollection: 'https://triplecheck-data-service.mikaelvesavuori.workers.dev/tests'
+    local: {
+      contractsPath: '__testdata__/contracts.ts',
+      testsPath: '__testdata__/tests.ts'
+    },
+    remote: {
+      brokerEndpoint: 'https://triplecheck-data-service.mikaelvesavuori.workers.dev/publish'
+    }
   },
   publishing: {
-    brokerEndpoint: 'https://triplecheck-data-service.mikaelvesavuori.workers.dev/publish',
     publishLocalContracts: true,
-    publishLocalTests: true,
-    overwritePolicy: {
-      remoteCollectionIsMaster: true
-    }
+    publishLocalTests: true
   }
 };

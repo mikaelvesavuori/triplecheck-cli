@@ -25,3 +25,5 @@ export const warnMissingPathToLocalTests = `⚠️ Missing path to local tests, 
 export const warnMissingContractWhenGeneratingFile = (serviceName: string, version: string) =>
   `⚠️ No contracts present when running generateContractFile() for ${serviceName}@${version}!`;
 export const warnNothingToPublish = `⚠️ Attempting to publish, but there is nothing to publish: The configuration has disabled both publishing local tests and contracts.\nExiting...`;
+export const warnPublishingWithNoLocals = `⚠️ Attempting to publish, but you are missing "resources.local" (and the required "resources.local.contractsPath" and "resources.local.testsPath") in your configuration. You can only publish local contracts/tests.`;
+export const warnPublishingWithNoEndpoint = `⚠️ Attempting to publish, but you are missing "resources.remote" (and the required "resources.remote.brokerEndpoint") in your configuration.`;

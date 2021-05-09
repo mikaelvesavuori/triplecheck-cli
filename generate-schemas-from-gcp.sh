@@ -10,6 +10,10 @@ function generateSchemasFromGcpPubSub() {
 
   echo "There is currently no way to get versions from GCP Pub/Sub schemas, so all schema versions will be set to 1.0.0..."
 
+  # Create folder to contain generated schemas
+  SCHEMA_FOLDER="generated-schemas-gcp"
+  mkdir -p $SCHEMA_FOLDER
+
   # Create schema files for all schemas stored in Pub/Sub
   for schema in $(jq '.[].name' -r gcp-schemas.json); do
     _SCHEMA_VERSION_="1.0.0"
@@ -35,7 +39,7 @@ function generateSchemasFromGcpPubSub() {
       --arg version "$_SCHEMA_VERSION_" \
       --argjson propertyNames "$_SCHEMA_PROPERTY_NAMES_" \
       --argjson properties "$_SCHEMA_PROPERTIES_" \
-      '[{($name): {($version): { required: ($propertyNames), properties: ($properties) }}}]' >> $_SCHEMA_NAME_@$_SCHEMA_VERSION_.contract.json
+      '[{($name): {($version): { required: ($propertyNames), properties: ($properties) }}}]' >> $SCHEMA_FOLDER/$_SCHEMA_NAME_@$_SCHEMA_VERSION_.contract.json
   done
 
   rm gcp-schemas.json

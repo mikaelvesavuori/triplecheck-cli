@@ -1,0 +1,20 @@
+[
+  {
+    "SensorData": {
+      "1.0.0": {
+        "required": [
+          "Temperature",
+          "Timestamp"
+        ],
+        "properties": {
+          "Temperature": {
+            "type": "string"
+          },
+          "Timestamp": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+]

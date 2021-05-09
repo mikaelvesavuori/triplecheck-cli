@@ -26,9 +26,7 @@ export function initConfig(file: any, configPath: string) {
           // @ts-ignore
           fileContents = fileContents.replace(`"__VERSION__"`, `"${packageJson.version}"`);
         }
-      } catch (error) {
-        return null;
-      }
+      } catch (error) {}
     })();
 
     write(configPath, fileContents);

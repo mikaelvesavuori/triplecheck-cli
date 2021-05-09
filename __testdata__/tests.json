@@ -37,6 +37,17 @@
             "email": "email",
             "totalPrice": 0
           }
+        },
+        {
+          "Should Take Customer asdf": {
+            "name": "Mikael",
+            "email": "email",
+            "totalPrice": 12345,
+            "somethingElse": {
+              "asdf": 89347938123,
+              "isOn": true
+            }
+          }
         }
       ]
     }

@@ -17,9 +17,7 @@ function initConfig(file, configPath) {
                     fileContents = fileContents.replace(`"__VERSION__"`, `"${packageJson.version}"`);
                 }
             }
-            catch (error) {
-                return null;
-            }
+            catch (error) { }
         })();
         write_1.write(configPath, fileContents);
         console.log(messages_1.msgJobCompleteInit);

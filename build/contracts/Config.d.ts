@@ -5,25 +5,25 @@ export declare type Config = {
     publishing: Publishing;
 };
 declare type Identity = {
-    version: string;
-    type: string;
     name: string;
-    endpoint?: string;
+    version: string;
 };
 export declare type Tests = {
     include?: string[];
     skipTestingRemoteResources?: boolean;
     skipTestingLocalResources?: boolean;
-    contractFilePath?: string;
+    contractFilePrefix?: string;
 };
 export declare type Resources = {
-    contractsLocal?: string;
-    contractsCollection?: string;
-    testsLocal?: string;
-    testsCollection?: string;
+    local?: {
+        contractsPath?: string;
+        testsPath?: string;
+    };
+    remote?: {
+        brokerEndpoint?: string;
+    };
 };
 declare type Publishing = {
-    brokerEndpoint: string;
     publishLocalContracts: boolean;
     publishLocalTests: boolean;
 };

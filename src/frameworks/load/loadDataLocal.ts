@@ -3,7 +3,7 @@ import * as fs from 'fs';
 /**
  * @description Load data from a local file.
  */
-export function loadDataLocal(filePath: string) {
+export function loadDataLocal(filePath: string): any {
   const path = `${process.cwd()}/${filePath}`;
   console.log(`Loading file from ${path}...`);
 

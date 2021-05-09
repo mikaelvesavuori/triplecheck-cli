@@ -3,9 +3,7 @@ export declare const createNewTripleCheck: (config: Config) => Promise<TripleChe
 export declare class TripleCheck {
     serviceName: string | undefined;
     serviceVersion: string | undefined;
-    serviceType: string | undefined;
-    serviceEndpoint: string | undefined;
-    contractFilePath: string | undefined;
+    contractFilePrefix: string | undefined;
     tests: any;
     contracts: any;
     config: Config;

@@ -1,8 +1,7 @@
 {
   "identity": {
     "name": "__SERVICE__",
-    "version": "__VERSION__",
-    "endpoint": "http://localhost:8080/api"
+    "version": "__VERSION__"
   },
   "tests": {
     "include": [],
@@ -10,13 +9,15 @@
     "skipTestingRemoteResources": false
   },
   "resources": {
-    "contractsLocal": "",
-    "contractsCollection": "",
-    "testsLocal": "",
-    "testsCollection": ""
+    "local": {
+      "contracts": "",
+      "tests": ""
+    },
+    "remote": {
+      "brokerEndpoint": ""
+    }
   },
   "publishing": {
-    "brokerEndpoint": "",
     "publishLocalContracts": true,
     "publishLocalTests": true
   }

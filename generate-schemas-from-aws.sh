@@ -7,7 +7,11 @@
 
 function generateSchemasFromAwsEventbridge() {
   # Get all schemas
-  aws schemas list-schemas --registry-name demo-registry >> aws-schemas.json
+  aws schemas list-schemas --registry-name $1 >> aws-schemas.json
+
+  # Create folder to contain generated schemas
+  SCHEMA_FOLDER="generated-schemas-aws"
+  mkdir -p generated-schemas-aws
 
   # Create schema files for all schemas stored in EventBridge
   for schema in $(jq '.Schemas[].SchemaName' -r aws-schemas.json); do
@@ -25,7 +29,7 @@ function generateSchemasFromAwsEventbridge() {
       --arg name "$_SCHEMA_NAME_" \
       --arg version "$_SCHEMA_VERSION_" \
       --argjson content "$_SCHEMA_CONTENT_" \
-      '[{($name): {"\($version).0.0": ($content) }}]' >> $_SCHEMA_NAME_@$_SCHEMA_VERSION_.0.0.contract.json
+      '[{($name): {"\($version).0.0": ($content) }}]' >> $SCHEMA_FOLDER/$_SCHEMA_NAME_@$_SCHEMA_VERSION_.0.0.contract.json
   done
 
   rm aws-schemas.json

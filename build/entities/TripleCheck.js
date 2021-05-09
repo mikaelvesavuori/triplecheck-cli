@@ -53,10 +53,8 @@ class TripleCheck {
         var _a, _b;
         this.serviceName = config.identity.name;
         this.serviceVersion = config.identity.version;
-        this.serviceType = config.identity.type;
-        this.serviceEndpoint = config.identity.endpoint || '';
-        this.contractFilePath =
-            ((_b = (_a = config.tests) === null || _a === void 0 ? void 0 : _a.contractFilePath) === null || _b === void 0 ? void 0 : _b.replace(/.ts/gi, '')) || '__quicktype-contract';
+        this.contractFilePrefix =
+            ((_b = (_a = config.tests) === null || _a === void 0 ? void 0 : _a.contractFilePrefix) === null || _b === void 0 ? void 0 : _b.replace(/.ts/gi, '')) || '__quicktype-contract';
         this.config = config;
     }
     init() {
@@ -90,27 +88,32 @@ class TripleCheck {
     loadData(resources, tests) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const { testsLocal, testsCollection, contractsLocal, contractsCollection } = resources;
-                const { include } = tests;
+                let localTests, localContracts, brokerEndpoint = undefined;
+                const { include, skipTestingLocalResources, skipTestingRemoteResources } = tests;
+                const { local, remote } = resources;
+                if (local) {
+                    localTests = local.testsPath;
+                    localContracts = local.contractsPath;
+                }
+                if (remote)
+                    brokerEndpoint = remote.brokerEndpoint;
                 let consumerTests = {};
                 let providerContracts = {};
-                if (testsLocal) {
-                    const data = loadDataLocal_1.loadDataLocal(testsLocal);
-                    consumerTests.local = clean_1.clean(data, include);
+                if (!skipTestingLocalResources && localTests) {
+                    const data = loadDataLocal_1.loadDataLocal(localTests);
+                    consumerTests.local = clean_1.clean(data, include || []);
                 }
-                if (testsCollection) {
-                    const type = 'tests';
-                    const fetchedTests = yield loadDataRemote_1.loadDataRemote(type, testsCollection, include);
+                if (!skipTestingRemoteResources && brokerEndpoint) {
+                    const fetchedTests = yield loadDataRemote_1.loadDataRemote('tests', brokerEndpoint, include);
                     if (fetchedTests)
                         consumerTests.remote = fetchedTests;
                 }
-                if (contractsLocal) {
-                    const data = loadDataLocal_1.loadDataLocal(contractsLocal);
-                    providerContracts.local = clean_1.clean(data, include);
+                if (!skipTestingLocalResources && localContracts) {
+                    const data = loadDataLocal_1.loadDataLocal(localContracts);
+                    providerContracts.local = clean_1.clean(data, include || []);
                 }
-                if (contractsCollection) {
-                    const type = 'contracts';
-                    const fetchedContracts = yield loadDataRemote_1.loadDataRemote(type, contractsCollection, include);
+                if (!skipTestingRemoteResources && brokerEndpoint) {
+                    const fetchedContracts = yield loadDataRemote_1.loadDataRemote('contracts', brokerEndpoint, include);
                     if (fetchedContracts)
                         providerContracts.remote = fetchedContracts;
                 }
@@ -128,38 +131,34 @@ class TripleCheck {
     getCleanedData(onlyLocalData) {
         return __awaiter(this, void 0, void 0, function* () {
             const { tests } = this.config;
-            const { include, skipTestingRemoteResources, skipTestingLocalResources } = tests;
+            const { skipTestingRemoteResources, skipTestingLocalResources } = tests;
             const providerContracts = this.contracts;
             const consumerTests = this.tests;
             if (!consumerTests || consumerTests.length === 0) {
                 console.warn(messages_1.warnMissingConsumerTestData);
                 return;
             }
-            const trimmedData = {
-                providerContracts,
-                consumerTests
-            };
             if (onlyLocalData) {
                 return {
-                    tests: trimmedData.consumerTests.local,
-                    contracts: trimmedData.providerContracts.local
+                    tests: consumerTests.local,
+                    contracts: providerContracts.local
                 };
             }
             const mergedTests = (() => {
                 if (skipTestingLocalResources)
-                    return mergeDatasets_1.mergeDatasets([], trimmedData.consumerTests.remote);
+                    return mergeDatasets_1.mergeDatasets([], consumerTests.remote);
                 else if (skipTestingRemoteResources)
-                    return mergeDatasets_1.mergeDatasets(trimmedData.consumerTests.local, []);
+                    return mergeDatasets_1.mergeDatasets(consumerTests.local, []);
                 else
-                    return mergeDatasets_1.mergeDatasets(trimmedData.consumerTests.local, trimmedData.consumerTests.remote);
+                    return mergeDatasets_1.mergeDatasets(consumerTests.local, consumerTests.remote);
             })();
             const mergedContracts = (() => {
                 if (skipTestingLocalResources)
-                    return mergeDatasets_1.mergeDatasets([], trimmedData.providerContracts.remote);
+                    return mergeDatasets_1.mergeDatasets([], providerContracts.remote);
                 else if (skipTestingRemoteResources)
-                    return mergeDatasets_1.mergeDatasets(trimmedData.providerContracts.local, []);
+                    return mergeDatasets_1.mergeDatasets(providerContracts.local, []);
                 else
-                    return mergeDatasets_1.mergeDatasets(trimmedData.providerContracts.local, trimmedData.providerContracts.remote);
+                    return mergeDatasets_1.mergeDatasets(providerContracts.local, providerContracts.remote);
             })();
             return {
                 tests: mergedTests,
@@ -235,7 +234,7 @@ class TripleCheck {
     callStub(callInput) {
         return __awaiter(this, void 0, void 0, function* () {
             const { serviceName, version, payload } = callInput;
-            const FULL_CONTRACT_FILEPATH = `${this.contractFilePath}-${serviceName}-${version}.js`;
+            const FULL_CONTRACT_FILEPATH = `${this.contractFilePrefix}-${serviceName}-${version}.js`;
             const contract = yield Promise.resolve().then(() => __importStar(require(`${process.cwd()}/${FULL_CONTRACT_FILEPATH}`)));
             contract.toContract(JSON.stringify(payload));
         });
@@ -251,7 +250,7 @@ class TripleCheck {
                 console.warn(messages_1.msgContractFileNotFound(serviceName, version));
                 return false;
             }
-            const FULL_CONTRACT_FILEPATH = `${this.contractFilePath}-${serviceName}-${version}.js`;
+            const FULL_CONTRACT_FILEPATH = `${this.contractFilePrefix}-${serviceName}-${version}.js`;
             yield createContractFile_1.createContractFile(contract, FULL_CONTRACT_FILEPATH);
             return true;
         });
@@ -260,16 +259,24 @@ class TripleCheck {
         return __awaiter(this, void 0, void 0, function* () {
             const name = this.serviceName;
             const version = this.serviceVersion;
-            const type = this.serviceType;
             const { resources, publishing } = this.config;
-            const { contractsLocal, testsLocal } = resources;
-            if (!contractsLocal)
+            if (!resources.local) {
+                console.warn(messages_1.warnPublishingWithNoLocals);
+                process.exit(1);
+            }
+            const { contractsPath, testsPath } = resources.local;
+            if (!contractsPath)
                 console.warn(messages_1.warnMissingPathToLocalContracts);
-            if (!testsLocal)
+            if (!testsPath)
                 console.warn(messages_1.warnMissingPathToLocalTests);
-            const { brokerEndpoint, publishLocalContracts, publishLocalTests } = publishing;
+            if (!resources.remote) {
+                console.warn(messages_1.warnPublishingWithNoEndpoint);
+                process.exit(1);
+            }
+            const { brokerEndpoint } = resources.remote;
             if (!brokerEndpoint)
                 throw new Error(messages_1.errorMissingPublishEndpoint);
+            const { publishLocalContracts, publishLocalTests } = publishing;
             if (!publishLocalContracts && !publishLocalTests) {
                 console.warn(messages_1.warnNothingToPublish);
                 return;
@@ -281,7 +288,6 @@ class TripleCheck {
                 tests = [];
             const data = {
                 version,
-                type,
                 name,
                 contracts,
                 tests

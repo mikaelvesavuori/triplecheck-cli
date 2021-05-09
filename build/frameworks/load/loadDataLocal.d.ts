@@ -1,1 +1,1 @@
-export declare function loadDataLocal(filePath: string): string;
+export declare function loadDataLocal(filePath: string): any;

@@ -28,7 +28,9 @@ import {
   warnMissingPathToLocalContracts,
   warnMissingPathToLocalTests,
   warnMissingContractWhenGeneratingFile,
-  warnNothingToPublish
+  warnNothingToPublish,
+  warnPublishingWithNoLocals,
+  warnPublishingWithNoEndpoint
 } from '../frameworks/text/messages';
 
 export const createNewTripleCheck = async (config: Config): Promise<TripleCheck> => {
@@ -43,9 +45,7 @@ export const createNewTripleCheck = async (config: Config): Promise<TripleCheck>
 export class TripleCheck {
   serviceName: string | undefined;
   serviceVersion: string | undefined;
-  serviceType: string | undefined;
-  serviceEndpoint: string | undefined;
-  contractFilePath: string | undefined;
+  contractFilePrefix: string | undefined;
   tests: any;
   contracts: any;
   config: Config;
@@ -53,10 +53,8 @@ export class TripleCheck {
   constructor(config: Config) {
     this.serviceName = config.identity.name;
     this.serviceVersion = config.identity.version;
-    this.serviceType = config.identity.type;
-    this.serviceEndpoint = config.identity.endpoint || '';
-    this.contractFilePath =
-      config.tests?.contractFilePath?.replace(/.ts/gi, '') || '__quicktype-contract';
+    this.contractFilePrefix =
+      config.tests?.contractFilePrefix?.replace(/.ts/gi, '') || '__quicktype-contract';
     this.config = config;
   }
 
@@ -92,14 +90,14 @@ export class TripleCheck {
   }
 
   /**
-   * @description TODO
+   * @description Set and update testing scope to provided include list.
    */
   private updateTestScopes(include: string[]): void {
     this.config.tests.include = include;
   }
 
   /**
-   * @description TODO
+   * @description Set and update loaded resources.
    */
   private updateLoadedResources(
     consumerTests: Record<string, unknown>[],
@@ -114,31 +112,41 @@ export class TripleCheck {
    */
   private async loadData(resources: Resources, tests: Tests): Promise<LoadedData | null> {
     try {
-      const { testsLocal, testsCollection, contractsLocal, contractsCollection } = resources;
-      const { include } = tests;
+      let localTests,
+        localContracts,
+        brokerEndpoint = undefined;
+
+      const { include, skipTestingLocalResources, skipTestingRemoteResources } = tests;
+      const { local, remote } = resources;
+
+      if (local) {
+        localTests = local.testsPath;
+        localContracts = local.contractsPath;
+      }
+
+      if (remote) brokerEndpoint = remote.brokerEndpoint;
+
       // Load data from their respective resources
       let consumerTests: any = {};
       let providerContracts: any = {};
 
-      if (testsLocal) {
-        const data = loadDataLocal(testsLocal);
-        // @ts-ignore
-        consumerTests.local = clean(data, include);
+      // Tests
+      if (!skipTestingLocalResources && localTests) {
+        const data = loadDataLocal(localTests);
+        consumerTests.local = clean(data, include || []);
       }
-      if (testsCollection) {
-        const type = 'tests';
-        const fetchedTests = await loadDataRemote(type, testsCollection, include);
+      if (!skipTestingRemoteResources && brokerEndpoint) {
+        const fetchedTests = await loadDataRemote('tests', brokerEndpoint, include);
         if (fetchedTests) consumerTests.remote = fetchedTests;
       }
 
-      if (contractsLocal) {
-        const data = loadDataLocal(contractsLocal);
-        // @ts-ignore
-        providerContracts.local = clean(data, include);
+      // Contracts
+      if (!skipTestingLocalResources && localContracts) {
+        const data = loadDataLocal(localContracts);
+        providerContracts.local = clean(data, include || []);
       }
-      if (contractsCollection) {
-        const type = 'contracts';
-        const fetchedContracts = await loadDataRemote(type, contractsCollection, include);
+      if (!skipTestingRemoteResources && brokerEndpoint) {
+        const fetchedContracts = await loadDataRemote('contracts', brokerEndpoint, include);
         if (fetchedContracts) providerContracts.remote = fetchedContracts;
       }
 
@@ -154,16 +162,10 @@ export class TripleCheck {
 
   /**
    * @description Get cleaned data for testing and publishing.
-   * @todo Ensure this takes data correctly; currently uses initial include/exclude arrays
    */
   public async getCleanedData(onlyLocalData?: boolean): Promise<any> {
     const { tests } = this.config;
-    const {
-      include,
-      skipTestingRemoteResources,
-      skipTestingLocalResources
-      //verifyLiveEndpoints,
-    } = tests;
+    const { skipTestingRemoteResources, skipTestingLocalResources } = tests;
 
     const providerContracts: any = this.contracts;
     const consumerTests: any = this.tests;
@@ -173,33 +175,12 @@ export class TripleCheck {
     }
 
     /**
-     * Remove excluded items etc
-     * If publishing (i.e. only using local data) we sidestep the "include" array, since we don't want that to affect what gets published
-     */
-    // TODO: Unfuck this mess, either remove this entirely or fix!
-    /*
-    const trimmedData = trimData(
-      {
-        consumerTests: consumerTests,
-        providerContracts: providerContracts
-      },
-      onlyLocalData ? [] : include,
-      exclude
-    );
-    */
-
-    const trimmedData = {
-      providerContracts,
-      consumerTests
-    };
-
-    /**
      * Check if we only want local data (i.e. when we want to publish our local/original data)
      */
     if (onlyLocalData) {
       return {
-        tests: trimmedData.consumerTests.local,
-        contracts: trimmedData.providerContracts.local
+        tests: consumerTests.local,
+        contracts: providerContracts.local
       };
     }
 
@@ -207,21 +188,15 @@ export class TripleCheck {
      * Typically in a test scenario we want the merged local and remote datasets
      */
     const mergedTests = (() => {
-      if (skipTestingLocalResources) return mergeDatasets([], trimmedData.consumerTests.remote);
-      else if (skipTestingRemoteResources)
-        return mergeDatasets(trimmedData.consumerTests.local, []);
-      else return mergeDatasets(trimmedData.consumerTests.local, trimmedData.consumerTests.remote);
+      if (skipTestingLocalResources) return mergeDatasets([], consumerTests.remote);
+      else if (skipTestingRemoteResources) return mergeDatasets(consumerTests.local, []);
+      else return mergeDatasets(consumerTests.local, consumerTests.remote);
     })();
 
     const mergedContracts = (() => {
-      if (skipTestingLocalResources) return mergeDatasets([], trimmedData.providerContracts.remote);
-      else if (skipTestingRemoteResources)
-        return mergeDatasets(trimmedData.providerContracts.local, []);
-      else
-        return mergeDatasets(
-          trimmedData.providerContracts.local,
-          trimmedData.providerContracts.remote
-        );
+      if (skipTestingLocalResources) return mergeDatasets([], providerContracts.remote);
+      else if (skipTestingRemoteResources) return mergeDatasets(providerContracts.local, []);
+      else return mergeDatasets(providerContracts.local, providerContracts.remote);
     })();
 
     return {
@@ -237,8 +212,6 @@ export class TripleCheck {
     try {
       // @ts-ignore
       const { contracts, tests } = await this.getCleanedData();
-      //const contracts = this.contracts;
-      //const tests = this.tests;
       let failedTestCount = 0;
 
       if (contracts.length === 0 && tests.length === 0) {
@@ -322,27 +295,11 @@ export class TripleCheck {
   private async callStub(callInput: CallInput) {
     const { serviceName, version, payload } = callInput;
 
-    const FULL_CONTRACT_FILEPATH = `${this.contractFilePath}-${serviceName}-${version}.js`;
+    const FULL_CONTRACT_FILEPATH = `${this.contractFilePrefix}-${serviceName}-${version}.js`;
     const contract = await import(`${process.cwd()}/${FULL_CONTRACT_FILEPATH}`);
     // Attempt to convert and cross-check the contract with the payload
     contract.toContract(JSON.stringify(payload));
   }
-
-  /**
-   * @description Call mock server version of stored response from the actual service.
-   * @todo
-   */
-  //private async callMock() {
-  //  console.log('Not yet implemented');
-  //}
-
-  /**
-   * @description Call the actual service.
-   * @todo
-   */
-  //private async callActual() {
-  //  console.log('Not yet implemented');
-  //}
 
   /**
    * @description Orchestrator method to generate contract file.
@@ -364,7 +321,7 @@ export class TripleCheck {
     }
 
     // Create and load the local, converted contract file
-    const FULL_CONTRACT_FILEPATH = `${this.contractFilePath}-${serviceName}-${version}.js`;
+    const FULL_CONTRACT_FILEPATH = `${this.contractFilePrefix}-${serviceName}-${version}.js`;
     await createContractFile(contract, FULL_CONTRACT_FILEPATH);
     return true;
   }
@@ -376,16 +333,30 @@ export class TripleCheck {
   public async publish(): Promise<void> {
     const name = this.serviceName;
     const version = this.serviceVersion;
-    const type = this.serviceType;
     const { resources, publishing } = this.config;
-    const { contractsLocal, testsLocal } = resources;
 
-    if (!contractsLocal) console.warn(warnMissingPathToLocalContracts);
-    if (!testsLocal) console.warn(warnMissingPathToLocalTests);
+    /**
+     * TODO: Clean up validation and how these checks should work.
+     */
 
-    const { brokerEndpoint, publishLocalContracts, publishLocalTests } = publishing;
+    if (!resources.local) {
+      console.warn(warnPublishingWithNoLocals);
+      process.exit(1);
+    }
+
+    const { contractsPath, testsPath } = resources.local;
+    if (!contractsPath) console.warn(warnMissingPathToLocalContracts);
+    if (!testsPath) console.warn(warnMissingPathToLocalTests);
+
+    if (!resources.remote) {
+      console.warn(warnPublishingWithNoEndpoint);
+      process.exit(1);
+    }
+
+    const { brokerEndpoint } = resources.remote;
     if (!brokerEndpoint) throw new Error(errorMissingPublishEndpoint);
 
+    const { publishLocalContracts, publishLocalTests } = publishing;
     if (!publishLocalContracts && !publishLocalTests) {
       console.warn(warnNothingToPublish);
       return;
@@ -397,7 +368,6 @@ export class TripleCheck {
 
     const data = {
       version,
-      type,
       name,
       contracts,
       tests
