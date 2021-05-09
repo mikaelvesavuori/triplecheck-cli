@@ -1,6 +1,9 @@
 # Configs
 triplecheck.config.json
 
+# Generated files
+generated-schemas-*/
+
 # Ensure built files are included
 !build/
 
