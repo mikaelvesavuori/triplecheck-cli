@@ -9,7 +9,6 @@ import { clean } from '../frameworks/data/clean';
 
 import { validateConfig } from '../frameworks/config/validateConfig';
 import { getContract } from '../frameworks/convert/getContract';
-import { trimData } from '../frameworks/data/trimData';
 import { mergeDatasets } from '../frameworks/data/mergeDatasets';
 import { loadDataLocal } from '../frameworks/load/loadDataLocal';
 import { loadDataRemote } from '../frameworks/load/loadDataRemote';
