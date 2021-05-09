@@ -33,9 +33,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TripleCheck = exports.createNewTripleCheck = void 0;
 const node_fetch_1 = __importDefault(require("node-fetch"));
+const clean_1 = require("../frameworks/data/clean");
 const validateConfig_1 = require("../frameworks/config/validateConfig");
 const getContract_1 = require("../frameworks/convert/getContract");
-const trimData_1 = require("../frameworks/data/trimData");
 const mergeDatasets_1 = require("../frameworks/data/mergeDatasets");
 const loadDataLocal_1 = require("../frameworks/load/loadDataLocal");
 const loadDataRemote_1 = require("../frameworks/load/loadDataRemote");
@@ -62,12 +62,17 @@ class TripleCheck {
     init() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const { resources } = this.config;
-                const loadedData = yield this.loadData(resources);
+                const { resources, tests, identity } = this.config;
+                let { include } = tests;
+                if (!include)
+                    include = [];
+                if (include.length === 0)
+                    include.push(`${identity.name}@${identity.version}`);
+                this.updateTestScopes(include);
+                const loadedData = yield this.loadData(resources, tests);
                 if (!(loadedData === null || loadedData === void 0 ? void 0 : loadedData.consumerTests) || !(loadedData === null || loadedData === void 0 ? void 0 : loadedData.providerContracts))
                     throw new Error(messages_1.errorMissingTestsContracts);
-                this.tests = loadedData === null || loadedData === void 0 ? void 0 : loadedData.consumerTests;
-                this.contracts = loadedData === null || loadedData === void 0 ? void 0 : loadedData.providerContracts;
+                this.updateLoadedResources(loadedData.consumerTests, loadedData.providerContracts);
                 validateConfig_1.validateConfig(this.config);
             }
             catch (error) {
@@ -75,23 +80,37 @@ class TripleCheck {
             }
         });
     }
-    loadData(resources) {
+    updateTestScopes(include) {
+        this.config.tests.include = include;
+    }
+    updateLoadedResources(consumerTests, providerContracts) {
+        this.tests = consumerTests;
+        this.contracts = providerContracts;
+    }
+    loadData(resources, tests) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const { testsLocal, testsCollection, contractsLocal, contractsCollection } = resources;
+                const { include } = tests;
                 let consumerTests = {};
                 let providerContracts = {};
-                if (testsLocal)
-                    consumerTests.local = yield loadDataLocal_1.loadDataLocal(testsLocal);
+                if (testsLocal) {
+                    const data = loadDataLocal_1.loadDataLocal(testsLocal);
+                    consumerTests.local = clean_1.clean(data, include);
+                }
                 if (testsCollection) {
-                    const fetchedTests = yield loadDataRemote_1.loadDataRemote(testsCollection);
+                    const type = 'tests';
+                    const fetchedTests = yield loadDataRemote_1.loadDataRemote(type, testsCollection, include);
                     if (fetchedTests)
                         consumerTests.remote = fetchedTests;
                 }
-                if (contractsLocal)
-                    providerContracts.local = yield loadDataLocal_1.loadDataLocal(contractsLocal);
+                if (contractsLocal) {
+                    const data = loadDataLocal_1.loadDataLocal(contractsLocal);
+                    providerContracts.local = clean_1.clean(data, include);
+                }
                 if (contractsCollection) {
-                    const fetchedContracts = yield loadDataRemote_1.loadDataRemote(contractsCollection);
+                    const type = 'contracts';
+                    const fetchedContracts = yield loadDataRemote_1.loadDataRemote(type, contractsCollection, include);
                     if (fetchedContracts)
                         providerContracts.remote = fetchedContracts;
                 }
@@ -106,20 +125,20 @@ class TripleCheck {
             }
         });
     }
-    getData(onlyLocalData) {
+    getCleanedData(onlyLocalData) {
         return __awaiter(this, void 0, void 0, function* () {
             const { tests } = this.config;
-            const { testScope, excludeScope, skipTestingRemoteResources, skipTestingLocalResources } = tests;
+            const { include, skipTestingRemoteResources, skipTestingLocalResources } = tests;
             const providerContracts = this.contracts;
             const consumerTests = this.tests;
             if (!consumerTests || consumerTests.length === 0) {
                 console.warn(messages_1.warnMissingConsumerTestData);
                 return;
             }
-            const trimmedData = trimData_1.trimData({
-                consumerTests: consumerTests,
-                providerContracts: providerContracts
-            }, onlyLocalData ? [] : testScope, excludeScope);
+            const trimmedData = {
+                providerContracts,
+                consumerTests
+            };
             if (onlyLocalData) {
                 return {
                     tests: trimmedData.consumerTests.local,
@@ -151,7 +170,12 @@ class TripleCheck {
     test() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const { contracts, tests } = yield this.getData();
+                const { contracts, tests } = yield this.getCleanedData();
+                let failedTestCount = 0;
+                if (contracts.length === 0 && tests.length === 0) {
+                    consoleOutput_1.consoleOutput('ContractsAndTestsMissing');
+                    return;
+                }
                 consoleOutput_1.consoleOutput('StartTests');
                 const _consumerTests = tests.map((test) => __awaiter(this, void 0, void 0, function* () {
                     const serviceName = Object.keys(test)[0];
@@ -168,19 +192,24 @@ class TripleCheck {
                             const service = Object.entries(serviceTest)[0];
                             const consumerName = service[0];
                             const payload = service[1];
-                            yield this.call({
+                            const passed = yield this.call({
                                 serviceName,
                                 version,
                                 consumerName,
                                 payload
                             });
+                            if (!passed)
+                                failedTestCount += 1;
                         }));
                         yield Promise.all(_serviceTests);
                     }));
                     yield Promise.all(_versions);
                 }));
                 yield Promise.all(_consumerTests);
-                console.log(`\n`);
+                if (failedTestCount > 0) {
+                    consoleOutput_1.consoleOutput('TestsFailed', failedTestCount);
+                    process.exit(1);
+                }
                 consoleOutput_1.consoleOutput('TestsFinished');
                 process.exit(0);
             }
@@ -195,13 +224,11 @@ class TripleCheck {
             try {
                 yield this.callStub(callInput);
                 console.log(messages_1.msgTestPassed(serviceName, version, consumerName));
+                return true;
             }
             catch (error) {
-                console.log('error', error);
-                console.error(messages_1.msgTestFailed(serviceName, version, consumerName));
-                console.log(`\n`);
-                consoleOutput_1.consoleOutput('TestsFailed');
-                process.exit(1);
+                console.error(messages_1.msgTestFailed(serviceName, version, consumerName, error.message));
+                return false;
             }
         });
     }
@@ -209,7 +236,6 @@ class TripleCheck {
         return __awaiter(this, void 0, void 0, function* () {
             const { serviceName, version, payload } = callInput;
             const FULL_CONTRACT_FILEPATH = `${this.contractFilePath}-${serviceName}-${version}.js`;
-            console.log('--->', `${process.cwd()}/${FULL_CONTRACT_FILEPATH}`);
             const contract = yield Promise.resolve().then(() => __importStar(require(`${process.cwd()}/${FULL_CONTRACT_FILEPATH}`)));
             contract.toContract(JSON.stringify(payload));
         });
@@ -248,7 +274,7 @@ class TripleCheck {
                 console.warn(messages_1.warnNothingToPublish);
                 return;
             }
-            let { contracts, tests } = yield this.getData(true);
+            let { contracts, tests } = yield this.getCleanedData(true);
             if (!publishLocalContracts)
                 contracts = [];
             if (!publishLocalTests)

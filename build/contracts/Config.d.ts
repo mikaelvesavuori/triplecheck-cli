@@ -2,7 +2,6 @@ export declare type Config = {
     identity: Identity;
     tests: Tests;
     resources: Resources;
-    requestOptions: any;
     publishing: Publishing;
 };
 declare type Identity = {
@@ -12,9 +11,7 @@ declare type Identity = {
     endpoint?: string;
 };
 export declare type Tests = {
-    testScope?: string[];
-    excludeScope?: string[];
-    verifyLiveEndpoints?: boolean;
+    include?: string[];
     skipTestingRemoteResources?: boolean;
     skipTestingLocalResources?: boolean;
     contractFilePath?: string;

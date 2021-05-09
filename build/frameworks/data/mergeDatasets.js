@@ -7,6 +7,8 @@ function mergeDatasets(localData = [], remoteData = []) {
     const arrays = [...localData, ...remoteData];
     const services = {};
     arrays.forEach((item) => {
+        if (JSON.stringify(item) === '{}')
+            return;
         const serviceName = Object.keys(item)[0];
         if (!services[serviceName]) {
             services[serviceName] = item[serviceName];

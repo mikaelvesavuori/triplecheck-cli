@@ -1,1 +1,1 @@
-export declare type ConsoleOutput = 'StartTests' | 'TestsFinished' | 'TestsFailed';
+export declare type ConsoleOutput = 'StartTests' | 'TestsFinished' | 'TestsFailed' | 'ContractsAndTestsMissing' | 'ConfigNotPresent';

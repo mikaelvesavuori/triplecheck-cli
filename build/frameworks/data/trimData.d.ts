@@ -1,1 +1,1 @@
-export declare function trimData(data: any, testScope?: string[], excludeScope?: string[]): any;
+export declare function trimData(data: any, include?: string[]): any;

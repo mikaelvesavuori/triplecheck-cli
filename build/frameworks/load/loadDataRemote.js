@@ -14,10 +14,26 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.loadDataRemote = void 0;
 const node_fetch_1 = __importDefault(require("node-fetch"));
-function loadDataRemote(url, headers) {
+function loadDataRemote(type, url, include, headers) {
     return __awaiter(this, void 0, void 0, function* () {
         console.log(`Loading data from ${url}...`);
-        return yield node_fetch_1.default(url, { method: 'GET', headers }).then((res) => __awaiter(this, void 0, void 0, function* () { return yield res.json(); }));
+        if (include && include.length > 0) {
+            const fetchPromises = include.map((service) => __awaiter(this, void 0, void 0, function* () {
+                url = 'https://triplecheck-data-service.mikaelvesavuori.workers.dev';
+                return yield node_fetch_1.default(`${url}/${type}?${service}`, { method: 'GET', headers }).then((res) => __awaiter(this, void 0, void 0, function* () { return yield res.json(); }));
+            }));
+            const resolved = yield Promise.all(fetchPromises);
+            let cleaned = resolved.map((item) => item[0]);
+            cleaned = cleaned.filter((item) => item);
+            const final = {};
+            cleaned.forEach((item) => {
+                if (final[Object.keys(item)[0]])
+                    final[Object.keys(item)[0]] = Object.assign(final[Object.keys(item)[0]], Object.values(item)[0]);
+                else
+                    final[Object.keys(item)[0]] = Object.values(item)[0];
+            });
+            return [final];
+        }
     });
 }
 exports.loadDataRemote = loadDataRemote;

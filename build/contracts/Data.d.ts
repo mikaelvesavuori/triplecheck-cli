@@ -1,4 +1,10 @@
 export declare type LoadedData = {
-    consumerTests: any;
-    providerContracts: any;
+    consumerTests: {
+        local: Record<string, unknown>[];
+        remote: Record<string, unknown>[];
+    };
+    providerContracts: {
+        local: Record<string, unknown>[];
+        remote: Record<string, unknown>[];
+    };
 };

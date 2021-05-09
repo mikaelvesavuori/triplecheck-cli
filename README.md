@@ -62,6 +62,60 @@ TODO.
 - Provide ready pipeline examples (and steps/actions?) for AWS CodePipeline, Github, Bitbucket, Cloud Build, Azure DevOps
 - One step deploy a visualizer to Cloudflare Pages or Netlify or Vercel
 
+Release criteria
+
+- Trevlig upplevelse, välrundat verktyg
+- Mycket bra dokumentation
+- Otroligt enkelt att börja (starters, Medium, zero config...)
+- Brett stöd för plattformar och databaser
+
+Designmål
+
+- Enklaste...
+- Snabbaste...
+- Billigaste...
+- Sättet att göra kontraktstestning
+
+Contracts should be "owned" by the respective services. The individual service is primarily responsible for creating, updating and publishing their contract.
+
+Tests can be written by anyone who has a dependency toward a given service.
+
+Send back data, having resolved dependencies, given that someone has already published contracts and tests (and that dependencies / dependents have been calculated) you'll get all related data back.
+
+- You get back data for your service: Ensure functionality of what others need of you
+- You get back data for services you depend on: Ensure functionality of what you need of others
+
+Publish är den primära punkten för interaktion. Den sköter också att uppdatera relationer samt att generera en aggregerad serviceList; inget annat uppdaterar dessa (då detta är enda routen som tar identity)
+
+## Publishing gates
+
+Rollback behavior if something breaks during the multi-phase procedure?
+
+A service can only publish contracts for its own namespace (as given in the service identity)?
+
+Tests cannot be published before a contract exists.
+
+Tests cannot be published unless they are passing.
+
+Föreslå filstruktur med ”schema”-mapp; man behöver inte nödvändigtvis vara redundant med hårda kopior av scheman på disk iom att dom ju lagras i databasen (däremot säkert smart att hårdlagra alla varianter i mapp med namn på tidigaste versionen som scheman med major changes förekom i, ex ”1.0.0” och ”1.8.0”) -> detta har ju även att göra med contractsLocal i config som bara pekar på en enskild fil på disk
+
+What protection does one have if someone would abuse the system and publish failing tests? (maybe as per above need to run tests and have them passing first?)
+
+Publish är den primära punkten för interaktion. Den sköter också att uppdatera relationer samt att generera en aggregerad serviceList; inget annat uppdaterar dessa (då detta är enda routen som tar identity)
+
+## Sync schemas from AWS EventBridge and GCP Pub/Sub
+
+Add one/both of these to your `package.json` scripts:
+
+```
+"sync:aws": "sh node_modules/triplecheck-cli/generate-schemas-from-aws.sh your-registry-name",
+"sync:gcp": "sh node_modules/triplecheck-cli/generate-schemas-from-gcp.sh"
+```
+
+Don't forget to change your registry name if you want to use the AWS option.
+
+Note that the shell scripts have no logic and will not take any options from your TripleCheck configuration. Feel free to copy and modify these shell scripts if you want to extend them with more functionality.
+
 ## References
 
 - https://www.fastify.io/docs/v2.2.x/Validation-and-Serialization/

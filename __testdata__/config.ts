@@ -8,9 +8,7 @@ export const config = {
     endpoint: 'http://localhost:8080/api'
   },
   tests: {
-    testScope: ['some-provider'], // By using a "whitelisting" policy we can have a complete list of what services we actually are interested in
-    excludeScope: [],
-    // testAll: true, ???
+    include: ['some-provider'], // By using a "whitelisting" policy we can have a complete list of what services we actually are interested in
     verifyLiveEndpoints: false,
     skipTestingLocalResources: false,
     skipTestingRemoteResources: false

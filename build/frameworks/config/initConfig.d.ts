@@ -1,1 +1,1 @@
-export declare function initConfig(file: any): void;
+export declare function initConfig(file: any, configPath: string): void;

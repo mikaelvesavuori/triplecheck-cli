@@ -124,6 +124,47 @@
 					<li>Provide ready pipeline examples (and steps/actions?) for AWS CodePipeline, Github, Bitbucket, Cloud Build, Azure DevOps</li>
 					<li>One step deploy a visualizer to Cloudflare Pages or Netlify or Vercel</li>
 				</ul>
+				<p>Release criteria</p>
+				<ul>
+					<li>Trevlig upplevelse, välrundat verktyg</li>
+					<li>Mycket bra dokumentation</li>
+					<li>Otroligt enkelt att börja (starters, Medium, zero config...)</li>
+					<li>Brett stöd för plattformar och databaser</li>
+				</ul>
+				<p>Designmål</p>
+				<ul>
+					<li>Enklaste...</li>
+					<li>Snabbaste...</li>
+					<li>Billigaste...</li>
+					<li>Sättet att göra kontraktstestning</li>
+				</ul>
+				<p>Contracts should be &quot;owned&quot; by the respective services. The individual service is primarily responsible for creating, updating and publishing their contract.</p>
+				<p>Tests can be written by anyone who has a dependency toward a given service.</p>
+				<p>Send back data, having resolved dependencies, given that someone has already published contracts and tests (and that dependencies / dependents have been calculated) you&#39;ll get all related data back.</p>
+				<ul>
+					<li>You get back data for your service: Ensure functionality of what others need of you</li>
+					<li>You get back data for services you depend on: Ensure functionality of what you need of others</li>
+				</ul>
+				<p>Publish är den primära punkten för interaktion. Den sköter också att uppdatera relationer samt att generera en aggregerad serviceList; inget annat uppdaterar dessa (då detta är enda routen som tar identity)</p>
+				<a href="#publishing-gates" id="publishing-gates" style="color: inherit; text-decoration: none;">
+					<h2>Publishing gates</h2>
+				</a>
+				<p>Rollback behavior if something breaks during the multi-phase procedure?</p>
+				<p>A service can only publish contracts for its own namespace (as given in the service identity)?</p>
+				<p>Tests cannot be published before a contract exists.</p>
+				<p>Tests cannot be published unless they are passing.</p>
+				<p>Föreslå filstruktur med ”schema”-mapp; man behöver inte nödvändigtvis vara redundant med hårda kopior av scheman på disk iom att dom ju lagras i databasen (däremot säkert smart att hårdlagra alla varianter i mapp med namn på tidigaste versionen som scheman med major changes förekom i, ex ”1.0.0” och ”1.8.0”) -&gt; detta har ju även att göra med contractsLocal i config som bara pekar på en enskild fil på disk</p>
+				<p>What protection does one have if someone would abuse the system and publish failing tests? (maybe as per above need to run tests and have them passing first?)</p>
+				<p>Publish är den primära punkten för interaktion. Den sköter också att uppdatera relationer samt att generera en aggregerad serviceList; inget annat uppdaterar dessa (då detta är enda routen som tar identity)</p>
+				<a href="#sync-schemas-from-aws-eventbridge-and-gcp-pubsub" id="sync-schemas-from-aws-eventbridge-and-gcp-pubsub" style="color: inherit; text-decoration: none;">
+					<h2>Sync schemas from AWS EventBridge and GCP Pub/Sub</h2>
+				</a>
+				<p>Add one/both of these to your <code>package.json</code> scripts:</p>
+				<pre><code><span style="color: #A31515">&quot;sync:aws&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;sh node_modules/triplecheck-cli/generate-schemas-from-aws.sh your-registry-name&quot;</span><span style="color: #000000">,</span>
+<span style="color: #A31515">&quot;sync:gcp&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;sh node_modules/triplecheck-cli/generate-schemas-from-gcp.sh&quot;</span>
+</code></pre>
+				<p>Don&#39;t forget to change your registry name if you want to use the AWS option.</p>
+				<p>Note that the shell scripts have no logic and will not take any options from your TripleCheck configuration. Feel free to copy and modify these shell scripts if you want to extend them with more functionality.</p>
 				<a href="#references" id="references" style="color: inherit; text-decoration: none;">
 					<h2>References</h2>
 				</a>
@@ -169,9 +210,6 @@
 						<a href="modules/entities_triplecheck.html">entities/<wbr>Triple<wbr>Check</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/frameworks_config_configtoinit.html">frameworks/config/config<wbr>ToInit</a>
-					</li>
-					<li class=" tsd-kind-module">
 						<a href="modules/frameworks_config_initconfig.html">frameworks/config/init<wbr>Config</a>
 					</li>
 					<li class=" tsd-kind-module">
@@ -188,6 +226,9 @@
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="modules/frameworks_convert_writecontracttodisk.html">frameworks/convert/write<wbr>Contract<wbr>ToDisk</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/frameworks_data_clean.html">frameworks/data/clean</a>
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="modules/frameworks_data_mergedatasets.html">frameworks/data/merge<wbr>Datasets</a>

@@ -11,8 +11,10 @@ export declare class TripleCheck {
     config: Config;
     constructor(config: Config);
     init(): Promise<void>;
+    private updateTestScopes;
+    private updateLoadedResources;
     private loadData;
-    getData(onlyLocalData?: boolean): Promise<any>;
+    getCleanedData(onlyLocalData?: boolean): Promise<any>;
     test(): Promise<void>;
     private call;
     private callStub;

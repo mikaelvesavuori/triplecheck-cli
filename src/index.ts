@@ -2,16 +2,28 @@
 import { TripleCheckController } from './controllers/TripleCheckController';
 
 import { initConfig } from './frameworks/config/initConfig';
-import { configToInit } from './frameworks/config/configToInit';
+import baseConfig from './frameworks/config/baseConfig.json';
 import { loadDataLocal } from './frameworks/load/loadDataLocal';
+import { checkIfExists } from './frameworks/filesystem/checkIfExists';
+import { consoleOutput } from './frameworks/text/consoleOutput';
 
+const CONFIG_FILEPATH = 'triplecheck.config.json';
+
+/**
+ * @description TODO
+ */
 async function main() {
   try {
     // User wants to init a configuration...
     const [, , ...CLI_ARGS] = process.argv;
-    if (CLI_ARGS[0]?.toLowerCase() === 'init') initConfig(configToInit);
+    if (CLI_ARGS[0]?.toLowerCase() === 'init') initConfig(baseConfig, CONFIG_FILEPATH);
 
-    const config: any = await loadDataLocal('triplecheck.config.json');
+    if (!checkIfExists(CONFIG_FILEPATH)) {
+      consoleOutput('ConfigNotPresent');
+      return;
+    }
+
+    const config: any = await loadDataLocal(CONFIG_FILEPATH);
     TripleCheckController(config);
   } catch (error) {
     console.error(error);

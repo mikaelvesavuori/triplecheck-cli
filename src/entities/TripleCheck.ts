@@ -1,9 +1,11 @@
 import fetch from 'node-fetch';
 
-import { Config, Resources } from '../contracts/Config';
+import { Config, Resources, Tests } from '../contracts/Config';
 import { CallInput } from '../contracts/Call';
 import { ConsumerTest, ProviderContract } from '../contracts/Contract';
 import { LoadedData } from '../contracts/Data';
+
+import { clean } from '../frameworks/data/clean';
 
 import { validateConfig } from '../frameworks/config/validateConfig';
 import { getContract } from '../frameworks/convert/getContract';
@@ -61,14 +63,28 @@ export class TripleCheck {
 
   public async init() {
     try {
-      const { resources } = this.config;
-      const loadedData = await this.loadData(resources);
+      const { resources, tests, identity } = this.config;
+      let { include } = tests;
+
+      /**
+       * Set baseline so we always have include and exclude arrays in case these are missing.
+       */
+      if (!include) include = [];
+
+      /**
+       * In case we have no explicit includes then set the current service as the SUT ("system under test").
+       */
+      if (include.length === 0) include.push(`${identity.name}@${identity.version}`);
+
+      this.updateTestScopes(include);
+
+      const loadedData = await this.loadData(resources, tests);
 
       if (!loadedData?.consumerTests || !loadedData?.providerContracts)
         throw new Error(errorMissingTestsContracts);
 
-      this.tests = loadedData?.consumerTests;
-      this.contracts = loadedData?.providerContracts;
+      // @ts-ignore
+      this.updateLoadedResources(loadedData.consumerTests, loadedData.providerContracts);
 
       validateConfig(this.config);
     } catch (error) {
@@ -77,27 +93,53 @@ export class TripleCheck {
   }
 
   /**
-   * @description Orchestrator (splitter) method for loading data from remote or local source.
+   * @description TODO
    */
-  private async loadData(resources: Resources): Promise<LoadedData | null> {
+  private updateTestScopes(include: string[]): void {
+    this.config.tests.include = include;
+  }
+
+  /**
+   * @description TODO
+   */
+  private updateLoadedResources(
+    consumerTests: Record<string, unknown>[],
+    providerContracts: Record<string, unknown>[]
+  ): void {
+    this.tests = consumerTests;
+    this.contracts = providerContracts;
+  }
+
+  /**
+   * @description Orchestrator (splitter) method for loading data from remote or local sources.
+   */
+  private async loadData(resources: Resources, tests: Tests): Promise<LoadedData | null> {
     try {
       const { testsLocal, testsCollection, contractsLocal, contractsCollection } = resources;
+      const { include } = tests;
       // Load data from their respective resources
       let consumerTests: any = {};
       let providerContracts: any = {};
 
-      if (testsLocal) consumerTests.local = await loadDataLocal(testsLocal);
-
-      // TODO: Add support to more selectively fetch data for services, by for example passing in "testScope"
+      if (testsLocal) {
+        const data = loadDataLocal(testsLocal);
+        // @ts-ignore
+        consumerTests.local = clean(data, include);
+      }
       if (testsCollection) {
-        const fetchedTests = await loadDataRemote(testsCollection);
+        const type = 'tests';
+        const fetchedTests = await loadDataRemote(type, testsCollection, include);
         if (fetchedTests) consumerTests.remote = fetchedTests;
       }
 
-      if (contractsLocal) providerContracts.local = await loadDataLocal(contractsLocal);
-
+      if (contractsLocal) {
+        const data = loadDataLocal(contractsLocal);
+        // @ts-ignore
+        providerContracts.local = clean(data, include);
+      }
       if (contractsCollection) {
-        const fetchedContracts = await loadDataRemote(contractsCollection);
+        const type = 'contracts';
+        const fetchedContracts = await loadDataRemote(type, contractsCollection, include);
         if (fetchedContracts) providerContracts.remote = fetchedContracts;
       }
 
@@ -113,20 +155,19 @@ export class TripleCheck {
 
   /**
    * @description Get cleaned data for testing and publishing.
+   * @todo Ensure this takes data correctly; currently uses initial include/exclude arrays
    */
-  public async getData(onlyLocalData?: boolean): Promise<any> {
+  public async getCleanedData(onlyLocalData?: boolean): Promise<any> {
     const { tests } = this.config;
-
     const {
-      testScope,
-      excludeScope,
+      include,
       skipTestingRemoteResources,
       skipTestingLocalResources
       //verifyLiveEndpoints,
     } = tests;
 
-    const providerContracts: ProviderContract[] = this.contracts;
-    const consumerTests: ConsumerTest[] = this.tests;
+    const providerContracts: any = this.contracts;
+    const consumerTests: any = this.tests;
     if (!consumerTests || consumerTests.length === 0) {
       console.warn(warnMissingConsumerTestData);
       return;
@@ -134,16 +175,24 @@ export class TripleCheck {
 
     /**
      * Remove excluded items etc
-     * If publishing (i.e. only using local data) we sidestep testScope, since we don't want that to affect what gets published
+     * If publishing (i.e. only using local data) we sidestep the "include" array, since we don't want that to affect what gets published
      */
+    // TODO: Unfuck this mess, either remove this entirely or fix!
+    /*
     const trimmedData = trimData(
       {
         consumerTests: consumerTests,
         providerContracts: providerContracts
       },
-      onlyLocalData ? [] : testScope,
-      excludeScope
+      onlyLocalData ? [] : include,
+      exclude
     );
+    */
+
+    const trimmedData = {
+      providerContracts,
+      consumerTests
+    };
 
     /**
      * Check if we only want local data (i.e. when we want to publish our local/original data)
@@ -188,7 +237,15 @@ export class TripleCheck {
   public async test(): Promise<void> {
     try {
       // @ts-ignore
-      const { contracts, tests } = await this.getData();
+      const { contracts, tests } = await this.getCleanedData();
+      //const contracts = this.contracts;
+      //const tests = this.tests;
+      let failedTestCount = 0;
+
+      if (contracts.length === 0 && tests.length === 0) {
+        consoleOutput('ContractsAndTestsMissing');
+        return;
+      }
 
       consoleOutput('StartTests');
 
@@ -213,12 +270,14 @@ export class TripleCheck {
             const consumerName = service[0];
             const payload = service[1];
 
-            await this.call({
+            const passed = await this.call({
               serviceName,
               version,
               consumerName,
               payload
             });
+
+            if (!passed) failedTestCount += 1;
           });
 
           await Promise.all(_serviceTests);
@@ -229,7 +288,11 @@ export class TripleCheck {
 
       await Promise.all(_consumerTests);
 
-      console.log(`\n`);
+      if (failedTestCount > 0) {
+        consoleOutput('TestsFailed', failedTestCount);
+        process.exit(1);
+      }
+
       consoleOutput('TestsFinished');
       process.exit(0);
     } catch (error) {
@@ -239,19 +302,18 @@ export class TripleCheck {
 
   /**
    * @description "Test call" a named service's contract with a given payload.
+   * Returns boolean reflecting if it passed successfully or not.
    */
-  private async call(callInput: CallInput): Promise<void> {
+  private async call(callInput: CallInput): Promise<boolean> {
     const { serviceName, version, consumerName } = callInput;
 
     try {
       await this.callStub(callInput);
       console.log(msgTestPassed(serviceName, version, consumerName));
+      return true;
     } catch (error) {
-      console.log('error', error);
-      console.error(msgTestFailed(serviceName, version, consumerName));
-      console.log(`\n`);
-      consoleOutput('TestsFailed');
-      process.exit(1);
+      console.error(msgTestFailed(serviceName, version, consumerName, error.message));
+      return false;
     }
   }
 
@@ -262,8 +324,6 @@ export class TripleCheck {
     const { serviceName, version, payload } = callInput;
 
     const FULL_CONTRACT_FILEPATH = `${this.contractFilePath}-${serviceName}-${version}.js`;
-    console.log('--->', `${process.cwd()}/${FULL_CONTRACT_FILEPATH}`);
-    //const contract = require(`${process.cwd()}/${FULL_CONTRACT_FILEPATH}`); //await loadDataLocal(FULL_CONTRACT_FILEPATH);
     const contract = await import(`${process.cwd()}/${FULL_CONTRACT_FILEPATH}`);
     // Attempt to convert and cross-check the contract with the payload
     contract.toContract(JSON.stringify(payload));
@@ -332,7 +392,7 @@ export class TripleCheck {
       return;
     }
 
-    let { contracts, tests } = await this.getData(true);
+    let { contracts, tests } = await this.getCleanedData(true);
     if (!publishLocalContracts) contracts = [];
     if (!publishLocalTests) tests = [];
 

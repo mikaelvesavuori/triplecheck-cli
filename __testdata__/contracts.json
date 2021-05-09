@@ -1,6 +1,12 @@
 [
   {
     "api-provider": {
+      "1.0.1": {
+        "name": "123",
+        "email": "apsodj",
+        "totalPrice": 123412,
+        "somethingElse": false
+      },
       "1.0.0": {
         "definitions": {},
         "$id": "http://example.com/common.json",

@@ -1,1 +1,1 @@
-export declare function loadDataRemote(url: string, headers?: any): Promise<any>;
+export declare function loadDataRemote(type: string, url: string, include?: string[], headers?: any): Promise<any>;

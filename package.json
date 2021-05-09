@@ -17,10 +17,10 @@
     "url": "https://github.com/mikaelvesavuori/triplecheck-cli.git"
   },
   "scripts": {
-    "start": "npm run clean && npx ts-node src/index.ts && npm run clean",
+    "start": "npm run clean && npx ts-node src/index.ts",
     "sync:aws": "sh generate-schemas-from-aws.sh demo-registry",
     "sync:gcp": "sh generate-schemas-from-gcp.sh",
-    "clean": "rm -f __quicktype-*.ts",
+    "clean": "rm -f __quicktype-*",
     "clean:build": "rm -rf build/",
     "build": "npm run clean:build && tsc",
     "build:watch": "onchange 'src/**/*.ts' -- npm run build",
@@ -40,8 +40,8 @@
     "quicktype-core": "^6.0.70"
   },
   "devDependencies": {
-    "@types/jest": "^26.0.22",
-    "@types/node": "^14.14.41",
+    "@types/jest": "^26.0.23",
+    "@types/node": "^15.0.1",
     "@types/node-fetch": "^2.5.10",
     "@types/readable-stream": "^2.3.9",
     "@types/urijs": "^1.19.15",

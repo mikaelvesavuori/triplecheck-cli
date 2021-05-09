@@ -1,1 +1,1 @@
-export declare function loadDataLocal(filePath: string): Promise<string>;
+export declare function loadDataLocal(filePath: string): string;

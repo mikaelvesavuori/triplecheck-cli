@@ -12,6 +12,7 @@ export function mergeDatasets(localData: any[] = [], remoteData: any[] = []) {
 
   // TODO: Add real type
   arrays.forEach((item: any) => {
+    if (JSON.stringify(item) === '{}') return;
     /**
      * Any pre-existing/local/current data will be added at once, so
      * new/updated/remote data will be the only data to get the more

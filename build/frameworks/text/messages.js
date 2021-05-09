@@ -1,9 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.warnNothingToPublish = exports.warnMissingContractWhenGeneratingFile = exports.warnMissingPathToLocalTests = exports.warnMissingPathToLocalContracts = exports.warnMissingConsumerTestData = exports.errorMissingPublishEndpoint = exports.errorMissingTestsForService = exports.errorMissingTestsContracts = exports.msgSuccessfullyPublished = exports.msgTestingService = exports.msgContractFileNotFound = exports.msgTestFailed = exports.msgTestPassed = void 0;
+exports.warnNothingToPublish = exports.warnMissingContractWhenGeneratingFile = exports.warnMissingPathToLocalTests = exports.warnMissingPathToLocalContracts = exports.warnMissingConsumerTestData = exports.errorMissingPublishEndpoint = exports.errorMissingTestsForService = exports.errorMissingTestsContracts = exports.msgSuccessfullyPublished = exports.msgTestingService = exports.msgContractFileNotFound = exports.msgTestFailed = exports.msgTestPassed = exports.msgJobCompleteInitStopped = exports.msgJobCompleteInit = void 0;
+exports.msgJobCompleteInit = `✅ Created a configuration file you --> triplecheck.config.json`;
+exports.msgJobCompleteInitStopped = `⚠️ Skipping generation of configuration file since one was already present...`;
 const msgTestPassed = (serviceName, version, consumerName) => `✅ Successfully tested ${serviceName}@${version} with ${consumerName}`;
 exports.msgTestPassed = msgTestPassed;
-const msgTestFailed = (serviceName, version, consumerName) => `❌ Did not pass test for ${serviceName}@${version} with ${consumerName}`;
+const msgTestFailed = (serviceName, version, consumerName, error) => `❌ Did not pass test for ${serviceName}@${version} with ${consumerName}\nError: ${error}`;
 exports.msgTestFailed = msgTestFailed;
 const msgContractFileNotFound = (serviceName, version) => `⚠️ Could not find any contracts for ${serviceName}@${version}!`;
 exports.msgContractFileNotFound = msgContractFileNotFound;

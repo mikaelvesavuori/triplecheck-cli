@@ -1,23 +1,40 @@
 import { checkIfExists } from '../filesystem/checkIfExists';
 import { write } from '../filesystem/write';
 
-const FILE = 'triplecheck.config.js';
+import { loadDataLocal } from '../load/loadDataLocal';
+
+import { msgJobCompleteInit, msgJobCompleteInitStopped } from '../text/messages';
 
 /**
  * @description Handle basic configuration initialization
- * @todo Fix messages
  */
-export function initConfig(file: any) {
-  const FILE_EXISTS = checkIfExists(FILE);
-  if (!FILE_EXISTS) {
-    let fileContents =
-      `import { version } from './package.json';\n\nexport const config = ` +
-      JSON.stringify(file, null, ' ');
-    fileContents = fileContents.replace('"__VERSION__"', 'version');
+export function initConfig(file: any, configPath: string) {
+  const FILE_EXISTS = checkIfExists(configPath);
 
-    write(FILE, fileContents);
-    console.log('MsgJobCompleteInit');
+  if (!FILE_EXISTS) {
+    let fileContents = JSON.stringify(file, null, ' ');
+    /**
+     * Convenience: Add name and version from package.json if these exist.
+     */
+    (() => {
+      try {
+        const packageJson = loadDataLocal('package.json');
+        // @ts-ignore
+        if (packageJson && packageJson.name && packageJson.version) {
+          // @ts-ignore
+          fileContents = fileContents.replace(`"__SERVICE__"`, `"${packageJson.name}"`);
+          // @ts-ignore
+          fileContents = fileContents.replace(`"__VERSION__"`, `"${packageJson.version}"`);
+        }
+      } catch (error) {
+        return null;
+      }
+    })();
+
+    write(configPath, fileContents);
+    console.log(msgJobCompleteInit);
     return;
   }
-  console.log('MsgJobCompleteInitStopped');
+
+  console.log(msgJobCompleteInitStopped);
 }

@@ -1,5 +1,7 @@
+export declare const msgJobCompleteInit = "\u2705 Created a configuration file you --> triplecheck.config.json";
+export declare const msgJobCompleteInitStopped = "\u26A0\uFE0F Skipping generation of configuration file since one was already present...";
 export declare const msgTestPassed: (serviceName: string, version: string, consumerName: string) => string;
-export declare const msgTestFailed: (serviceName: string, version: string, consumerName: string) => string;
+export declare const msgTestFailed: (serviceName: string, version: string, consumerName: string, error: string) => string;
 export declare const msgContractFileNotFound: (serviceName: string, version: string) => string;
 export declare const msgTestingService: (serviceName: string, version: string) => string;
 export declare const msgSuccessfullyPublished = "Successfully published contracts and tests";
