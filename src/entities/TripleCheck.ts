@@ -15,6 +15,8 @@ import { loadDataRemote } from '../frameworks/load/loadDataRemote';
 import { createContractFile } from '../frameworks/convert/createContractFile';
 import { consoleOutput } from '../frameworks/text/consoleOutput';
 
+import { mockedLoadedData } from '../../__testdata__/mockedLoadedData';
+
 import {
   msgTestPassed,
   msgTestFailed,
@@ -25,12 +27,8 @@ import {
   errorMissingTestsForService,
   errorMissingPublishEndpoint,
   warnMissingConsumerTestData,
-  warnMissingPathToLocalContracts,
-  warnMissingPathToLocalTests,
   warnMissingContractWhenGeneratingFile,
-  warnNothingToPublish,
-  warnPublishingWithNoLocals,
-  warnPublishingWithNoEndpoint
+  warnNothingToPublish
 } from '../frameworks/text/messages';
 
 export const createNewTripleCheck = async (config: Config): Promise<TripleCheck> => {
@@ -60,11 +58,11 @@ export class TripleCheck {
 
   public async init() {
     try {
-      const { resources, tests, identity } = this.config;
+      const { identity, tests, resources } = this.config;
       let { include } = tests;
 
       /**
-       * Set baseline so we always have include and exclude arrays in case these are missing.
+       * Set baseline so we always have the include array in case this is missing.
        */
       if (!include) include = [];
 
@@ -75,15 +73,22 @@ export class TripleCheck {
 
       this.updateTestScopes(include);
 
-      const loadedData = await this.loadData(resources, tests);
+      // Handle fake data if we are running tests
+      if (process.env.NODE_ENV === 'test') {
+        const loadedData = mockedLoadedData;
+        // @ts-ignore
+        this.updateLoadedResources(loadedData.consumerTests, loadedData.providerContracts);
+      } else {
+        const loadedData = await this.loadData(resources, tests);
 
-      if (!loadedData?.consumerTests || !loadedData?.providerContracts)
-        throw new Error(errorMissingTestsContracts);
+        if (!loadedData?.consumerTests || !loadedData?.providerContracts)
+          throw new Error(errorMissingTestsContracts);
 
-      // @ts-ignore
-      this.updateLoadedResources(loadedData.consumerTests, loadedData.providerContracts);
+        // @ts-ignore
+        this.updateLoadedResources(loadedData.consumerTests, loadedData.providerContracts);
+      }
 
-      validateConfig(this.config);
+      if (!validateConfig(this.config)) process.exit(1);
     } catch (error) {
       throw new Error(error);
     }
@@ -335,24 +340,7 @@ export class TripleCheck {
     const version = this.serviceVersion;
     const { resources, publishing } = this.config;
 
-    /**
-     * TODO: Clean up validation and how these checks should work.
-     */
-
-    if (!resources.local) {
-      console.warn(warnPublishingWithNoLocals);
-      process.exit(1);
-    }
-
-    const { contractsPath, testsPath } = resources.local;
-    if (!contractsPath) console.warn(warnMissingPathToLocalContracts);
-    if (!testsPath) console.warn(warnMissingPathToLocalTests);
-
-    if (!resources.remote) {
-      console.warn(warnPublishingWithNoEndpoint);
-      process.exit(1);
-    }
-
+    // @ts-ignore
     const { brokerEndpoint } = resources.remote;
     if (!brokerEndpoint) throw new Error(errorMissingPublishEndpoint);
 
@@ -373,9 +361,9 @@ export class TripleCheck {
       tests
     };
 
-    if (process.env.NODE_ENV === 'test') return; // TODO: Consider using a mock instead
+    if (process.env.NODE_ENV === 'test') process.exit(0);
 
-    await fetch(brokerEndpoint, {
+    await fetch(`${brokerEndpoint}/publish`, {
       method: 'POST',
       body: JSON.stringify(data)
     })

@@ -1,7 +1,3 @@
-// This is the mock of all collected provider contracts
-
-// TODO: Demonstrate nested objects
-// TODO: Demonstrate GraphQL support
 export const providerContracts = [
   {
     'delivery-service': {

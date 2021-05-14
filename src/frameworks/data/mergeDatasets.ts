@@ -10,7 +10,6 @@ export function mergeDatasets(localData: any[] = [], remoteData: any[] = []) {
   const arrays = [...localData, ...remoteData];
   const services: any = {}; // Keep as object for easy manipulation below...
 
-  // TODO: Add real type
   arrays.forEach((item: any) => {
     if (JSON.stringify(item) === '{}') return;
     /**

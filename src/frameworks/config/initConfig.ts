@@ -8,7 +8,9 @@ import { msgJobCompleteInit, msgJobCompleteInitStopped } from '../text/messages'
 /**
  * @description Handle basic configuration initialization
  */
-export function initConfig(file: any, configPath: string) {
+export function initConfig(file: any, configPath: string): boolean {
+  if (!file || !configPath) throw new Error('Missing file and/or configPath in initConfig!');
+
   const FILE_EXISTS = checkIfExists(configPath);
 
   if (!FILE_EXISTS) {
@@ -31,8 +33,9 @@ export function initConfig(file: any, configPath: string) {
 
     write(configPath, fileContents);
     console.log(msgJobCompleteInit);
-    return;
+    return true;
   }
 
   console.log(msgJobCompleteInitStopped);
+  return false;
 }

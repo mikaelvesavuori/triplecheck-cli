@@ -18,6 +18,7 @@ export const msgSuccessfullyPublished = `Successfully published contracts and te
 export const errorMissingTestsContracts = `❌ Missing consumer tests and/or provider contracts!`;
 export const errorMissingTestsForService = `❌ No consumer tests found for this service!`;
 export const errorMissingPublishEndpoint = `❌ Missing endpoint when trying to publish!`;
+export const errorInvalidIdentity = `❌ Invalid identity structure. Verify that your configuration's "identity" block uses only lowercase characters and hyphens for the name and a valid Semantic Version (for example, "1.5.0") for the version.`;
 
 export const warnMissingConsumerTestData = `⚠️ Missing consumer test data! Skipping tests...`;
 export const warnMissingPathToLocalContracts = `⚠️ Missing path to local contracts, skipping publishing these...`;

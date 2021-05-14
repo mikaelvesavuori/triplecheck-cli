@@ -1,14 +1,15 @@
 export type Config = {
   identity: Identity;
+  dependencies: Dependency[];
   tests: Tests;
   resources: Resources;
   publishing: Publishing;
 };
 
 /**
- * TODO
+ * Basic service identity data.
  */
-type Identity = {
+export type Identity = {
   /**
    * Name of your service. If you generate a configuration with the "init" flag this will be picked up from
    * your package.json file, if you have one.
@@ -16,7 +17,7 @@ type Identity = {
    */
   name: string;
   /**
-   * Version of your service. If you generate a configuration with the "init" flag this will be picked up from
+   * Version of your service. If you generate a configuration with the `init` flag this will be picked up from
    * your package.json file, if you have one.
    * @example "1.0.0"
    */
@@ -24,11 +25,22 @@ type Identity = {
 };
 
 /**
- * TODO
+ * A dependency is how we list service we depend on. These will be also be added in addition to anything
+ * listed in the `tests.include` block. This is a required array—think of this as the long-term way of
+ * stating dependencies. When you publish, relations _will_ be inferred for/from any services listed here.
+ * @example ["api-service@1.0.0", "some-other-service@2.1.5"]
+ */
+export type Dependency = string;
+
+/**
+ * Test setup.
  */
 export type Tests = {
   /**
-   * An array of strings that specify what services and versions we want to test.
+   * An array of strings that specify what services and versions we want to test. Note that these are _in addition_
+   * to those listed in `dependencies`. This is an optional array—think of it as a temporary way of adding services
+   * you want to test, for example in CI. When you publish, the relations will not be inferred from services present
+   * here.
    * @example ["api-service@1.0.0", "some-other-service@2.1.5"]
    */
   include?: string[];
@@ -68,7 +80,7 @@ export type Resources = {
   };
   remote?: {
     /**
-     * TODO
+     * Where is the broker located?
      * @example "https://my-broker-service.com/api/"
      */
     brokerEndpoint?: string;
@@ -76,7 +88,7 @@ export type Resources = {
 };
 
 /**
- * TODO
+ * Publishing setup.
  */
 type Publishing = {
   /**

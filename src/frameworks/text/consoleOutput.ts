@@ -26,7 +26,8 @@ export function consoleOutput(output: ConsoleOutput, input?: number) {
     console.log(`|-----------------------------------|`);
     console.log(`|- Contracts and tests missing... --|`);
     console.log(`|- Did you forget to specify them --|`);
-    console.log(`|- in triplecheck.config.json? -----|`);
+    console.log(`|- in triplecheck.config.json, -----|`);
+    console.log(`|- or is your include array empty? -|`);
     console.log(`|-----------------------------------|`);
   }
 

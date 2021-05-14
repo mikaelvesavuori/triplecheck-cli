@@ -3,6 +3,7 @@
     "name": "__SERVICE__",
     "version": "__VERSION__"
   },
+  "dependencies": [],
   "tests": {
     "include": [],
     "skipTestingLocalResources": false,
@@ -10,8 +11,8 @@
   },
   "resources": {
     "local": {
-      "contracts": "",
-      "tests": ""
+      "contractsPath": "",
+      "testsPath": ""
     },
     "remote": {
       "brokerEndpoint": ""

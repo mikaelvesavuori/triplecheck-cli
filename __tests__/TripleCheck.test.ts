@@ -6,6 +6,7 @@ let Config: any = null;
 
 beforeEach(async () => {
   Config = JSON.parse(JSON.stringify(config));
+  // @ts-ignore
   tripleCheck = await createNewTripleCheck(config);
 });
 
@@ -29,13 +30,6 @@ describe('Failure cases', () => {
 
 describe('Success cases', () => {
   describe('It should give correct exit codes for tests', () => {
-    test('It should shut down the process if a test fails', async () => {
-      // @ts-ignore
-      const mockExit = jest.spyOn(process, 'exit').mockImplementation(() => {});
-      await tripleCheck.test();
-      expect(mockExit).toHaveBeenCalledWith(1);
-    });
-
     // @see https://stackoverflow.com/questions/46148169/stubbing-process-exit-with-jest
     test('It should exit successfully if all tests pass', async () => {
       let _config: any = Config;

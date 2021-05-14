@@ -1,5 +1,7 @@
 /**
- * @description TODO
+ * @description Process and return a clean array of services according to the incoming include list.
+ * We dedupe and clean data in the broker, so this function is only practically meaningful for local data.
+ * Incoming data can be tests or contracts.
  */
 export function clean(data: any[], include: string[]) {
   let included: string[] = [];

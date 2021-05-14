@@ -69,14 +69,14 @@ export const testData = {
         {
           '1.0.0': [
             { 'Should Take Customer': { name: 'name', email: 'email', totalPrice: 12345 } },
-            { 'Something Here': { name: 'Mikael', email: 'email', totalPrice: 12345 } },
+            { 'Something Here': { name: 'Someone', email: 'email', totalPrice: 12345 } },
             {
               'Should Take Customer': { name: 'name', email: 'email', totalPrice: 1234512345 }
             },
             {
               'Something Really Specific': {
-                name: 'Mikael',
-                email: 'mikael@mikael.se',
+                name: 'Someone',
+                email: 'someone@somewhere.net',
                 totalPrice: 100
               }
             }

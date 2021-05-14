@@ -10,7 +10,7 @@ import { consoleOutput } from './frameworks/text/consoleOutput';
 const CONFIG_FILEPATH = 'triplecheck.config.json';
 
 /**
- * @description TODO
+ * @description Entrypoint for TripleCheck broker.
  */
 async function main() {
   try {

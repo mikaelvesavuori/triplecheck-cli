@@ -1,6 +1,9 @@
 import * as fs from 'fs';
 
 /**
- * @description Check if a file exists
+ * @description Check if a file exists.
  */
-export const checkIfExists = (path: string): boolean => fs.existsSync(path);
+export function checkIfExists(path: string): boolean {
+  if (!path) throw new Error('Missing path in checkIfExists!');
+  return fs.existsSync(path);
+}

@@ -1,0 +1,15 @@
+[
+  {
+    "gql-service": {
+      "1.0.0": [
+        {
+          "just a demo for GQL conversion": {
+            "Query": {
+              "asdf": 1
+            }
+          }
+        }
+      ]
+    }
+  }
+]

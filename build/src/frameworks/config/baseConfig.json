@@ -1,0 +1,25 @@
+{
+    "identity": {
+        "name": "__SERVICE__",
+        "version": "__VERSION__"
+    },
+    "dependencies": [],
+    "tests": {
+        "include": [],
+        "skipTestingLocalResources": false,
+        "skipTestingRemoteResources": false
+    },
+    "resources": {
+        "local": {
+            "contractsPath": "",
+            "testsPath": ""
+        },
+        "remote": {
+            "brokerEndpoint": ""
+        }
+    },
+    "publishing": {
+        "publishLocalContracts": true,
+        "publishLocalTests": true
+    }
+}

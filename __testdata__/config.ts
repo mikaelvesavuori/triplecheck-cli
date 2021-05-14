@@ -1,26 +1,21 @@
-import { version } from '../package.json';
-
 export const config = {
   identity: {
-    version,
-    type: 'provider', // What if something is a provider, but also a consumer?
     name: 'api-provider',
-    endpoint: 'http://localhost:8080/api'
+    version: '1.0.0'
   },
+  dependencies: ['gql-service@1.0.0'],
   tests: {
-    include: ['some-provider'], // By using a "whitelisting" policy we can have a complete list of what services we actually are interested in
-    verifyLiveEndpoints: false,
+    include: [],
     skipTestingLocalResources: false,
     skipTestingRemoteResources: false
   },
-  requestOptions: {},
   resources: {
     local: {
-      contractsPath: '__testdata__/contracts.ts',
-      testsPath: '__testdata__/tests.ts'
+      contractsPath: '__testdata__/contracts.json',
+      testsPath: '__testdata__/tests.json'
     },
     remote: {
-      brokerEndpoint: 'https://triplecheck-data-service.mikaelvesavuori.workers.dev/publish'
+      brokerEndpoint: 'https://triplecheck-data-service.mikaelvesavuori.workers.dev'
     }
   },
   publishing: {

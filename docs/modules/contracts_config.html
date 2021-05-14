@@ -73,6 +73,8 @@
 							<h3>Type aliases</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-type-alias tsd-parent-kind-module"><a href="contracts_config.html#config" class="tsd-kind-icon">Config</a></li>
+								<li class="tsd-kind-type-alias tsd-parent-kind-module"><a href="contracts_config.html#dependency" class="tsd-kind-icon">Dependency</a></li>
+								<li class="tsd-kind-type-alias tsd-parent-kind-module"><a href="contracts_config.html#identity-1" class="tsd-kind-icon">Identity</a></li>
 								<li class="tsd-kind-type-alias tsd-parent-kind-module"><a href="contracts_config.html#resources-1" class="tsd-kind-icon">Resources</a></li>
 								<li class="tsd-kind-type-alias tsd-parent-kind-module"><a href="contracts_config.html#tests-1" class="tsd-kind-icon">Tests</a></li>
 							</ul>
@@ -85,17 +87,20 @@
 				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-module">
 					<a name="config" class="tsd-anchor"></a>
 					<h3>Config</h3>
-					<div class="tsd-signature tsd-kind-icon">Config<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>identity<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Identity</span><span class="tsd-signature-symbol">; </span>publishing<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Publishing</span><span class="tsd-signature-symbol">; </span>resources<span class="tsd-signature-symbol">: </span><a href="contracts_config.html#resources-1" class="tsd-signature-type" data-tsd-kind="Type alias">Resources</a><span class="tsd-signature-symbol">; </span>tests<span class="tsd-signature-symbol">: </span><a href="contracts_config.html#tests-1" class="tsd-signature-type" data-tsd-kind="Type alias">Tests</a><span class="tsd-signature-symbol"> }</span></div>
+					<div class="tsd-signature tsd-kind-icon">Config<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>dependencies<span class="tsd-signature-symbol">: </span><a href="contracts_config.html#dependency" class="tsd-signature-type" data-tsd-kind="Type alias">Dependency</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">; </span>identity<span class="tsd-signature-symbol">: </span><a href="contracts_config.html#identity-1" class="tsd-signature-type" data-tsd-kind="Type alias">Identity</a><span class="tsd-signature-symbol">; </span>publishing<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Publishing</span><span class="tsd-signature-symbol">; </span>resources<span class="tsd-signature-symbol">: </span><a href="contracts_config.html#resources-1" class="tsd-signature-type" data-tsd-kind="Type alias">Resources</a><span class="tsd-signature-symbol">; </span>tests<span class="tsd-signature-symbol">: </span><a href="contracts_config.html#tests-1" class="tsd-signature-type" data-tsd-kind="Type alias">Tests</a><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/mikaelvesavuori/triplecheck-cli/blob/faa6655/src/contracts/Config.ts#L1">contracts/Config.ts:1</a></li>
+							<li>Defined in <a href="https://github.com/mikaelvesavuori/triplecheck-cli/blob/2b1e925/src/contracts/Config.ts#L1">contracts/Config.ts:1</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-type-declaration">
 						<h4>Type declaration</h4>
 						<ul class="tsd-parameters">
 							<li class="tsd-parameter">
-								<h5>identity<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Identity</span></h5>
+								<h5>dependencies<span class="tsd-signature-symbol">: </span><a href="contracts_config.html#dependency" class="tsd-signature-type" data-tsd-kind="Type alias">Dependency</a><span class="tsd-signature-symbol">[]</span></h5>
+							</li>
+							<li class="tsd-parameter">
+								<h5>identity<span class="tsd-signature-symbol">: </span><a href="contracts_config.html#identity-1" class="tsd-signature-type" data-tsd-kind="Type alias">Identity</a></h5>
 							</li>
 							<li class="tsd-parameter">
 								<h5>publishing<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Publishing</span></h5>
@@ -110,12 +115,82 @@
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-module">
+					<a name="dependency" class="tsd-anchor"></a>
+					<h3>Dependency</h3>
+					<div class="tsd-signature tsd-kind-icon">Dependency<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/mikaelvesavuori/triplecheck-cli/blob/2b1e925/src/contracts/Config.ts#L33">contracts/Config.ts:33</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>A dependency is how we list service we depend on. These will be also be added in addition to anything
+								listed in the <code>tests.include</code> block. This is a required array—think of this as the long-term way of
+							stating dependencies. When you publish, relations <em>will</em> be inferred for/from any services listed here.</p>
+						</div>
+						<dl class="tsd-comment-tags">
+							<dt>example</dt>
+							<dd><p>[&quot;api-service@1.0.0&quot;, &quot;<a href="mailto:some-other-service@2.1.5">some-other-service@2.1.5</a>&quot;]</p>
+							</dd>
+						</dl>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-module">
+					<a name="identity-1" class="tsd-anchor"></a>
+					<h3>Identity</h3>
+					<div class="tsd-signature tsd-kind-icon">Identity<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>version<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/mikaelvesavuori/triplecheck-cli/blob/2b1e925/src/contracts/Config.ts#L12">contracts/Config.ts:12</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Basic service identity data.</p>
+						</div>
+					</div>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter">
+								<h5>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>Name of your service. If you generate a configuration with the &quot;init&quot; flag this will be picked up from
+										your package.json file, if you have one.</p>
+									</div>
+									<dl class="tsd-comment-tags">
+										<dt>example</dt>
+										<dd><p>&quot;my-service&quot;</p>
+										</dd>
+									</dl>
+								</div>
+							</li>
+							<li class="tsd-parameter">
+								<h5>version<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>Version of your service. If you generate a configuration with the <code>init</code> flag this will be picked up from
+										your package.json file, if you have one.</p>
+									</div>
+									<dl class="tsd-comment-tags">
+										<dt>example</dt>
+										<dd><p>&quot;1.0.0&quot;</p>
+										</dd>
+									</dl>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-module">
 					<a name="resources-1" class="tsd-anchor"></a>
 					<h3>Resources</h3>
 					<div class="tsd-signature tsd-kind-icon">Resources<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>local<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-symbol">{ </span>contractsPath<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>testsPath<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>remote<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-symbol">{ </span>brokerEndpoint<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/mikaelvesavuori/triplecheck-cli/blob/faa6655/src/contracts/Config.ts#L56">contracts/Config.ts:56</a></li>
+							<li>Defined in <a href="https://github.com/mikaelvesavuori/triplecheck-cli/blob/2b1e925/src/contracts/Config.ts#L68">contracts/Config.ts:68</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -164,7 +239,7 @@
 										<h5><span class="tsd-flag ts-flagOptional">Optional</span> broker<wbr>Endpoint<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span></h5>
 										<div class="tsd-comment tsd-typography">
 											<div class="lead">
-												<p>TODO</p>
+												<p>Where is the broker located?</p>
 											</div>
 											<dl class="tsd-comment-tags">
 												<dt>example</dt>
@@ -184,12 +259,12 @@
 					<div class="tsd-signature tsd-kind-icon">Tests<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>contractFilePrefix<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>include<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">; </span>skipTestingLocalResources<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>skipTestingRemoteResources<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/mikaelvesavuori/triplecheck-cli/blob/faa6655/src/contracts/Config.ts#L29">contracts/Config.ts:29</a></li>
+							<li>Defined in <a href="https://github.com/mikaelvesavuori/triplecheck-cli/blob/2b1e925/src/contracts/Config.ts#L38">contracts/Config.ts:38</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>TODO</p>
+							<p>Test setup.</p>
 						</div>
 					</div>
 					<div class="tsd-type-declaration">
@@ -215,7 +290,10 @@
 								<h5><span class="tsd-flag ts-flagOptional">Optional</span> include<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h5>
 								<div class="tsd-comment tsd-typography">
 									<div class="lead">
-										<p>An array of strings that specify what services and versions we want to test.</p>
+										<p>An array of strings that specify what services and versions we want to test. Note that these are <em>in addition</em>
+											to those listed in <code>dependencies</code>. This is an optional array—think of it as a temporary way of adding services
+											you want to test, for example in CI. When you publish, the relations will not be inferred from services present
+										here.</p>
 									</div>
 									<dl class="tsd-comment-tags">
 										<dt>example</dt>
@@ -326,6 +404,12 @@
 				<ul class="before-current">
 					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
 						<a href="contracts_config.html#config" class="tsd-kind-icon">Config</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
+						<a href="contracts_config.html#dependency" class="tsd-kind-icon">Dependency</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
+						<a href="contracts_config.html#identity-1" class="tsd-kind-icon">Identity</a>
 					</li>
 					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
 						<a href="contracts_config.html#resources-1" class="tsd-kind-icon">Resources</a>
