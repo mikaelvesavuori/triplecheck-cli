@@ -2,6 +2,8 @@
 
 ## TripleCheck CLI — The easiest and fastest way to do contract testing.
 
+![Build Status](https://github.com/mikaelvesavuori/triplecheck-cli/workflows/main/badge.svg)
+
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=mikaelvesavuori_triplecheck-cli&metric=alert_status)](https://sonarcloud.io/dashboard?id=mikaelvesavuori_triplecheck-cli)
 
 [![CodeScene Code Health](https://codescene.io/projects/15674/status-badges/code-health)](https://codescene.io/projects/15674)
