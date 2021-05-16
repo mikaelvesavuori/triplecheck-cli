@@ -2,6 +2,8 @@
 
 ## TripleCheck CLI — The easiest and fastest way to do contract testing.
 
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=mikaelvesavuori_triplecheck-cli&metric=alert_status)](https://sonarcloud.io/dashboard?id=mikaelvesavuori_triplecheck-cli)
+
 Contract testing should be as easy and painless as unit testing, yet it never really seems to be. TripleCheck tries to remove as much of the pain as possible.
 
 The three key features of the TripleCheck eco-system are:
