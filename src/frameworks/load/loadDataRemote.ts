@@ -13,8 +13,8 @@ export async function loadDataRemote(
 
   if (include && include.length > 0) {
     const fetchPromises = include.map(async (service: string) => {
-      return fetch(`${url}/${type}?${service}`, { method: 'GET', headers }).then(
-        async (res) => await res.json()
+      return fetch(`${url}/${type}?${service}`, { method: 'GET', headers }).then(async (res) =>
+        res.json()
       );
     });
 

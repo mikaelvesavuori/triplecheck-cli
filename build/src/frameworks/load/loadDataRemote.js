@@ -19,7 +19,7 @@ function loadDataRemote(type, url, include, headers) {
         console.log(`Loading data from ${url}...`);
         if (include && include.length > 0) {
             const fetchPromises = include.map((service) => __awaiter(this, void 0, void 0, function* () {
-                return node_fetch_1.default(`${url}/${type}?${service}`, { method: 'GET', headers }).then((res) => __awaiter(this, void 0, void 0, function* () { return yield res.json(); }));
+                return node_fetch_1.default(`${url}/${type}?${service}`, { method: 'GET', headers }).then((res) => __awaiter(this, void 0, void 0, function* () { return res.json(); }));
             }));
             const resolved = yield Promise.all(fetchPromises);
             if (type === 'dependents')
