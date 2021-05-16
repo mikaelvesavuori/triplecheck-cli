@@ -7,7 +7,8 @@ export const config = {
   tests: {
     include: [],
     skipTestingLocalResources: false,
-    skipTestingRemoteResources: false
+    skipTestingRemoteResources: false,
+    skipIncludingDependents: false
   },
   resources: {
     local: {

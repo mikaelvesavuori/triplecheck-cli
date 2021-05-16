@@ -64,10 +64,81 @@
 				<a href="#triplecheck-cli--the-easiest-and-fastest-way-to-do-contract-testing" id="triplecheck-cli--the-easiest-and-fastest-way-to-do-contract-testing" style="color: inherit; text-decoration: none;">
 					<h2>TripleCheck CLI — The easiest and fastest way to do contract testing.</h2>
 				</a>
-				<p>Easy contract testing for Node (TS, JS).</p>
-				<p>I love the idea of Pact, but I get nervous around it: I personally find it a bit too much, too daunting and too involved in its workflow. I also admit that I have therefore not given it any real testing, in a demo project or otherwise. I don&#39;t consider myself either a super-engineer nor a novice, but that criticism against Pact is hopefully at least somewhat valid.</p>
-				<p>One of the things I absolutely wanted to improve was the DX (developer experience), beyond just making this a new pet project.</p>
-				<p>If you are coming from Pact, you will probably see a lot of things missing—some I know, some I don&#39;t.</p>
+				<p>Contract testing should be as easy and painless as unit testing, yet it never really seems to be. TripleCheck tries to remove as much of the pain as possible.</p>
+				<p>The three key features of the TripleCheck eco-system are:</p>
+				<ol>
+					<li><strong>Smooth-as-melted-icecream two-way continuous testing</strong>, meaning all parties do testing of their dependencies and dependents, puts an end to &quot;consumer driven contracts&quot;: what we always wanted was that all sides verify respective integrity, not necessarily deep dialogues on who &quot;drives&quot; contracts/interfaces;</li>
+					<li>Broker (&quot;server&quot;) acting as an (optional) lightweight <strong>global collection of all existing tests and contracts</strong>;</li>
+					<li>Practically turnkey solutions ready-to-go, for common modern toolchains/architectures.</li>
+				</ol>
+				<p>[TODO]</p>
+				<a href="#design-goals" id="design-goals" style="color: inherit; text-decoration: none;">
+					<h2>Design goals</h2>
+				</a>
+				<ul>
+					<li>Ease over rich functionality: should require minimal effort to learn and operate</li>
+					<li>First grade support for serverless compute (Lambda, Cloud Run...) and databases (Fauna, Dynamo, Firestore...)</li>
+					<li>First-grade support for modern CI tools (GitHub Actions, cloud provider&#39;s toolchains..)</li>
+					<li>Day 1 support for modern message brokers (Google Pub/Sub, AWS Eventbridge...)</li>
+					<li>Remove the need for a <em>heavyweight</em> broker</li>
+					<li>Ideally zero config</li>
+					<li>Lightweight: no need to mock or make actual requests, TripleCheck will compare static typed contracts</li>
+					<li>Support any kind of infra and data sources</li>
+				</ul>
+				<p>Compared to Pact, TripleCheck cannot make deep syntactic asserts (like an expected response body), it can only ensure type and schema consistency. This is—I find—to be the true scope of contract testing. Tools like Pact are capable but, at least according to me, do too much.</p>
+				<a href="#a-demo-case" id="a-demo-case" style="color: inherit; text-decoration: none;">
+					<h2>A demo case</h2>
+				</a>
+				<p>TripleCheck CLI allows you to run tests by verifying <a href="https://json-schema.org">JSON Schemas</a> and/or plain objects that represent contracts against test objects. An example contract (plain object style) could be:</p>
+				<pre><code><span style="color: #000000">[</span>
+<span style="color: #000000">  {</span>
+<span style="color: #000000">    </span><span style="color: #A31515">&quot;user-api&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> {</span>
+<span style="color: #000000">      </span><span style="color: #A31515">&quot;1.0.0&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> {</span>
+<span style="color: #000000">        </span><span style="color: #A31515">&quot;name&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;Someone&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">        </span><span style="color: #A31515">&quot;address&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;Some Street 123&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">        </span><span style="color: #A31515">&quot;age&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> </span><span style="color: #098658">35</span>
+<span style="color: #000000">      }</span>
+<span style="color: #000000">    }</span>
+<span style="color: #000000">  }</span>
+<span style="color: #000000">]</span>
+</code></pre>
+				<p>In our list of contracts, we&#39;ve provided <code>user-api</code> with version <code>1.0.0</code> and the three fields that it expects.</p>
+				<p>A basic test (again, a plain object) to verify schema integrity could look like:</p>
+				<pre><code><span style="color: #000000">[</span>
+<span style="color: #000000">  {</span>
+<span style="color: #000000">    </span><span style="color: #A31515">&quot;user-api&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> {</span>
+<span style="color: #000000">      </span><span style="color: #A31515">&quot;1.0.0&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> [</span>
+<span style="color: #000000">        {</span>
+<span style="color: #000000">          </span><span style="color: #A31515">&quot;Verify identity&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> {</span>
+<span style="color: #000000">            </span><span style="color: #A31515">&quot;name&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;Carmen&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">            </span><span style="color: #A31515">&quot;address&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;Ocean View 3000&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">            </span><span style="color: #A31515">&quot;age&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> </span><span style="color: #098658">27</span>
+<span style="color: #000000">          }</span>
+<span style="color: #000000">        }</span>
+<span style="color: #000000">      ]</span>
+<span style="color: #000000">    }</span>
+<span style="color: #000000">  }</span>
+<span style="color: #000000">]</span>
+</code></pre>
+				<p>To test the contract, we construct an array of tests for any services and their versions. This makes it easy to co-locate both contracts and tests in single files, or to assemble them programmatically. You can use a combination of local and/or remote tests and contracts.</p>
+				<p>Notice that the exact syntax is not validated, but instead the shape [TODO: Syntax vs Semantics]. Under the hood TripleCheck uses <a href="https://quicktype.io">Quicktype</a> to do this checking. It&#39;s recommended to use <a href="https://json-schema.org">JSON Schema</a> for more complex usecases. It also makes it easier to be concrete about actual types and what fields are required.</p>
+				<a href="#terminology" id="terminology" style="color: inherit; text-decoration: none;">
+					<h2>Terminology</h2>
+				</a>
+				<ul>
+					<li>Test/verify: When you test compatibility between two or more contracts</li>
+					<li>Publish contract: When you make a local contract public (adding/updating) in the shared data source</li>
+				</ul>
+				<a href="#workflow" id="workflow" style="color: inherit; text-decoration: none;">
+					<h2>Workflow</h2>
+				</a>
+				<p>Contracts should be &quot;owned&quot; by the respective services. The individual service is primarily responsible for creating, updating and publishing their contract.</p>
+				<p>Tests can be written by anyone who has a dependency toward a given service.</p>
+				<p>Send back data, having resolved dependencies, given that someone has already published contracts and tests (and that dependencies / dependents have been calculated) you&#39;ll get all related data back.</p>
+				<ul>
+					<li><strong>You get back data for your service</strong>: Ensure functionality of what others need of you</li>
+					<li><strong>You get back data for services you depend on</strong>: Ensure functionality of what you need of others</li>
+				</ul>
 				<a href="#development-flow" id="development-flow" style="color: inherit; text-decoration: none;">
 					<h2>Development flow</h2>
 				</a>
@@ -94,70 +165,21 @@
 					<h3>Provider updates their API that has several applications depending on it</h3>
 				</a>
 				<p>TODO.</p>
-				<a href="#terminology" id="terminology" style="color: inherit; text-decoration: none;">
-					<h2>Terminology</h2>
+				<a href="#example-broker-implementations" id="example-broker-implementations" style="color: inherit; text-decoration: none;">
+					<h2>Example broker implementations</h2>
 				</a>
+				<p>There are several broker implementations that you can use right away or as the basis of your own starter kit. The current list is:</p>
 				<ul>
-					<li>Test/verify: When you test compatibility between two or more contracts</li>
-					<li>Publish contract: When you make a local contract public (adding/updating) in the shared data source</li>
+					<li><a href="https://github.com/mikaelvesavuori/triplecheck-example-cloudrun">Google Cloud Run and Firestore</a></li>
+					<li><a href="https://github.com/mikaelvesavuori/triplecheck-example-cloud-functions">Google Cloud Functions and Firestore</a></li>
+					<li><a href="https://github.com/mikaelvesavuori/triplecheck-example-cloudflare-workers">Cloudflare Workers and KV</a></li>
+					<li><a href="https://github.com/mikaelvesavuori/triplecheck-example-lambda">AWS Lambda with DynamoDB</a></li>
+					<li><a href="https://github.com/mikaelvesavuori/triplecheck-example-vercel">Vercel with FaunaDB</a></li>
+					<li><a href="https://github.com/mikaelvesavuori/triplecheck-example-netlify">Netlify with FaunaDB</a></li>
 				</ul>
-				<a href="#design-goals" id="design-goals" style="color: inherit; text-decoration: none;">
-					<h2>Design goals</h2>
-				</a>
-				<ul>
-					<li>Prefers ease over rich functionality</li>
-					<li>As close to zero config as possible</li>
-					<li>Support any kind of infra and data sources</li>
-					<li>First-grade support for modern CI tools and serverless</li>
-					<li>Removes the need for a heavyweight broker</li>
-					<li>Lightweight: no need to mock or make actual requests, TripleCheck will compare static typed contracts</li>
-					<li>Note: Compared to Pact, TripleCheck does not make it possible to make deep asserts (like an expected response), it only ensures type and schema consistency</li>
-				</ul>
-				<a href="#features" id="features" style="color: inherit; text-decoration: none;">
-					<h2>Features</h2>
-				</a>
-				<ul>
-					<li>Explicit testing: you test your contracts as you do with any regular test</li>
-					<li>Implicit testing: if you provide your use patterns, dynamic testing can be done and both ways (provider and consumer) can be validated without any formal test</li>
-					<li>Examples for pushing/pulling data to AWS S3, GCP bucket, Azure bucket incl permissions in pipeline</li>
-					<li>TripleCheck will only use, merge, test data and download it - it will not upload it</li>
-					<li>Provide ready pipeline examples (and steps/actions?) for AWS CodePipeline, Github, Bitbucket, Cloud Build, Azure DevOps</li>
-					<li>One step deploy a visualizer to Cloudflare Pages or Netlify or Vercel</li>
-				</ul>
-				<p>Release criteria</p>
-				<ul>
-					<li>Trevlig upplevelse, välrundat verktyg</li>
-					<li>Mycket bra dokumentation</li>
-					<li>Otroligt enkelt att börja (starters, Medium, zero config...)</li>
-					<li>Brett stöd för plattformar och databaser</li>
-				</ul>
-				<p>Designmål</p>
-				<ul>
-					<li>Enklaste...</li>
-					<li>Snabbaste...</li>
-					<li>Billigaste...</li>
-					<li>Sättet att göra kontraktstestning</li>
-				</ul>
-				<p>Contracts should be &quot;owned&quot; by the respective services. The individual service is primarily responsible for creating, updating and publishing their contract.</p>
-				<p>Tests can be written by anyone who has a dependency toward a given service.</p>
-				<p>Send back data, having resolved dependencies, given that someone has already published contracts and tests (and that dependencies / dependents have been calculated) you&#39;ll get all related data back.</p>
-				<ul>
-					<li>You get back data for your service: Ensure functionality of what others need of you</li>
-					<li>You get back data for services you depend on: Ensure functionality of what you need of others</li>
-				</ul>
-				<p>Publish är den primära punkten för interaktion. Den sköter också att uppdatera relationer samt att generera en aggregerad serviceList; inget annat uppdaterar dessa (då detta är enda routen som tar identity)</p>
-				<a href="#publishing-gates" id="publishing-gates" style="color: inherit; text-decoration: none;">
-					<h2>Publishing gates</h2>
-				</a>
-				<p>Rollback behavior if something breaks during the multi-phase procedure?</p>
-				<p>A service can only publish contracts for its own namespace (as given in the service identity)?</p>
-				<p>Tests cannot be published before a contract exists.</p>
-				<p>Tests cannot be published unless they are passing.</p>
-				<p>Föreslå filstruktur med ”schema”-mapp; man behöver inte nödvändigtvis vara redundant med hårda kopior av scheman på disk iom att dom ju lagras i databasen (däremot säkert smart att hårdlagra alla varianter i mapp med namn på tidigaste versionen som scheman med major changes förekom i, ex ”1.0.0” och ”1.8.0”) -&gt; detta har ju även att göra med contractsLocal i config som bara pekar på en enskild fil på disk</p>
-				<p>What protection does one have if someone would abuse the system and publish failing tests? (maybe as per above need to run tests and have them passing first?)</p>
-				<p>Publish är den primära punkten för interaktion. Den sköter också att uppdatera relationer samt att generera en aggregerad serviceList; inget annat uppdaterar dessa (då detta är enda routen som tar identity)</p>
-				<a href="#sync-schemas-from-aws-eventbridge-and-gcp-pubsub" id="sync-schemas-from-aws-eventbridge-and-gcp-pubsub" style="color: inherit; text-decoration: none;">
-					<h2>Sync schemas from AWS EventBridge and GCP Pub/Sub</h2>
+				<p>Read more over at <a href="https://github.com/mikaelvesavuori/triplecheck-broker">triplecheck-broker</a> for details on these.</p>
+				<a href="#sync-schemas-from-aws-eventbridge-and-google-cloud-platform-pubsub" id="sync-schemas-from-aws-eventbridge-and-google-cloud-platform-pubsub" style="color: inherit; text-decoration: none;">
+					<h2>Sync schemas from AWS EventBridge and Google Cloud Platform Pub/Sub</h2>
 				</a>
 				<p>Add one/both of these to your <code>package.json</code> scripts:</p>
 				<pre><code><span style="color: #A31515">&quot;sync:aws&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;sh node_modules/triplecheck-cli/generate-schemas-from-aws.sh your-registry-name&quot;</span><span style="color: #000000">,</span>
@@ -202,6 +224,9 @@
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="modules/contracts_http.html">contracts/<wbr>Http</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/contracts_service.html">contracts/<wbr>Service</a>
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="modules/controllers_triplecheckcontroller.html">controllers/<wbr>Triple<wbr>Check<wbr>Controller</a>

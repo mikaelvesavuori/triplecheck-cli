@@ -14,6 +14,7 @@ export declare type Tests = {
     include?: string[];
     skipTestingRemoteResources?: boolean;
     skipTestingLocalResources?: boolean;
+    skipIncludingDependents?: boolean;
     contractFilePrefix?: string;
 };
 export declare type Resources = {

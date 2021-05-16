@@ -12,6 +12,7 @@ export declare class TripleCheck {
     private updateTestScopes;
     private updateLoadedResources;
     private loadData;
+    getDependents(brokerEndpoint: string, dependencies: string[]): Promise<any>;
     getCleanedData(onlyLocalData?: boolean): Promise<any>;
     test(): Promise<void>;
     private call;

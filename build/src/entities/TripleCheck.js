@@ -59,15 +59,25 @@ class TripleCheck {
         this.config = config;
     }
     init() {
+        var _a;
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const { identity, tests, resources } = this.config;
+                const { skipIncludingDependents } = tests;
                 let { include } = tests;
                 if (!include)
                     include = [];
                 if (include.length === 0)
                     include.push(`${identity.name}@${identity.version}`);
-                this.updateTestScopes(include);
+                if (((_a = resources.remote) === null || _a === void 0 ? void 0 : _a.brokerEndpoint) && !skipIncludingDependents) {
+                    const dependents = yield this.getDependents(resources.remote.brokerEndpoint, [
+                        `${identity.name}@${identity.version}`
+                    ]);
+                    const dedupedFinalIncludes = Array.from(new Set([...include, ...dependents]));
+                    this.updateTestScopes(dedupedFinalIncludes);
+                }
+                else
+                    this.updateTestScopes(include);
                 if (process.env.NODE_ENV === 'test') {
                     const loadedData = mockedLoadedData_1.mockedLoadedData;
                     this.updateLoadedResources(loadedData.consumerTests, loadedData.providerContracts);
@@ -134,6 +144,11 @@ class TripleCheck {
                 console.error(`Error when loading data:\n${error.message}`);
                 return null;
             }
+        });
+    }
+    getDependents(brokerEndpoint, dependencies) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield loadDataRemote_1.loadDataRemote('dependents', brokerEndpoint, dependencies);
         });
     }
     getCleanedData(onlyLocalData) {

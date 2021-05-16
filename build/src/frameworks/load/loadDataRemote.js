@@ -22,6 +22,8 @@ function loadDataRemote(type, url, include, headers) {
                 return yield node_fetch_1.default(`${url}/${type}?${service}`, { method: 'GET', headers }).then((res) => __awaiter(this, void 0, void 0, function* () { return yield res.json(); }));
             }));
             const resolved = yield Promise.all(fetchPromises);
+            if (type === 'dependents')
+                return resolved[0];
             let cleaned = resolved.map((item) => item[0]);
             cleaned = cleaned.filter((item) => item);
             const final = {};

@@ -53,6 +53,10 @@ export type Tests = {
    */
   skipTestingLocalResources?: boolean;
   /**
+   * Should we skip including dependent services from our remote broker?
+   */
+  skipIncludingDependents?: boolean;
+  /**
    * An option to specify what the temporary generated contract file will be prefixed as.
    * The contract itself will be generated as a TypeScript (.ts) file.
    * You should remove any generated contracts in-between test runs to ensure you have

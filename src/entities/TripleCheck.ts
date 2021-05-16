@@ -2,7 +2,6 @@ import fetch from 'node-fetch';
 
 import { Config, Resources, Tests } from '../contracts/Config';
 import { CallInput } from '../contracts/Call';
-import { ConsumerTest, ProviderContract } from '../contracts/Contract';
 import { LoadedData } from '../contracts/Data';
 
 import { clean } from '../frameworks/data/clean';
@@ -59,6 +58,7 @@ export class TripleCheck {
   public async init() {
     try {
       const { identity, tests, resources } = this.config;
+      const { skipIncludingDependents } = tests;
       let { include } = tests;
 
       /**
@@ -71,7 +71,18 @@ export class TripleCheck {
        */
       if (include.length === 0) include.push(`${identity.name}@${identity.version}`);
 
-      this.updateTestScopes(include);
+      /**
+       * If we have a broker endpoint, and unless the user explicitly does not disallow it, we will
+       * get all dependent services for our include list.
+       */
+      if (resources.remote?.brokerEndpoint && !skipIncludingDependents) {
+        // @ts-ignore
+        const dependents: string[] = await this.getDependents(resources.remote.brokerEndpoint, [
+          `${identity.name}@${identity.version}`
+        ]);
+        const dedupedFinalIncludes = Array.from(new Set([...include, ...dependents]));
+        this.updateTestScopes(dedupedFinalIncludes);
+      } else this.updateTestScopes(include);
 
       // Handle fake data if we are running tests
       if (process.env.NODE_ENV === 'test') {
@@ -166,6 +177,14 @@ export class TripleCheck {
   }
 
   /**
+   * @description Get list of services that are dependent on the service we are testing.
+   * This assumes that there is a broker available.
+   */
+  async getDependents(brokerEndpoint: string, dependencies: string[]) {
+    return await loadDataRemote('dependents', brokerEndpoint, dependencies);
+  }
+
+  /**
    * @description Get cleaned data for testing and publishing.
    */
   public async getCleanedData(onlyLocalData?: boolean): Promise<any> {
@@ -180,7 +199,7 @@ export class TripleCheck {
     }
 
     /**
-     * Check if we only want local data (i.e. when we want to publish our local/original data)
+     * Check if we only want local data (i.e. when we want to test/publish our local/original data)
      */
     if (onlyLocalData) {
       return {

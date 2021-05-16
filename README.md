@@ -2,13 +2,88 @@
 
 ## TripleCheck CLI — The easiest and fastest way to do contract testing.
 
-Easy contract testing for Node (TS, JS).
+Contract testing should be as easy and painless as unit testing, yet it never really seems to be. TripleCheck tries to remove as much of the pain as possible.
 
-I love the idea of Pact, but I get nervous around it: I personally find it a bit too much, too daunting and too involved in its workflow. I also admit that I have therefore not given it any real testing, in a demo project or otherwise. I don't consider myself either a super-engineer nor a novice, but that criticism against Pact is hopefully at least somewhat valid.
+The three key features of the TripleCheck eco-system are:
 
-One of the things I absolutely wanted to improve was the DX (developer experience), beyond just making this a new pet project.
+1. **Smooth-as-melted-icecream two-way continuous testing**, meaning all parties do testing of their dependencies and dependents, puts an end to "consumer driven contracts": what we always wanted was that all sides verify respective integrity, not necessarily deep dialogues on who "drives" contracts/interfaces;
+2. Broker ("server") acting as an (optional) lightweight **global collection of all existing tests and contracts**;
+3. Practically turnkey solutions ready-to-go, for common modern toolchains/architectures.
 
-If you are coming from Pact, you will probably see a lot of things missing—some I know, some I don't.
+[TODO]
+
+## Design goals
+
+- Ease over rich functionality: should require minimal effort to learn and operate
+- First grade support for serverless compute (Lambda, Cloud Run...) and databases (Fauna, Dynamo, Firestore...)
+- First-grade support for modern CI tools (GitHub Actions, cloud provider's toolchains..)
+- Day 1 support for modern message brokers (Google Pub/Sub, AWS Eventbridge...)
+- Remove the need for a _heavyweight_ broker
+- Ideally zero config
+- Lightweight: no need to mock or make actual requests, TripleCheck will compare static typed contracts
+- Support any kind of infra and data sources
+
+Compared to Pact, TripleCheck cannot make deep syntactic asserts (like an expected response body), it can only ensure type and schema consistency. This is—I find—to be the true scope of contract testing. Tools like Pact are capable but, at least according to me, do too much.
+
+## A demo case
+
+TripleCheck CLI allows you to run tests by verifying [JSON Schemas](https://json-schema.org) and/or plain objects that represent contracts against test objects. An example contract (plain object style) could be:
+
+```
+[
+  {
+    "user-api": {
+      "1.0.0": {
+        "name": "Someone",
+        "address": "Some Street 123",
+        "age": 35
+      }
+    }
+  }
+]
+```
+
+In our list of contracts, we've provided `user-api` with version `1.0.0` and the three fields that it expects.
+
+A basic test (again, a plain object) to verify schema integrity could look like:
+
+```
+[
+  {
+    "user-api": {
+      "1.0.0": [
+        {
+          "Verify identity": {
+            "name": "Carmen",
+            "address": "Ocean View 3000",
+            "age": 27
+          }
+        }
+      ]
+    }
+  }
+]
+```
+
+To test the contract, we construct an array of tests for any services and their versions. This makes it easy to co-locate both contracts and tests in single files, or to assemble them programmatically. You can use a combination of local and/or remote tests and contracts.
+
+Notice that the exact syntax is not validated, but instead the shape [TODO: Syntax vs Semantics]. Under the hood TripleCheck uses [Quicktype](https://quicktype.io) to do this checking. It's recommended to use [JSON Schema](https://json-schema.org) for more complex usecases. It also makes it easier to be concrete about actual types and what fields are required.
+
+## Terminology
+
+- Test/verify: When you test compatibility between two or more contracts
+- Publish contract: When you make a local contract public (adding/updating) in the shared data source
+
+## Workflow
+
+Contracts should be "owned" by the respective services. The individual service is primarily responsible for creating, updating and publishing their contract.
+
+Tests can be written by anyone who has a dependency toward a given service.
+
+Send back data, having resolved dependencies, given that someone has already published contracts and tests (and that dependencies / dependents have been calculated) you'll get all related data back.
+
+- **You get back data for your service**: Ensure functionality of what others need of you
+- **You get back data for services you depend on**: Ensure functionality of what you need of others
 
 ## Development flow
 
@@ -38,72 +113,20 @@ TODO.
 
 TODO.
 
-## Terminology
+## Example broker implementations
 
-- Test/verify: When you test compatibility between two or more contracts
-- Publish contract: When you make a local contract public (adding/updating) in the shared data source
+There are several broker implementations that you can use right away or as the basis of your own starter kit. The current list is:
 
-## Design goals
+- [Google Cloud Run and Firestore](https://github.com/mikaelvesavuori/triplecheck-example-cloudrun)
+- [Google Cloud Functions and Firestore](https://github.com/mikaelvesavuori/triplecheck-example-cloud-functions)
+- [Cloudflare Workers and KV](https://github.com/mikaelvesavuori/triplecheck-example-cloudflare-workers)
+- [AWS Lambda with DynamoDB](https://github.com/mikaelvesavuori/triplecheck-example-lambda)
+- [Vercel with FaunaDB](https://github.com/mikaelvesavuori/triplecheck-example-vercel)
+- [Netlify with FaunaDB](https://github.com/mikaelvesavuori/triplecheck-example-netlify)
 
-- Prefers ease over rich functionality
-- As close to zero config as possible
-- Support any kind of infra and data sources
-- First-grade support for modern CI tools and serverless
-- Removes the need for a heavyweight broker
-- Lightweight: no need to mock or make actual requests, TripleCheck will compare static typed contracts
-- Note: Compared to Pact, TripleCheck does not make it possible to make deep asserts (like an expected response), it only ensures type and schema consistency
+Read more over at [triplecheck-broker](https://github.com/mikaelvesavuori/triplecheck-broker) for details on these.
 
-## Features
-
-- Explicit testing: you test your contracts as you do with any regular test
-- Implicit testing: if you provide your use patterns, dynamic testing can be done and both ways (provider and consumer) can be validated without any formal test
-- Examples for pushing/pulling data to AWS S3, GCP bucket, Azure bucket incl permissions in pipeline
-- TripleCheck will only use, merge, test data and download it - it will not upload it
-- Provide ready pipeline examples (and steps/actions?) for AWS CodePipeline, Github, Bitbucket, Cloud Build, Azure DevOps
-- One step deploy a visualizer to Cloudflare Pages or Netlify or Vercel
-
-Release criteria
-
-- Trevlig upplevelse, välrundat verktyg
-- Mycket bra dokumentation
-- Otroligt enkelt att börja (starters, Medium, zero config...)
-- Brett stöd för plattformar och databaser
-
-Designmål
-
-- Enklaste...
-- Snabbaste...
-- Billigaste...
-- Sättet att göra kontraktstestning
-
-Contracts should be "owned" by the respective services. The individual service is primarily responsible for creating, updating and publishing their contract.
-
-Tests can be written by anyone who has a dependency toward a given service.
-
-Send back data, having resolved dependencies, given that someone has already published contracts and tests (and that dependencies / dependents have been calculated) you'll get all related data back.
-
-- You get back data for your service: Ensure functionality of what others need of you
-- You get back data for services you depend on: Ensure functionality of what you need of others
-
-Publish är den primära punkten för interaktion. Den sköter också att uppdatera relationer samt att generera en aggregerad serviceList; inget annat uppdaterar dessa (då detta är enda routen som tar identity)
-
-## Publishing gates
-
-Rollback behavior if something breaks during the multi-phase procedure?
-
-A service can only publish contracts for its own namespace (as given in the service identity)?
-
-Tests cannot be published before a contract exists.
-
-Tests cannot be published unless they are passing.
-
-Föreslå filstruktur med ”schema”-mapp; man behöver inte nödvändigtvis vara redundant med hårda kopior av scheman på disk iom att dom ju lagras i databasen (däremot säkert smart att hårdlagra alla varianter i mapp med namn på tidigaste versionen som scheman med major changes förekom i, ex ”1.0.0” och ”1.8.0”) -> detta har ju även att göra med contractsLocal i config som bara pekar på en enskild fil på disk
-
-What protection does one have if someone would abuse the system and publish failing tests? (maybe as per above need to run tests and have them passing first?)
-
-Publish är den primära punkten för interaktion. Den sköter också att uppdatera relationer samt att generera en aggregerad serviceList; inget annat uppdaterar dessa (då detta är enda routen som tar identity)
-
-## Sync schemas from AWS EventBridge and GCP Pub/Sub
+## Sync schemas from AWS EventBridge and Google Cloud Platform Pub/Sub
 
 Add one/both of these to your `package.json` scripts:
 

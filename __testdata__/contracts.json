@@ -1,5 +1,14 @@
 [
   {
+    "payments-service": {
+      "1.3.0": {
+        "userId": "string",
+        "invoiceId": "string",
+        "paidInFull": false
+      }
+    }
+  },
+  {
     "api-provider": {
       "1.0.1": {
         "name": "123",

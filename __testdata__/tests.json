@@ -1,5 +1,18 @@
 [
   {
+    "payments-service": {
+      "1.3.0": [
+        {
+          "Failing test": {
+            "userId": 124124123,
+            "invoiceId": "djsh7-jk383fu-y33h",
+            "paidInFull": "true"
+          }
+        }
+      ]
+    }
+  },
+  {
     "api-provider": {
       "1.0.0": [
         {
@@ -39,7 +52,7 @@
           }
         },
         {
-          "Should Take Customer asdf": {
+          "Should Take Customer totally new": {
             "name": "Mikael",
             "email": "email",
             "totalPrice": 12345,
@@ -47,17 +60,6 @@
               "asdf": 89347938123,
               "isOn": true
             }
-          }
-        }
-      ]
-    }
-  },
-  {
-    "some-provider": {
-      "1.0.0": [
-        {
-          "demo for some provider": {
-            "name": 123
           }
         }
       ]

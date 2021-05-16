@@ -80,8 +80,7 @@ const providerContractsLocal = [
     'api-provider': {
       '1.0.0': {
         name: 'asdf'
-      },
-      endpoint: 'http://localhost:8080/api'
+      }
     }
   }
 ];
@@ -90,8 +89,7 @@ const providerContractsRemote = [
     'api-provider': {
       '1.0.1': {
         name: 'asdf'
-      },
-      endpoint: 'http://localhost:8080/api'
+      }
     }
   }
 ];
@@ -160,8 +158,7 @@ describe('Success cases', () => {
         {
           'api-provider': {
             '1.0.0': { name: 'asdf' },
-            '1.0.1': { name: 'asdf' },
-            endpoint: 'http://localhost:8080/api'
+            '1.0.1': { name: 'asdf' }
           }
         }
       ]);

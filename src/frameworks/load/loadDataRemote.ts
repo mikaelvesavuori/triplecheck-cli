@@ -19,6 +19,10 @@ export async function loadDataRemote(
     });
 
     const resolved = await Promise.all(fetchPromises);
+
+    // A bit of an odd use-case but when dependents are needed the data required back is just a single array with no further transformations
+    if (type === 'dependents') return resolved[0];
+
     let cleaned = resolved.map((item: any) => item[0]);
     cleaned = cleaned.filter((item: any) => item);
 
