@@ -1,7 +1,5 @@
 import * as fs from 'fs';
 
-//import { ErrorWrite } from '../errors/errors'; // TODO
-
 /**
  * @description Helper that writes files. Prefer using the writeFile function since that is hooked for up for any pre-processing.
  */

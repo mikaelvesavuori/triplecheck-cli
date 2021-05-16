@@ -9,10 +9,7 @@ export function getContract(providerContracts: any, contractName: string, versio
     const contract = providerContracts.filter(
       (providerContract: any) => Object.keys(providerContract)[0] === contractName
     )[0];
-    if (!contract) {
-      //console.warn(`⚠️ Unable to resolve a contract for ${contractName}@${version}!`); // TODO: Add in messages
-      return;
-    }
+    if (!contract) return;
     return contract[contractName][version];
   } catch (error) {
     console.error(error);

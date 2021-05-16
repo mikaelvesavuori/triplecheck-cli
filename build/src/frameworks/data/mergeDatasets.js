@@ -51,10 +51,9 @@ function mergeDatasets(localData = [], remoteData = []) {
             }
         });
     });
-    const serviceList = Object.keys(services).map((itemName) => {
+    return Object.keys(services).map((itemName) => {
         return { [itemName]: services[itemName] };
     });
-    return serviceList;
 }
 exports.mergeDatasets = mergeDatasets;
 //# sourceMappingURL=mergeDatasets.js.map

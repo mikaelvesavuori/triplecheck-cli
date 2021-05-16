@@ -24,7 +24,7 @@ function convertToQuicktype(schema) {
             const jsonInput = yield generateJsonInput(targetLanguage, name, schema);
             inputData.addInput(jsonInput);
         }
-        return yield quicktype_core_1.quicktype({
+        return quicktype_core_1.quicktype({
             inputData,
             lang: targetLanguage
         });

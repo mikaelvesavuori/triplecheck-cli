@@ -26,7 +26,7 @@ export async function convertToQuicktype(schema: string) {
     inputData.addInput(jsonInput);
   }
 
-  return await quicktype({
+  return quicktype({
     inputData,
     lang: targetLanguage
   });

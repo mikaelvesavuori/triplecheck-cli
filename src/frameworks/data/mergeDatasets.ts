@@ -80,9 +80,7 @@ export function mergeDatasets(localData: Service[] = [], remoteData: Service[] =
   });
 
   // Convert our object to a proper array
-  const serviceList = Object.keys(services).map((itemName: string) => {
+  return Object.keys(services).map((itemName: string) => {
     return { [itemName]: services[itemName] };
   });
-
-  return serviceList;
 }

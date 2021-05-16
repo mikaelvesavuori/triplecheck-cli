@@ -181,7 +181,7 @@ export class TripleCheck {
    * This assumes that there is a broker available.
    */
   async getDependents(brokerEndpoint: string, dependencies: string[]) {
-    return await loadDataRemote('dependents', brokerEndpoint, dependencies);
+    return loadDataRemote('dependents', brokerEndpoint, dependencies);
   }
 
   /**

@@ -148,7 +148,7 @@ class TripleCheck {
     }
     getDependents(brokerEndpoint, dependencies) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield loadDataRemote_1.loadDataRemote('dependents', brokerEndpoint, dependencies);
+            return loadDataRemote_1.loadDataRemote('dependents', brokerEndpoint, dependencies);
         });
     }
     getCleanedData(onlyLocalData) {

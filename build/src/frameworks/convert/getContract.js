@@ -6,9 +6,8 @@ function getContract(providerContracts, contractName, version) {
         throw new Error('Missing required arguments!');
     try {
         const contract = providerContracts.filter((providerContract) => Object.keys(providerContract)[0] === contractName)[0];
-        if (!contract) {
+        if (!contract)
             return;
-        }
         return contract[contractName][version];
     }
     catch (error) {
