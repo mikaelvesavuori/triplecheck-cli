@@ -13,8 +13,7 @@ import { loadDataLocal } from '../frameworks/load/loadDataLocal';
 import { loadDataRemote } from '../frameworks/load/loadDataRemote';
 import { createContractFile } from '../frameworks/convert/createContractFile';
 import { consoleOutput } from '../frameworks/text/consoleOutput';
-
-import { mockedLoadedData } from '../../__testdata__/mockedLoadedData';
+import { mockedLoadedData } from '../frameworks/mock/mockedLoadedData';
 
 import {
   msgTestPassed,
@@ -25,6 +24,9 @@ import {
   errorMissingTestsContracts,
   errorMissingTestsForService,
   errorMissingPublishEndpoint,
+  errorLoadingData,
+  errorWhenTesting,
+  errorWhenPublishing,
   warnMissingConsumerTestData,
   warnMissingContractWhenGeneratingFile,
   warnNothingToPublish
@@ -171,7 +173,7 @@ export class TripleCheck {
         providerContracts
       };
     } catch (error) {
-      console.error(`Error when loading data:\n${error.message}`);
+      console.error(errorLoadingData(error.message));
       return null;
     }
   }
@@ -292,7 +294,7 @@ export class TripleCheck {
       consoleOutput('TestsFinished');
       process.exit(0);
     } catch (error) {
-      console.error(`Error when testing:\n ${error.message}`);
+      console.error(errorWhenTesting(error.message));
     }
   }
 
@@ -390,7 +392,7 @@ export class TripleCheck {
         console.log(msgSuccessfullyPublished);
       })
       .catch((error) => {
-        console.error(`Error when publishing:\n${error.message}`);
+        console.error(errorWhenPublishing(error.message));
       });
 
     process.exit(0);

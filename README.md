@@ -12,32 +12,56 @@
 
 Contract testing should be as easy and painless as unit testing, yet it never really seems to be. TripleCheck tries to remove as much of the pain as possible.
 
+In particular `triplecheck-cli` helps you with:
+
+- Testing contracts (either plain objects or [JSON Schemas](https://json-schema.org));
+- Publishing contracts and tests to a broker instance, [`triplecheck-broker`](https://github.com/mikaelvesavuori/triplecheck-broker);
+- Sync schemas from AWS EventBridge and/or Google Pub/Sub and create contracts for them.
+
 The three key features of the TripleCheck eco-system are:
 
-1. **Smooth-as-melted-icecream two-way continuous testing**, meaning all parties do testing of their dependencies and dependents, puts an end to "consumer driven contracts": what we always wanted was that all sides verify respective integrity, not necessarily deep dialogues on who "drives" contracts/interfaces;
-2. Broker ("server") acting as an (optional) lightweight **global collection of all existing tests and contracts**;
-3. Practically turnkey solutions ready-to-go, for common modern toolchains/architectures.
+1. **Simplified, smooth-as-melted-icecream two-way continuous testing**, meaning all parties by default do testing of both their dependencies and dependents;
+2. Broker ("server") that you can publish contracts and tests to, and acts as an (optional) lightweight API to get a **global collection of all existing tests and contracts**;
+3. A set of practically turnkey solutions that are ready-to-go for common modern toolchains/architectures.
 
-[TODO]
+## Installation
+
+### Global
+
+Run `npm install triplecheck-cli -g` or `yarn global add triplecheck-cli`.
+
+### Local
+
+Run `npm install triplecheck-cli -D` or `yarn add triplecheck-cli -D`.
+
+## Configuration
+
+### Initialize a configuration file
+
+**Global install**: Run `x`.
+
+**Local install**: Run `x`.
 
 ## Design goals
 
-- Ease over rich functionality: should require minimal effort to learn and operate
-- First grade support for serverless compute (Lambda, Cloud Run...) and databases (Fauna, Dynamo, Firestore...)
+- Ease over rich functionality, requires minimal effort to learn and operate
+- Support any type of message or event as long as it can be represented as some kind of object (i.e. REST API, GraphQL, CloudEvents, proprietary message formats...)
+- First-grade support for serverless compute (Lambda, Cloud Run...) and databases (Fauna, Dynamo, Firestore...)
 - First-grade support for modern CI tools (GitHub Actions, cloud provider's toolchains..)
 - Day 1 support for modern message brokers (Google Pub/Sub, AWS Eventbridge...)
 - Remove the need for a _heavyweight_ broker
-- Ideally zero config
-- Lightweight: no need to mock or make actual requests, TripleCheck will compare static typed contracts
-- Support any kind of infra and data sources
+- Avoid mocking or making actual requests, instead compare static typed contracts
+- Support any kind of infrastructure and data sources
 
-Compared to Pact, TripleCheck cannot make deep syntactic asserts (like an expected response body), it can only ensure type and schema consistency. This is—I find—to be the true scope of contract testing. Tools like Pact are capable but, at least according to me, do too much.
+Compared to [Pact](https://pact.io), TripleCheck cannot make deep semantic asserts (like testing an expected response body), it can only ensure type and schema consistency. [This is the true scope of contract testing](https://docs.microsoft.com/en-us/graph/overview). Tools like Pact are capable but, at least according to me, do too much. If you _really_ want to know more than whether the contracts and tests are compatible, Pact will remain a better fit for you than TripleCheck.
 
-## A demo case
+## Demo of testing a simple contract
 
-TripleCheck CLI allows you to run tests by verifying [JSON Schemas](https://json-schema.org) and/or plain objects that represent contracts against test objects. An example contract (plain object style) could be:
+TripleCheck CLI allows you to run tests by verifying [JSON Schemas](https://json-schema.org) and/or plain objects that represent contracts against test objects.
 
-```
+An example contract (plain object style) could be:
+
+```json
 [
   {
     "user-api": {
@@ -52,10 +76,11 @@ TripleCheck CLI allows you to run tests by verifying [JSON Schemas](https://json
 ```
 
 In our list of contracts, we've provided `user-api` with version `1.0.0` and the three fields that it expects.
+It doesn't matter who writes this contract, but it makes sense that the team/person writing the service handles this activity.
 
 A basic test (again, a plain object) to verify schema integrity could look like:
 
-```
+```json
 [
   {
     "user-api": {
@@ -73,16 +98,69 @@ A basic test (again, a plain object) to verify schema integrity could look like:
 ]
 ```
 
-To test the contract, we construct an array of tests for any services and their versions. This makes it easy to co-locate both contracts and tests in single files, or to assemble them programmatically. You can use a combination of local and/or remote tests and contracts.
+To test the contract, we have constructed an array of tests for services and the versions of them that we want to test. An approach like this makes it easy to co-locate both contracts and tests in single respective files, or to assemble those files programmatically. If you use the [TripleCheck broker](https://github.com/mikaelvesavuori/triplecheck-broker) this is actually one of the things it helps you do, by piecing together contracts and tests. When testing, you can use a combination of local and/or remote tests and contracts. The configuration lets you set this as needed.
 
-Notice that the exact syntax is not validated, but instead the shape [TODO: Syntax vs Semantics]. Under the hood TripleCheck uses [Quicktype](https://quicktype.io) to do this checking. It's recommended to use [JSON Schema](https://json-schema.org) for more complex usecases. It also makes it easier to be concrete about actual types and what fields are required.
+Notice that the exact semantics are not validated (i.e. `Carmen` vs `some other name`), but instead the shape. If you remove a field, or make the `age` field a string, the test would fail. Under the hood TripleCheck uses [Quicktype](https://quicktype.io) to do this checking. It's recommended to use [JSON Schema](https://json-schema.org) for more complex usecases. It also makes it easier to be concrete about actual types and what fields are required.
 
-## Terminology
+## The broker
 
-- Test/verify: When you test compatibility between two or more contracts
-- Publish contract: When you make a local contract public (adding/updating) in the shared data source
+### Do I need to have a broker?
 
-## Workflow
+No.
+
+### Why would I want a broker?
+
+The broker acts as a central, global resource so you can publish contracts and tests, meaning you create discoverability of what services exist, what their relations are, and because of that allows richer testing facilities. Most importantly this means you can—unless you change the default settings—dynamically test dependents' expectations on your service.
+
+You also get the obvious benefit of storing contracts and tests somewhere that's not on your disk.
+
+### When does it make sense to skip the broker?
+
+If you only want to do basic one-way testing (maybe lightweight integration testing), or anything where you are not concerned of a distributed network of functions and APIs calling each other. But then maybe contract testing just isn't something you should be too concerned about anyway?
+
+### How do I get started with my own broker?
+
+There are several broker implementations that you can use right away or as the basis of your own starter kit. The current list is:
+
+- [Google Cloud Run and Firestore](https://github.com/mikaelvesavuori/triplecheck-example-cloudrun)
+- [Google Cloud Functions and Firestore](https://github.com/mikaelvesavuori/triplecheck-example-cloud-functions)
+- [Cloudflare Workers and KV](https://github.com/mikaelvesavuori/triplecheck-example-cloudflare-workers)
+- [AWS Lambda with DynamoDB](https://github.com/mikaelvesavuori/triplecheck-example-lambda)
+- [Vercel with FaunaDB](https://github.com/mikaelvesavuori/triplecheck-example-vercel)
+- [Netlify with FaunaDB](https://github.com/mikaelvesavuori/triplecheck-example-netlify)
+
+Read more at the respective links or over at [triplecheck-broker](https://github.com/mikaelvesavuori/triplecheck-broker) for details on the broker.
+
+## Working with TripleCheck
+
+### Terminology
+
+- **Test**: When you test compatibility between a contract and a test object (representing for example an API call).
+- **Contract**: A document/file that shows the shape of your event/message/API in the form of an object or JSON Schema.
+- **Publish a contract**: When you make a local contract public (adding/updating) into the shared data source (i.e. broker).
+- **Relations**: There are two types of relations—_dependencies_ (what services a given service depends on) and _dependents_ (what services depend on a given service). Relations allow us to keep up-to-date on whether our work on a given service will break other services.
+
+## How relations work
+
+A visual representation:
+
+![How relations work, graphically](readme/relations.png)
+
+And how they would look if you call the broker:
+
+![How relations work, listed](readme/relations-lists.png)
+
+Certainly there can be services that have no dependencies or dependents, or any combination of those.
+
+## What about schemas for GraphQL services and APIs?
+
+There's a few aspects to this. With GraphQL you do get pretty good validation and typing on the service level but not necessarily on the actual managed API.
+
+At least I am inclined to think that if you are running a managed API (such as AWS/GCP API Gateway) you will want to have schema validation on it. If you already have that, and are running GraphQL, then that schema should be ready (or nearly ready) to use as a contract with TripleCheck—OpenAPI schemas are after all very similar to JSON Schema. This has worked fine for me with AWS API Gateway, for example.
+
+If you want to convert a GraphQL schema you can use a package like [graphql-2-json-schema](https://www.npmjs.com/package/graphql-2-json-schema). You may want to take a look at my own package [TODO ADD HERE](https://www.npmjs.com/package/) that provides you that functionality pre-baked in an API that you can call. Frankly I've had mixed success, but feel free to try it and do a pull request if you can improve it (either the original base package or my API variant of it).
+
+### Workflow
 
 Contracts should be "owned" by the respective services. The individual service is primarily responsible for creating, updating and publishing their contract.
 
@@ -121,38 +199,140 @@ TODO.
 
 TODO.
 
-## Example broker implementations
-
-There are several broker implementations that you can use right away or as the basis of your own starter kit. The current list is:
-
-- [Google Cloud Run and Firestore](https://github.com/mikaelvesavuori/triplecheck-example-cloudrun)
-- [Google Cloud Functions and Firestore](https://github.com/mikaelvesavuori/triplecheck-example-cloud-functions)
-- [Cloudflare Workers and KV](https://github.com/mikaelvesavuori/triplecheck-example-cloudflare-workers)
-- [AWS Lambda with DynamoDB](https://github.com/mikaelvesavuori/triplecheck-example-lambda)
-- [Vercel with FaunaDB](https://github.com/mikaelvesavuori/triplecheck-example-vercel)
-- [Netlify with FaunaDB](https://github.com/mikaelvesavuori/triplecheck-example-netlify)
-
-Read more over at [triplecheck-broker](https://github.com/mikaelvesavuori/triplecheck-broker) for details on these.
-
 ## Sync schemas from AWS EventBridge and Google Cloud Platform Pub/Sub
 
-Add one/both of these to your `package.json` scripts:
+Add these these to your `package.json` scripts:
 
-```
+```json
 "sync:aws": "sh node_modules/triplecheck-cli/generate-schemas-from-aws.sh your-registry-name",
-"sync:gcp": "sh node_modules/triplecheck-cli/generate-schemas-from-gcp.sh"
+"sync:gcp": "sh node_modules/triplecheck-cli/generate-schemas-from-gcp.sh",
+"merge-schemas": "sh node_modules/triplecheck-cli/merge-schemas.sh existing-contracts-file.json generated-contracts-folder",
 ```
 
 Don't forget to change your registry name if you want to use the AWS option.
 
 Note that the shell scripts have no logic and will not take any options from your TripleCheck configuration. Feel free to copy and modify these shell scripts if you want to extend them with more functionality.
 
+### AWS EventBridge example
+
+Save the below content in a schema named `demo-schema`:
+
+```json
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "definitions": {
+    "address": {
+      "type": "object",
+      "properties": {
+        "street_address": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        }
+      },
+      "required": ["street_address", "city", "state"]
+    }
+  },
+  "type": "object",
+  "properties": {
+    "billing_address": {
+      "$ref": "#/definitions/address"
+    },
+    "shipping_address": {
+      "$ref": "#/definitions/address"
+    }
+  }
+}
+```
+
+The above will generate the following file `generated-schemas-aws/demo-schema@1.0.0.contract.json`:
+
+```json
+[
+  {
+    "demo-schema": {
+      "1.0.0": {
+        "$schema": "http://json-schema.org/draft-04/schema#",
+        "definitions": {
+          "address": {
+            "type": "object",
+            "properties": {
+              "street_address": {
+                "type": "string"
+              },
+              "city": {
+                "type": "string"
+              },
+              "state": {
+                "type": "string"
+              }
+            },
+            "required": ["street_address", "city", "state"]
+          }
+        },
+        "type": "object",
+        "properties": {
+          "billing_address": {
+            "$ref": "#/definitions/address"
+          },
+          "shipping_address": {
+            "$ref": "#/definitions/address"
+          }
+        }
+      }
+    }
+  }
+]
+```
+
+### GCP Pub/Sub example
+
+Save the below content in a schema named `sensor-data`:
+
+```json
+{
+  "type": "record",
+  "name": "Avro",
+  "fields": [
+    {
+      "name": "Temperature",
+      "type": "string"
+    },
+    {
+      "name": "Timestamp",
+      "type": "string"
+    }
+  ]
+}
+```
+
+The above will generate the following file `generated-schemas-gcp/sensor-data@1.0.0.contract.json`:
+
+```json
+[
+  {
+    "sensor-data": {
+      "1.0.0": {
+        "required": ["Temperature", "Timestamp"],
+        "properties": {
+          "Temperature": {
+            "type": "string"
+          },
+          "Timestamp": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+]
+```
+
 ## References
 
-- https://www.fastify.io/docs/v2.2.x/Validation-and-Serialization/
-- https://github.com/pact-foundation/pact-js/blob/master/examples/graphql/src/consumer.spec.ts
-- https://docs.pact.io/getting_started/how_pact_works
-- https://docs.pact.io/5-minute-getting-started-guide/
-- https://github.com/pact-foundation/pact-js/tree/master/examples/e2e
-- https://blog.dennisokeeffe.com/blog/2020-09-20-generating-types-with-quicktype/
-- https://json-schema.org/understanding-json-schema/structuring.html
+- [Article detailing roughly how TripleCheck implements Quicktype](https://blog.dennisokeeffe.com/blog/2020-09-20-generating-types-with-quicktype/)
+- [JSON Schema: Structuring a complex schema](https://json-schema.org/understanding-json-schema/structuring.html)

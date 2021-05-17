@@ -1,11 +1,13 @@
 import * as fs from 'fs';
 
+import { msgLoadingLocal } from '../../frameworks/text/messages';
+
 /**
  * @description Load data from a local file.
  */
 export function loadDataLocal(filePath: string): any {
   const path = `${process.cwd()}/${filePath}`;
-  console.log(`Loading file from ${path}...`);
+  console.log(msgLoadingLocal(path));
 
   let file = fs.readFileSync(path, 'utf8');
   file = isJsonString(file) ? JSON.parse(file) : file;

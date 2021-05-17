@@ -1,5 +1,7 @@
 import fetch from 'node-fetch';
 
+import { msgLoadingRemote } from '../../frameworks/text/messages';
+
 /**
  * @description Load data from a remote source.
  */
@@ -9,7 +11,7 @@ export async function loadDataRemote(
   include?: string[],
   headers?: any
 ): Promise<any> {
-  console.log(`Loading data from ${url}...`);
+  console.log(msgLoadingRemote(url));
 
   if (include && include.length > 0) {
     const fetchPromises = include.map(async (service: string) => {

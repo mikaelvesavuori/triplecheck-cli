@@ -20,6 +20,7 @@
     "start": "npm run clean && npx ts-node src/index.ts",
     "sync:aws": "sh generate-schemas-from-aws.sh demo-registry",
     "sync:gcp": "sh generate-schemas-from-gcp.sh",
+    "merge-schemas": "sh merge-schemas.sh existing-contracts-file.json generated-contracts-folder",
     "clean": "rm -f __quicktype-*",
     "clean:build": "rm -rf build/",
     "build": "npm run clean:build && tsc",

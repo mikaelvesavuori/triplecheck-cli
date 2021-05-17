@@ -1,5 +1,7 @@
 import { Service } from '../../contracts/Service';
 
+import { infoSkippingTestBecauseDuplicate } from '../../frameworks/text/messages';
+
 /**
  * @description Merge and deduplicate data. Can be used for both tests and contracts.
  * When merging from the broker, local data is synonymous with "current data" and
@@ -58,9 +60,7 @@ export function mergeDatasets(localData: Service[] = [], remoteData: Service[] =
 
             const IS_TEST_ALREADY_ADDED = listOfAddedTestsForCurrentVersion.includes(testName);
             if (IS_TEST_ALREADY_ADDED) {
-              console.log(
-                `ℹ️  Test named "${testName}" will be skipped from the test merge process, as an identically-named test has already been added...`
-              );
+              console.log(infoSkippingTestBecauseDuplicate(testName));
             } else {
               listOfAddedTestsForCurrentVersion.push(testName);
               updatedTests.push({

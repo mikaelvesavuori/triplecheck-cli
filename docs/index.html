@@ -69,54 +69,80 @@
 				<p><a href="https://codescene.io/projects/15674"><img src="https://codescene.io/projects/15674/status-badges/code-health" alt="CodeScene Code Health"></a></p>
 				<p><a href="https://codescene.io/projects/15674"><img src="https://codescene.io/projects/15674/status-badges/system-mastery" alt="CodeScene System Mastery"></a></p>
 				<p>Contract testing should be as easy and painless as unit testing, yet it never really seems to be. TripleCheck tries to remove as much of the pain as possible.</p>
+				<p>In particular <code>triplecheck-cli</code> helps you with:</p>
+				<ul>
+					<li>Testing contracts (either plain objects or <a href="https://json-schema.org">JSON Schemas</a>);</li>
+					<li>Publishing contracts and tests to a broker instance, <a href="https://github.com/mikaelvesavuori/triplecheck-broker"><code>triplecheck-broker</code></a>;</li>
+					<li>Sync schemas from AWS EventBridge and/or Google Pub/Sub and create contracts for them.</li>
+				</ul>
 				<p>The three key features of the TripleCheck eco-system are:</p>
 				<ol>
-					<li><strong>Smooth-as-melted-icecream two-way continuous testing</strong>, meaning all parties do testing of their dependencies and dependents, puts an end to &quot;consumer driven contracts&quot;: what we always wanted was that all sides verify respective integrity, not necessarily deep dialogues on who &quot;drives&quot; contracts/interfaces;</li>
-					<li>Broker (&quot;server&quot;) acting as an (optional) lightweight <strong>global collection of all existing tests and contracts</strong>;</li>
-					<li>Practically turnkey solutions ready-to-go, for common modern toolchains/architectures.</li>
+					<li><strong>Simplified, smooth-as-melted-icecream two-way continuous testing</strong>, meaning all parties by default do testing of both their dependencies and dependents;</li>
+					<li>Broker (&quot;server&quot;) that you can publish contracts and tests to, and acts as an (optional) lightweight API to get a <strong>global collection of all existing tests and contracts</strong>;</li>
+					<li>A set of practically turnkey solutions that are ready-to-go for common modern toolchains/architectures.</li>
 				</ol>
-				<p>[TODO]</p>
+				<a href="#installation" id="installation" style="color: inherit; text-decoration: none;">
+					<h2>Installation</h2>
+				</a>
+				<a href="#global" id="global" style="color: inherit; text-decoration: none;">
+					<h3>Global</h3>
+				</a>
+				<p>Run <code>npm install triplecheck-cli -g</code> or <code>yarn global add triplecheck-cli</code>.</p>
+				<a href="#local" id="local" style="color: inherit; text-decoration: none;">
+					<h3>Local</h3>
+				</a>
+				<p>Run <code>npm install triplecheck-cli -D</code> or <code>yarn add triplecheck-cli -D</code>.</p>
+				<a href="#configuration" id="configuration" style="color: inherit; text-decoration: none;">
+					<h2>Configuration</h2>
+				</a>
+				<a href="#initialize-a-configuration-file" id="initialize-a-configuration-file" style="color: inherit; text-decoration: none;">
+					<h3>Initialize a configuration file</h3>
+				</a>
+				<p><strong>Global install</strong>: Run <code>x</code>.</p>
+				<p><strong>Local install</strong>: Run <code>x</code>.</p>
 				<a href="#design-goals" id="design-goals" style="color: inherit; text-decoration: none;">
 					<h2>Design goals</h2>
 				</a>
 				<ul>
-					<li>Ease over rich functionality: should require minimal effort to learn and operate</li>
-					<li>First grade support for serverless compute (Lambda, Cloud Run...) and databases (Fauna, Dynamo, Firestore...)</li>
+					<li>Ease over rich functionality, requires minimal effort to learn and operate</li>
+					<li>Support any type of message or event as long as it can be represented as some kind of object (i.e. REST API, GraphQL, CloudEvents, proprietary message formats...)</li>
+					<li>First-grade support for serverless compute (Lambda, Cloud Run...) and databases (Fauna, Dynamo, Firestore...)</li>
 					<li>First-grade support for modern CI tools (GitHub Actions, cloud provider&#39;s toolchains..)</li>
 					<li>Day 1 support for modern message brokers (Google Pub/Sub, AWS Eventbridge...)</li>
 					<li>Remove the need for a <em>heavyweight</em> broker</li>
-					<li>Ideally zero config</li>
-					<li>Lightweight: no need to mock or make actual requests, TripleCheck will compare static typed contracts</li>
-					<li>Support any kind of infra and data sources</li>
+					<li>Avoid mocking or making actual requests, instead compare static typed contracts</li>
+					<li>Support any kind of infrastructure and data sources</li>
 				</ul>
-				<p>Compared to Pact, TripleCheck cannot make deep syntactic asserts (like an expected response body), it can only ensure type and schema consistency. This is—I find—to be the true scope of contract testing. Tools like Pact are capable but, at least according to me, do too much.</p>
-				<a href="#a-demo-case" id="a-demo-case" style="color: inherit; text-decoration: none;">
-					<h2>A demo case</h2>
+				<p>Compared to <a href="https://pact.io">Pact</a>, TripleCheck cannot make deep semantic asserts (like testing an expected response body), it can only ensure type and schema consistency. <a href="https://docs.microsoft.com/en-us/graph/overview">This is the true scope of contract testing</a>. Tools like Pact are capable but, at least according to me, do too much. If you <em>really</em> want to know more than whether the contracts and tests are compatible, Pact will remain a better fit for you than TripleCheck.</p>
+				<a href="#demo-of-testing-a-simple-contract" id="demo-of-testing-a-simple-contract" style="color: inherit; text-decoration: none;">
+					<h2>Demo of testing a simple contract</h2>
 				</a>
-				<p>TripleCheck CLI allows you to run tests by verifying <a href="https://json-schema.org">JSON Schemas</a> and/or plain objects that represent contracts against test objects. An example contract (plain object style) could be:</p>
-				<pre><code><span style="color: #000000">[</span>
+				<p>TripleCheck CLI allows you to run tests by verifying <a href="https://json-schema.org">JSON Schemas</a> and/or plain objects that represent contracts against test objects.</p>
+				<p>An example contract (plain object style) could be:</p>
+				<pre><code class="language-json"><span style="color: #000000">[</span>
 <span style="color: #000000">  {</span>
-<span style="color: #000000">    </span><span style="color: #A31515">&quot;user-api&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> {</span>
-<span style="color: #000000">      </span><span style="color: #A31515">&quot;1.0.0&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> {</span>
-<span style="color: #000000">        </span><span style="color: #A31515">&quot;name&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;Someone&quot;</span><span style="color: #000000">,</span>
-<span style="color: #000000">        </span><span style="color: #A31515">&quot;address&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;Some Street 123&quot;</span><span style="color: #000000">,</span>
-<span style="color: #000000">        </span><span style="color: #A31515">&quot;age&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> </span><span style="color: #098658">35</span>
+<span style="color: #000000">    </span><span style="color: #0451A5">&quot;user-api&quot;</span><span style="color: #000000">: {</span>
+<span style="color: #000000">      </span><span style="color: #0451A5">&quot;1.0.0&quot;</span><span style="color: #000000">: {</span>
+<span style="color: #000000">        </span><span style="color: #0451A5">&quot;name&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;Someone&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">        </span><span style="color: #0451A5">&quot;address&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;Some Street 123&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">        </span><span style="color: #0451A5">&quot;age&quot;</span><span style="color: #000000">: </span><span style="color: #098658">35</span>
 <span style="color: #000000">      }</span>
 <span style="color: #000000">    }</span>
 <span style="color: #000000">  }</span>
 <span style="color: #000000">]</span>
 </code></pre>
-				<p>In our list of contracts, we&#39;ve provided <code>user-api</code> with version <code>1.0.0</code> and the three fields that it expects.</p>
+				<p>In our list of contracts, we&#39;ve provided <code>user-api</code> with version <code>1.0.0</code> and the three fields that it expects.
+				It doesn&#39;t matter who writes this contract, but it makes sense that the team/person writing the service handles this activity.</p>
 				<p>A basic test (again, a plain object) to verify schema integrity could look like:</p>
-				<pre><code><span style="color: #000000">[</span>
+				<pre><code class="language-json"><span style="color: #000000">[</span>
 <span style="color: #000000">  {</span>
-<span style="color: #000000">    </span><span style="color: #A31515">&quot;user-api&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> {</span>
-<span style="color: #000000">      </span><span style="color: #A31515">&quot;1.0.0&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> [</span>
+<span style="color: #000000">    </span><span style="color: #0451A5">&quot;user-api&quot;</span><span style="color: #000000">: {</span>
+<span style="color: #000000">      </span><span style="color: #0451A5">&quot;1.0.0&quot;</span><span style="color: #000000">: [</span>
 <span style="color: #000000">        {</span>
-<span style="color: #000000">          </span><span style="color: #A31515">&quot;Verify identity&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> {</span>
-<span style="color: #000000">            </span><span style="color: #A31515">&quot;name&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;Carmen&quot;</span><span style="color: #000000">,</span>
-<span style="color: #000000">            </span><span style="color: #A31515">&quot;address&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;Ocean View 3000&quot;</span><span style="color: #000000">,</span>
-<span style="color: #000000">            </span><span style="color: #A31515">&quot;age&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> </span><span style="color: #098658">27</span>
+<span style="color: #000000">          </span><span style="color: #0451A5">&quot;Verify identity&quot;</span><span style="color: #000000">: {</span>
+<span style="color: #000000">            </span><span style="color: #0451A5">&quot;name&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;Carmen&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">            </span><span style="color: #0451A5">&quot;address&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;Ocean View 3000&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">            </span><span style="color: #0451A5">&quot;age&quot;</span><span style="color: #000000">: </span><span style="color: #098658">27</span>
 <span style="color: #000000">          }</span>
 <span style="color: #000000">        }</span>
 <span style="color: #000000">      ]</span>
@@ -124,17 +150,65 @@
 <span style="color: #000000">  }</span>
 <span style="color: #000000">]</span>
 </code></pre>
-				<p>To test the contract, we construct an array of tests for any services and their versions. This makes it easy to co-locate both contracts and tests in single files, or to assemble them programmatically. You can use a combination of local and/or remote tests and contracts.</p>
-				<p>Notice that the exact syntax is not validated, but instead the shape [TODO: Syntax vs Semantics]. Under the hood TripleCheck uses <a href="https://quicktype.io">Quicktype</a> to do this checking. It&#39;s recommended to use <a href="https://json-schema.org">JSON Schema</a> for more complex usecases. It also makes it easier to be concrete about actual types and what fields are required.</p>
+				<p>To test the contract, we have constructed an array of tests for services and the versions of them that we want to test. An approach like this makes it easy to co-locate both contracts and tests in single respective files, or to assemble those files programmatically. If you use the <a href="https://github.com/mikaelvesavuori/triplecheck-broker">TripleCheck broker</a> this is actually one of the things it helps you do, by piecing together contracts and tests. When testing, you can use a combination of local and/or remote tests and contracts. The configuration lets you set this as needed.</p>
+				<p>Notice that the exact semantics are not validated (i.e. <code>Carmen</code> vs <code>some other name</code>), but instead the shape. If you remove a field, or make the <code>age</code> field a string, the test would fail. Under the hood TripleCheck uses <a href="https://quicktype.io">Quicktype</a> to do this checking. It&#39;s recommended to use <a href="https://json-schema.org">JSON Schema</a> for more complex usecases. It also makes it easier to be concrete about actual types and what fields are required.</p>
+				<a href="#the-broker" id="the-broker" style="color: inherit; text-decoration: none;">
+					<h2>The broker</h2>
+				</a>
+				<a href="#do-i-need-to-have-a-broker" id="do-i-need-to-have-a-broker" style="color: inherit; text-decoration: none;">
+					<h3>Do I need to have a broker?</h3>
+				</a>
+				<p>No.</p>
+				<a href="#why-would-i-want-a-broker" id="why-would-i-want-a-broker" style="color: inherit; text-decoration: none;">
+					<h3>Why would I want a broker?</h3>
+				</a>
+				<p>The broker acts as a central, global resource so you can publish contracts and tests, meaning you create discoverability of what services exist, what their relations are, and because of that allows richer testing facilities. Most importantly this means you can—unless you change the default settings—dynamically test dependents&#39; expectations on your service.</p>
+				<p>You also get the obvious benefit of storing contracts and tests somewhere that&#39;s not on your disk.</p>
+				<a href="#when-does-it-make-sense-to-skip-the-broker" id="when-does-it-make-sense-to-skip-the-broker" style="color: inherit; text-decoration: none;">
+					<h3>When does it make sense to skip the broker?</h3>
+				</a>
+				<p>If you only want to do basic one-way testing (maybe lightweight integration testing), or anything where you are not concerned of a distributed network of functions and APIs calling each other. But then maybe contract testing just isn&#39;t something you should be too concerned about anyway?</p>
+				<a href="#how-do-i-get-started-with-my-own-broker" id="how-do-i-get-started-with-my-own-broker" style="color: inherit; text-decoration: none;">
+					<h3>How do I get started with my own broker?</h3>
+				</a>
+				<p>There are several broker implementations that you can use right away or as the basis of your own starter kit. The current list is:</p>
+				<ul>
+					<li><a href="https://github.com/mikaelvesavuori/triplecheck-example-cloudrun">Google Cloud Run and Firestore</a></li>
+					<li><a href="https://github.com/mikaelvesavuori/triplecheck-example-cloud-functions">Google Cloud Functions and Firestore</a></li>
+					<li><a href="https://github.com/mikaelvesavuori/triplecheck-example-cloudflare-workers">Cloudflare Workers and KV</a></li>
+					<li><a href="https://github.com/mikaelvesavuori/triplecheck-example-lambda">AWS Lambda with DynamoDB</a></li>
+					<li><a href="https://github.com/mikaelvesavuori/triplecheck-example-vercel">Vercel with FaunaDB</a></li>
+					<li><a href="https://github.com/mikaelvesavuori/triplecheck-example-netlify">Netlify with FaunaDB</a></li>
+				</ul>
+				<p>Read more at the respective links or over at <a href="https://github.com/mikaelvesavuori/triplecheck-broker">triplecheck-broker</a> for details on the broker.</p>
+				<a href="#working-with-triplecheck" id="working-with-triplecheck" style="color: inherit; text-decoration: none;">
+					<h2>Working with TripleCheck</h2>
+				</a>
 				<a href="#terminology" id="terminology" style="color: inherit; text-decoration: none;">
-					<h2>Terminology</h2>
+					<h3>Terminology</h3>
 				</a>
 				<ul>
-					<li>Test/verify: When you test compatibility between two or more contracts</li>
-					<li>Publish contract: When you make a local contract public (adding/updating) in the shared data source</li>
+					<li><strong>Test</strong>: When you test compatibility between a contract and a test object (representing for example an API call).</li>
+					<li><strong>Contract</strong>: A document/file that shows the shape of your event/message/API in the form of an object or JSON Schema.</li>
+					<li><strong>Publish a contract</strong>: When you make a local contract public (adding/updating) into the shared data source (i.e. broker).</li>
+					<li><strong>Relations</strong>: There are two types of relations—<em>dependencies</em> (what services a given service depends on) and <em>dependents</em> (what services depend on a given service). Relations allow us to keep up-to-date on whether our work on a given service will break other services.</li>
 				</ul>
+				<a href="#how-relations-work" id="how-relations-work" style="color: inherit; text-decoration: none;">
+					<h2>How relations work</h2>
+				</a>
+				<p>A visual representation:</p>
+				<p><img src="readme/relations.png" alt="How relations work, graphically"></p>
+				<p>And how they would look if you call the broker:</p>
+				<p><img src="readme/relations-lists.png" alt="How relations work, listed"></p>
+				<p>Certainly there can be services that have no dependencies or dependents, or any combination of those.</p>
+				<a href="#what-about-schemas-for-graphql-services-and-apis" id="what-about-schemas-for-graphql-services-and-apis" style="color: inherit; text-decoration: none;">
+					<h2>What about schemas for GraphQL services and APIs?</h2>
+				</a>
+				<p>There&#39;s a few aspects to this. With GraphQL you do get pretty good validation and typing on the service level but not necessarily on the actual managed API.</p>
+				<p>At least I am inclined to think that if you are running a managed API (such as AWS/GCP API Gateway) you will want to have schema validation on it. If you already have that, and are running GraphQL, then that schema should be ready (or nearly ready) to use as a contract with TripleCheck—OpenAPI schemas are after all very similar to JSON Schema. This has worked fine for me with AWS API Gateway, for example.</p>
+				<p>If you want to convert a GraphQL schema you can use a package like <a href="https://www.npmjs.com/package/graphql-2-json-schema">graphql-2-json-schema</a>. You may want to take a look at my own package <a href="https://www.npmjs.com/package/">TODO ADD HERE</a> that provides you that functionality pre-baked in an API that you can call. Frankly I&#39;ve had mixed success, but feel free to try it and do a pull request if you can improve it (either the original base package or my API variant of it).</p>
 				<a href="#workflow" id="workflow" style="color: inherit; text-decoration: none;">
-					<h2>Workflow</h2>
+					<h3>Workflow</h3>
 				</a>
 				<p>Contracts should be &quot;owned&quot; by the respective services. The individual service is primarily responsible for creating, updating and publishing their contract.</p>
 				<p>Tests can be written by anyone who has a dependency toward a given service.</p>
@@ -169,39 +243,131 @@
 					<h3>Provider updates their API that has several applications depending on it</h3>
 				</a>
 				<p>TODO.</p>
-				<a href="#example-broker-implementations" id="example-broker-implementations" style="color: inherit; text-decoration: none;">
-					<h2>Example broker implementations</h2>
-				</a>
-				<p>There are several broker implementations that you can use right away or as the basis of your own starter kit. The current list is:</p>
-				<ul>
-					<li><a href="https://github.com/mikaelvesavuori/triplecheck-example-cloudrun">Google Cloud Run and Firestore</a></li>
-					<li><a href="https://github.com/mikaelvesavuori/triplecheck-example-cloud-functions">Google Cloud Functions and Firestore</a></li>
-					<li><a href="https://github.com/mikaelvesavuori/triplecheck-example-cloudflare-workers">Cloudflare Workers and KV</a></li>
-					<li><a href="https://github.com/mikaelvesavuori/triplecheck-example-lambda">AWS Lambda with DynamoDB</a></li>
-					<li><a href="https://github.com/mikaelvesavuori/triplecheck-example-vercel">Vercel with FaunaDB</a></li>
-					<li><a href="https://github.com/mikaelvesavuori/triplecheck-example-netlify">Netlify with FaunaDB</a></li>
-				</ul>
-				<p>Read more over at <a href="https://github.com/mikaelvesavuori/triplecheck-broker">triplecheck-broker</a> for details on these.</p>
 				<a href="#sync-schemas-from-aws-eventbridge-and-google-cloud-platform-pubsub" id="sync-schemas-from-aws-eventbridge-and-google-cloud-platform-pubsub" style="color: inherit; text-decoration: none;">
 					<h2>Sync schemas from AWS EventBridge and Google Cloud Platform Pub/Sub</h2>
 				</a>
-				<p>Add one/both of these to your <code>package.json</code> scripts:</p>
-				<pre><code><span style="color: #A31515">&quot;sync:aws&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;sh node_modules/triplecheck-cli/generate-schemas-from-aws.sh your-registry-name&quot;</span><span style="color: #000000">,</span>
-<span style="color: #A31515">&quot;sync:gcp&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;sh node_modules/triplecheck-cli/generate-schemas-from-gcp.sh&quot;</span>
+				<p>Add these these to your <code>package.json</code> scripts:</p>
+				<pre><code class="language-json"><span style="color: #A31515">&quot;sync:aws&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;sh node_modules/triplecheck-cli/generate-schemas-from-aws.sh your-registry-name&quot;</span><span style="color: #000000">,</span>
+<span style="color: #A31515">&quot;sync:gcp&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;sh node_modules/triplecheck-cli/generate-schemas-from-gcp.sh&quot;</span><span style="color: #000000">,</span>
+<span style="color: #A31515">&quot;merge-schemas&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;sh node_modules/triplecheck-cli/merge-schemas.sh existing-contracts-file.json generated-contracts-folder&quot;</span><span style="color: #000000">,</span>
 </code></pre>
 				<p>Don&#39;t forget to change your registry name if you want to use the AWS option.</p>
 				<p>Note that the shell scripts have no logic and will not take any options from your TripleCheck configuration. Feel free to copy and modify these shell scripts if you want to extend them with more functionality.</p>
+				<a href="#aws-eventbridge-example" id="aws-eventbridge-example" style="color: inherit; text-decoration: none;">
+					<h3>AWS EventBridge example</h3>
+				</a>
+				<p>Save the below content in a schema named <code>demo-schema</code>:</p>
+				<pre><code class="language-json"><span style="color: #000000">{</span>
+<span style="color: #000000">  </span><span style="color: #0451A5">&quot;$schema&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;http://json-schema.org/draft-04/schema#&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">  </span><span style="color: #0451A5">&quot;definitions&quot;</span><span style="color: #000000">: {</span>
+<span style="color: #000000">    </span><span style="color: #0451A5">&quot;address&quot;</span><span style="color: #000000">: {</span>
+<span style="color: #000000">      </span><span style="color: #0451A5">&quot;type&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;object&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">      </span><span style="color: #0451A5">&quot;properties&quot;</span><span style="color: #000000">: {</span>
+<span style="color: #000000">        </span><span style="color: #0451A5">&quot;street_address&quot;</span><span style="color: #000000">: {</span>
+<span style="color: #000000">          </span><span style="color: #0451A5">&quot;type&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;string&quot;</span>
+<span style="color: #000000">        },</span>
+<span style="color: #000000">        </span><span style="color: #0451A5">&quot;city&quot;</span><span style="color: #000000">: {</span>
+<span style="color: #000000">          </span><span style="color: #0451A5">&quot;type&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;string&quot;</span>
+<span style="color: #000000">        },</span>
+<span style="color: #000000">        </span><span style="color: #0451A5">&quot;state&quot;</span><span style="color: #000000">: {</span>
+<span style="color: #000000">          </span><span style="color: #0451A5">&quot;type&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;string&quot;</span>
+<span style="color: #000000">        }</span>
+<span style="color: #000000">      },</span>
+<span style="color: #000000">      </span><span style="color: #0451A5">&quot;required&quot;</span><span style="color: #000000">: [</span><span style="color: #A31515">&quot;street_address&quot;</span><span style="color: #000000">, </span><span style="color: #A31515">&quot;city&quot;</span><span style="color: #000000">, </span><span style="color: #A31515">&quot;state&quot;</span><span style="color: #000000">]</span>
+<span style="color: #000000">    }</span>
+<span style="color: #000000">  },</span>
+<span style="color: #000000">  </span><span style="color: #0451A5">&quot;type&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;object&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">  </span><span style="color: #0451A5">&quot;properties&quot;</span><span style="color: #000000">: {</span>
+<span style="color: #000000">    </span><span style="color: #0451A5">&quot;billing_address&quot;</span><span style="color: #000000">: {</span>
+<span style="color: #000000">      </span><span style="color: #0451A5">&quot;$ref&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;#/definitions/address&quot;</span>
+<span style="color: #000000">    },</span>
+<span style="color: #000000">    </span><span style="color: #0451A5">&quot;shipping_address&quot;</span><span style="color: #000000">: {</span>
+<span style="color: #000000">      </span><span style="color: #0451A5">&quot;$ref&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;#/definitions/address&quot;</span>
+<span style="color: #000000">    }</span>
+<span style="color: #000000">  }</span>
+<span style="color: #000000">}</span>
+</code></pre>
+				<p>The above will generate the following file <code>generated-schemas-aws/demo-schema@1.0.0.contract.json</code>:</p>
+				<pre><code class="language-json"><span style="color: #000000">[</span>
+<span style="color: #000000">  {</span>
+<span style="color: #000000">    </span><span style="color: #0451A5">&quot;demo-schema&quot;</span><span style="color: #000000">: {</span>
+<span style="color: #000000">      </span><span style="color: #0451A5">&quot;1.0.0&quot;</span><span style="color: #000000">: {</span>
+<span style="color: #000000">        </span><span style="color: #0451A5">&quot;$schema&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;http://json-schema.org/draft-04/schema#&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">        </span><span style="color: #0451A5">&quot;definitions&quot;</span><span style="color: #000000">: {</span>
+<span style="color: #000000">          </span><span style="color: #0451A5">&quot;address&quot;</span><span style="color: #000000">: {</span>
+<span style="color: #000000">            </span><span style="color: #0451A5">&quot;type&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;object&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">            </span><span style="color: #0451A5">&quot;properties&quot;</span><span style="color: #000000">: {</span>
+<span style="color: #000000">              </span><span style="color: #0451A5">&quot;street_address&quot;</span><span style="color: #000000">: {</span>
+<span style="color: #000000">                </span><span style="color: #0451A5">&quot;type&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;string&quot;</span>
+<span style="color: #000000">              },</span>
+<span style="color: #000000">              </span><span style="color: #0451A5">&quot;city&quot;</span><span style="color: #000000">: {</span>
+<span style="color: #000000">                </span><span style="color: #0451A5">&quot;type&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;string&quot;</span>
+<span style="color: #000000">              },</span>
+<span style="color: #000000">              </span><span style="color: #0451A5">&quot;state&quot;</span><span style="color: #000000">: {</span>
+<span style="color: #000000">                </span><span style="color: #0451A5">&quot;type&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;string&quot;</span>
+<span style="color: #000000">              }</span>
+<span style="color: #000000">            },</span>
+<span style="color: #000000">            </span><span style="color: #0451A5">&quot;required&quot;</span><span style="color: #000000">: [</span><span style="color: #A31515">&quot;street_address&quot;</span><span style="color: #000000">, </span><span style="color: #A31515">&quot;city&quot;</span><span style="color: #000000">, </span><span style="color: #A31515">&quot;state&quot;</span><span style="color: #000000">]</span>
+<span style="color: #000000">          }</span>
+<span style="color: #000000">        },</span>
+<span style="color: #000000">        </span><span style="color: #0451A5">&quot;type&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;object&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">        </span><span style="color: #0451A5">&quot;properties&quot;</span><span style="color: #000000">: {</span>
+<span style="color: #000000">          </span><span style="color: #0451A5">&quot;billing_address&quot;</span><span style="color: #000000">: {</span>
+<span style="color: #000000">            </span><span style="color: #0451A5">&quot;$ref&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;#/definitions/address&quot;</span>
+<span style="color: #000000">          },</span>
+<span style="color: #000000">          </span><span style="color: #0451A5">&quot;shipping_address&quot;</span><span style="color: #000000">: {</span>
+<span style="color: #000000">            </span><span style="color: #0451A5">&quot;$ref&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;#/definitions/address&quot;</span>
+<span style="color: #000000">          }</span>
+<span style="color: #000000">        }</span>
+<span style="color: #000000">      }</span>
+<span style="color: #000000">    }</span>
+<span style="color: #000000">  }</span>
+<span style="color: #000000">]</span>
+</code></pre>
+				<a href="#gcp-pubsub-example" id="gcp-pubsub-example" style="color: inherit; text-decoration: none;">
+					<h3>GCP Pub/Sub example</h3>
+				</a>
+				<p>Save the below content in a schema named <code>sensor-data</code>:</p>
+				<pre><code class="language-json"><span style="color: #000000">{</span>
+<span style="color: #000000">  </span><span style="color: #0451A5">&quot;type&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;record&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">  </span><span style="color: #0451A5">&quot;name&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;Avro&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">  </span><span style="color: #0451A5">&quot;fields&quot;</span><span style="color: #000000">: [</span>
+<span style="color: #000000">    {</span>
+<span style="color: #000000">      </span><span style="color: #0451A5">&quot;name&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;Temperature&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">      </span><span style="color: #0451A5">&quot;type&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;string&quot;</span>
+<span style="color: #000000">    },</span>
+<span style="color: #000000">    {</span>
+<span style="color: #000000">      </span><span style="color: #0451A5">&quot;name&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;Timestamp&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">      </span><span style="color: #0451A5">&quot;type&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;string&quot;</span>
+<span style="color: #000000">    }</span>
+<span style="color: #000000">  ]</span>
+<span style="color: #000000">}</span>
+</code></pre>
+				<p>The above will generate the following file <code>generated-schemas-gcp/sensor-data@1.0.0.contract.json</code>:</p>
+				<pre><code class="language-json"><span style="color: #000000">[</span>
+<span style="color: #000000">  {</span>
+<span style="color: #000000">    </span><span style="color: #0451A5">&quot;sensor-data&quot;</span><span style="color: #000000">: {</span>
+<span style="color: #000000">      </span><span style="color: #0451A5">&quot;1.0.0&quot;</span><span style="color: #000000">: {</span>
+<span style="color: #000000">        </span><span style="color: #0451A5">&quot;required&quot;</span><span style="color: #000000">: [</span><span style="color: #A31515">&quot;Temperature&quot;</span><span style="color: #000000">, </span><span style="color: #A31515">&quot;Timestamp&quot;</span><span style="color: #000000">],</span>
+<span style="color: #000000">        </span><span style="color: #0451A5">&quot;properties&quot;</span><span style="color: #000000">: {</span>
+<span style="color: #000000">          </span><span style="color: #0451A5">&quot;Temperature&quot;</span><span style="color: #000000">: {</span>
+<span style="color: #000000">            </span><span style="color: #0451A5">&quot;type&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;string&quot;</span>
+<span style="color: #000000">          },</span>
+<span style="color: #000000">          </span><span style="color: #0451A5">&quot;Timestamp&quot;</span><span style="color: #000000">: {</span>
+<span style="color: #000000">            </span><span style="color: #0451A5">&quot;type&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;string&quot;</span>
+<span style="color: #000000">          }</span>
+<span style="color: #000000">        }</span>
+<span style="color: #000000">      }</span>
+<span style="color: #000000">    }</span>
+<span style="color: #000000">  }</span>
+<span style="color: #000000">]</span>
+</code></pre>
 				<a href="#references" id="references" style="color: inherit; text-decoration: none;">
 					<h2>References</h2>
 				</a>
 				<ul>
-					<li><a href="https://www.fastify.io/docs/v2.2.x/Validation-and-Serialization/">https://www.fastify.io/docs/v2.2.x/Validation-and-Serialization/</a></li>
-					<li><a href="https://github.com/pact-foundation/pact-js/blob/master/examples/graphql/src/consumer.spec.ts">https://github.com/pact-foundation/pact-js/blob/master/examples/graphql/src/consumer.spec.ts</a></li>
-					<li><a href="https://docs.pact.io/getting_started/how_pact_works">https://docs.pact.io/getting_started/how_pact_works</a></li>
-					<li><a href="https://docs.pact.io/5-minute-getting-started-guide/">https://docs.pact.io/5-minute-getting-started-guide/</a></li>
-					<li><a href="https://github.com/pact-foundation/pact-js/tree/master/examples/e2e">https://github.com/pact-foundation/pact-js/tree/master/examples/e2e</a></li>
-					<li><a href="https://blog.dennisokeeffe.com/blog/2020-09-20-generating-types-with-quicktype/">https://blog.dennisokeeffe.com/blog/2020-09-20-generating-types-with-quicktype/</a></li>
-					<li><a href="https://json-schema.org/understanding-json-schema/structuring.html">https://json-schema.org/understanding-json-schema/structuring.html</a></li>
+					<li><a href="https://blog.dennisokeeffe.com/blog/2020-09-20-generating-types-with-quicktype/">Article detailing roughly how TripleCheck implements Quicktype</a></li>
+					<li><a href="https://json-schema.org/understanding-json-schema/structuring.html">JSON Schema: Structuring a complex schema</a></li>
 				</ul>
 			</div>
 		</div>
@@ -273,6 +439,9 @@
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="modules/frameworks_load_loaddataremote.html">frameworks/load/load<wbr>Data<wbr>Remote</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/frameworks_mock_mockedloadeddata.html">frameworks/mock/mocked<wbr>Loaded<wbr>Data</a>
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="modules/frameworks_text_consoleoutput.html">frameworks/text/console<wbr>Output</a>
