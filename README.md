@@ -1,6 +1,6 @@
 # triplecheck-cli
 
-![TripleCheck](readme/triplecheck.png)
+![TripleCheck](readme/triplecheck-cli.png)
 
 ![Build Status](https://github.com/mikaelvesavuori/triplecheck-cli/workflows/main/badge.svg)
 
@@ -361,7 +361,7 @@ A visual representation:
 
 ![How relations work, graphically](readme/relations.png)
 
-And how they would look if you call the broker:
+And how they would look like if you'd call the broker:
 
 ![How relations work, listed](readme/relations-lists.png)
 
