@@ -16,7 +16,10 @@ async function main() {
   try {
     // User wants to init a configuration...
     const [, , ...CLI_ARGS] = process.argv;
-    if (CLI_ARGS[0]?.toLowerCase() === 'init') initConfig(baseConfig, CONFIG_FILEPATH);
+    if (CLI_ARGS[0]?.toLowerCase() === 'init') {
+      initConfig(baseConfig, CONFIG_FILEPATH);
+      process.exit(0);
+    }
 
     if (!checkIfExists(CONFIG_FILEPATH)) {
       consoleOutput('ConfigNotPresent');

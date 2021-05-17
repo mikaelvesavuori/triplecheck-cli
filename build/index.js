@@ -25,8 +25,10 @@ function main() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const [, , ...CLI_ARGS] = process.argv;
-            if (((_a = CLI_ARGS[0]) === null || _a === void 0 ? void 0 : _a.toLowerCase()) === 'init')
+            if (((_a = CLI_ARGS[0]) === null || _a === void 0 ? void 0 : _a.toLowerCase()) === 'init') {
                 initConfig_1.initConfig(baseConfig_json_1.default, CONFIG_FILEPATH);
+                process.exit(0);
+            }
             if (!checkIfExists_1.checkIfExists(CONFIG_FILEPATH)) {
                 consoleOutput_1.consoleOutput('ConfigNotPresent');
                 return;

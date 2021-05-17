@@ -1,6 +1,6 @@
 # triplecheck-cli
 
-## TripleCheck CLI — The easiest and fastest way to do contract testing.
+![TripleCheck](readme/triplecheck.png)
 
 ![Build Status](https://github.com/mikaelvesavuori/triplecheck-cli/workflows/main/badge.svg)
 
@@ -10,7 +10,20 @@
 
 [![CodeScene System Mastery](https://codescene.io/projects/15674/status-badges/system-mastery)](https://codescene.io/projects/15674)
 
-Contract testing should be as easy and painless as unit testing, yet it never really seems to be. TripleCheck tries to remove as much of the pain as possible.
+## TripleCheck CLI — The easiest and fastest way to do contract testing.
+
+- [Design goals](#design-goals)
+- [Installation](#installation)
+- [Starting TripleCheck](#starting-triplecheck)
+- [Configuration](#configuration)
+- [Demo](#demo-testing-a-simple-contract)
+- [The broker](#the-broker)
+- [Working with TripleCheck](#working-with-triplecheck)
+- [Development Flow](#development-flow)
+- [Syncing schemas from AWS EventBridge and Google Cloud Platform Pub/Sub](#syncing-schemas-from-aws-eventbridge-and-google-cloud-platform-pubsub)
+- [References](#references)
+
+Contract testing should be as easy and painless as unit testing, yet it never really seems to be. TripleCheck tries to remove as much of the pain as possible. The end goal is to **always be able to ensure functionality of what others need of you** and **ensure functionality of what you need of others**.
 
 In particular `triplecheck-cli` helps you with:
 
@@ -23,24 +36,6 @@ The three key features of the TripleCheck eco-system are:
 1. **Simplified, smooth-as-melted-icecream two-way continuous testing**, meaning all parties by default do testing of both their dependencies and dependents;
 2. Broker ("server") that you can publish contracts and tests to, and acts as an (optional) lightweight API to get a **global collection of all existing tests and contracts**;
 3. A set of practically turnkey solutions that are ready-to-go for common modern toolchains/architectures.
-
-## Installation
-
-### Global
-
-Run `npm install triplecheck-cli -g` or `yarn global add triplecheck-cli`.
-
-### Local
-
-Run `npm install triplecheck-cli -D` or `yarn add triplecheck-cli -D`.
-
-## Configuration
-
-### Initialize a configuration file
-
-**Global install**: Run `x`.
-
-**Local install**: Run `x`.
 
 ## Design goals
 
@@ -55,7 +50,227 @@ Run `npm install triplecheck-cli -D` or `yarn add triplecheck-cli -D`.
 
 Compared to [Pact](https://pact.io), TripleCheck cannot make deep semantic asserts (like testing an expected response body), it can only ensure type and schema consistency. [This is the true scope of contract testing](https://docs.microsoft.com/en-us/graph/overview). Tools like Pact are capable but, at least according to me, do too much. If you _really_ want to know more than whether the contracts and tests are compatible, Pact will remain a better fit for you than TripleCheck.
 
-## Demo of testing a simple contract
+## Installation
+
+### Global
+
+Run `npm install triplecheck-cli -g` or `yarn global add triplecheck-cli`.
+
+### Local
+
+Run `npm install triplecheck-cli -D` or `yarn add triplecheck-cli -D`.
+
+## Starting TripleCheck
+
+Run `npx triplecheck-cli`.
+
+## Configuration
+
+### Initialize a configuration file
+
+You can do this manually according to the example below—or make it real simple and just run one of the following commands.
+
+**Global install**: Run `triplecheck init`.
+
+**Local install**: Run `npx triplecheck-cli`.
+
+### Basic configuration
+
+This is the configuration that TripleCheck will generate for you (with the identity fields changed, of course ):
+
+```json
+{
+  "identity": {
+    "name": "GENERATED_FROM_PACKAGE_JSON_NAME",
+    "version": "GENERATED_FROM_PACKAGE_JSON_VERSION"
+  },
+  "dependencies": [],
+  "tests": {
+    "include": [],
+    "skipTestingLocalResources": false,
+    "skipTestingRemoteResources": false,
+    "skipIncludingDependents": false
+  },
+  "resources": {
+    "local": {
+      "contractsPath": "",
+      "testsPath": ""
+    },
+    "remote": {
+      "brokerEndpoint": ""
+    }
+  },
+  "publishing": {
+    "publishLocalContracts": true,
+    "publishLocalTests": true
+  }
+}
+```
+
+### Recommendations for setup
+
+#### Deploy a broker and point `brokerEndpoint` to it
+
+Use one of the pre-baked brokers that correspond to your setup and deploy it. Point the config's `resources.remote.brokerEndpoint` to it.
+
+#### Create a local contracts file and point `contractsPath` to it
+
+Create a JSON file in your project folder. This should at least cover your own service. If you don't have any contracts for services you are dependent on in a broker yet, then ideally write those here as well. The format for a contract is:
+
+```
+[
+  {
+    "my-service": {
+      "1.2.3": {
+        "fieldName": "string",
+        "canBeAnything": "string",
+        "canBeAnyBasicType": false
+      }
+    }
+  }
+]
+```
+
+Specify the file and path in the config's `resources.local.contractsPath`.
+
+#### Create a local tests file and point `testsPath` to it
+
+Create a JSON file in your project folder. If you don't have any tests for services you are dependent on in a broker yet, then ideally write those here as well. The format is:
+
+```
+[
+  {
+    "my-service": {
+      "1.2.3": [
+        {
+          "The name of your test": {
+            "fieldName": "something",
+            "canBeAnything": "djsh7-jk383fu-y33h",
+            "canBeAnyBasicType": true
+          }
+        }
+      ]
+    }
+  }
+]
+```
+
+Specify the file and path in the config's `resources.local.testsPath`.
+
+### Configuration details
+
+Refer to the below type documentation for more details.
+
+```ts
+export type Config = {
+  identity: Identity;
+  dependencies: Dependency[];
+  tests: Tests;
+  resources: Resources;
+  publishing: Publishing;
+};
+
+/**
+ * Basic service identity data.
+ */
+export type Identity = {
+  /**
+   * Name of your service. If you generate a configuration with the "init" flag this will be picked up from
+   * your package.json file, if you have one.
+   * @example "my-service"
+   */
+  name: string;
+  /**
+   * Version of your service. If you generate a configuration with the `init` flag this will be picked up from
+   * your package.json file, if you have one.
+   * @example "1.0.0"
+   */
+  version: string;
+};
+
+/**
+ * A dependency is how we list service we depend on. These will be also be added in addition to anything
+ * listed in the `tests.include` block. This is a required array—think of this as the long-term way of
+ * stating dependencies. When you publish, relations _will_ be inferred for/from any services listed here.
+ * @example ["api-service@1.0.0", "some-other-service@2.1.5"]
+ */
+export type Dependency = string;
+
+/**
+ * Test setup.
+ */
+export type Tests = {
+  /**
+   * An array of strings that specify what services and versions we want to test. Note that these are _in addition_
+   * to those listed in `dependencies`. This is an optional array—think of it as a temporary way of adding services
+   * you want to test, for example in CI. When you publish, the relations will not be inferred from services present
+   * here.
+   * @example ["api-service@1.0.0", "some-other-service@2.1.5"]
+   */
+  include?: string[];
+  /**
+   * Should we skip testing tests found on a remote resource?
+   */
+  skipTestingRemoteResources?: boolean;
+  /**
+   * Should we skip testing tests found locally?
+   */
+  skipTestingLocalResources?: boolean;
+  /**
+   * Should we skip including dependent services from our remote broker?
+   */
+  skipIncludingDependents?: boolean;
+  /**
+   * An option to specify what the temporary generated contract file will be prefixed as.
+   * The contract itself will be generated as a TypeScript (.ts) file.
+   * You should remove any generated contracts in-between test runs to ensure you have
+   * no conflicts with old data.
+   * @example "__quicktype-contract"
+   */
+  contractFilePrefix?: string;
+};
+
+/**
+ * Resources specify where we can find the things we need: local tests/contracts and a broker, for example.
+ */
+export type Resources = {
+  local?: {
+    /**
+     * Where are you storing local contracts? These should be stored in an array of objects, all collected in a single file.
+     * @example "./contracts/contracts.json"
+     */
+    contractsPath?: string;
+    /**
+     * Where are you storing local tests? These should be stored in an array of objects, all collected in a single file.
+     * @example "./tests/tests.json"
+     */
+    testsPath?: string;
+  };
+  remote?: {
+    /**
+     * Where is the broker located?
+     * @example "https://my-broker-service.com/api/"
+     */
+    brokerEndpoint?: string;
+  };
+};
+
+/**
+ * Publishing setup.
+ */
+type Publishing = {
+  /**
+   * Should we publish any contracts we store locally?
+   */
+  publishLocalContracts: boolean;
+  /**
+   * Should we publish any tests we store locally?
+   */
+  publishLocalTests: boolean;
+};
+```
+
+## Demo: Testing a simple contract
 
 TripleCheck CLI allows you to run tests by verifying [JSON Schemas](https://json-schema.org) and/or plain objects that represent contracts against test objects.
 
@@ -118,7 +333,7 @@ You also get the obvious benefit of storing contracts and tests somewhere that's
 
 If you only want to do basic one-way testing (maybe lightweight integration testing), or anything where you are not concerned of a distributed network of functions and APIs calling each other. But then maybe contract testing just isn't something you should be too concerned about anyway?
 
-### How do I get started with my own broker?
+### What is the fastest way to get started with the broker?
 
 There are several broker implementations that you can use right away or as the basis of your own starter kit. The current list is:
 
@@ -140,7 +355,7 @@ Read more at the respective links or over at [triplecheck-broker](https://github
 - **Publish a contract**: When you make a local contract public (adding/updating) into the shared data source (i.e. broker).
 - **Relations**: There are two types of relations—_dependencies_ (what services a given service depends on) and _dependents_ (what services depend on a given service). Relations allow us to keep up-to-date on whether our work on a given service will break other services.
 
-## How relations work
+### How relations work
 
 A visual representation:
 
@@ -152,70 +367,67 @@ And how they would look if you call the broker:
 
 Certainly there can be services that have no dependencies or dependents, or any combination of those.
 
-## What about schemas for GraphQL services and APIs?
-
-There's a few aspects to this. With GraphQL you do get pretty good validation and typing on the service level but not necessarily on the actual managed API.
-
-At least I am inclined to think that if you are running a managed API (such as AWS/GCP API Gateway) you will want to have schema validation on it. If you already have that, and are running GraphQL, then that schema should be ready (or nearly ready) to use as a contract with TripleCheck—OpenAPI schemas are after all very similar to JSON Schema. This has worked fine for me with AWS API Gateway, for example.
-
-If you want to convert a GraphQL schema you can use a package like [graphql-2-json-schema](https://www.npmjs.com/package/graphql-2-json-schema). You may want to take a look at my own package [TODO ADD HERE](https://www.npmjs.com/package/) that provides you that functionality pre-baked in an API that you can call. Frankly I've had mixed success, but feel free to try it and do a pull request if you can improve it (either the original base package or my API variant of it).
-
-### Workflow
+## Development flow
 
 Contracts should be "owned" by the respective services. The individual service is primarily responsible for creating, updating and publishing their contract.
 
 Tests can be written by anyone who has a dependency toward a given service.
 
-Send back data, having resolved dependencies, given that someone has already published contracts and tests (and that dependencies / dependents have been calculated) you'll get all related data back.
-
-- **You get back data for your service**: Ensure functionality of what others need of you
-- **You get back data for services you depend on**: Ensure functionality of what you need of others
-
-## Development flow
-
-The approach with TripleCheck may be more naive than with Pact. In TripleCheck, there is no forced two-way verification, so any change you make will not start any other processes. It's really just like a lightweight mocked integration test.
-
-Below I will list two typical cases. Of course a system/service/app/API can have _both_ dependents and dependencies.
-
 ### One contract per service
 
 Each service should abide by one contract. This contract may have multiple versions.
 
-### One local test file
+### One local test file and one local contracts file
 
-All tests are collected in a single file. This can contain tests for any number of services and versions.
+Note: This recommendation stands, unless you only use remote data.
+
+All tests are collected in a single file. Same goes for the contracts. These can, respectively, contain any number of services and versions.
 
 ### Use the remote collections of tests and contracts
 
 Make sure to publish collections to the remote data storage. Only keep locally the minimum number of things you need. For a typical provider it would be your own service (provider) contract and your tests.
 
-Use `testScope` and `excludeScope` in the configuration to decide what you actually need to test.
+Use `tests.include` in the configuration to decide what you actually need to test.
 
-### Consumer updates their application that depends on an API
+### Dependent services will be tested by default
 
-TODO.
+If a service X is dependent on you, those tests will be run automatically as well.
 
-### Provider updates their API that has several applications depending on it
+This can be skipped by setting `tests.skipIncludingDependents` to `true`.
 
-TODO.
+### How do I update or "unpublish" tests and/or contracts?
 
-## Sync schemas from AWS EventBridge and Google Cloud Platform Pub/Sub
+Any updates will replace the pre-existing data (being "idempotent").
 
-Add these these to your `package.json` scripts:
+Deleting tests/contracts is currently something you have to do manually by calling the broker API.
+
+### What about schemas for GraphQL services and APIs?
+
+There's a few aspects to this. With GraphQL you do get pretty good validation and typing on the service level but not necessarily on the actual managed API.
+
+At least I am inclined to think that if you are running a managed API (such as AWS/GCP API Gateway) you will want to have schema validation on it. If you already have that, and are running GraphQL, then that schema should be ready (or nearly ready) to use as a contract with TripleCheck—OpenAPI schemas are after all very similar to JSON Schema. This has worked fine for me with AWS API Gateway, for example.
+
+If you want to convert a GraphQL schema you can use a package like [graphql-2-json-schema](https://www.npmjs.com/package/graphql-2-json-schema). You may also want to take a look at my own API-oriented solution [convert-gql-to-json](https://github.com/mikaelvesavuori/convert-gql-to-json) that uses that same package. Frankly I've had mixed success, but feel free to try it and do a pull request if you can improve it (either the original base package or my API variant of it).
+
+## Syncing schemas from AWS EventBridge and Google Cloud Platform Pub/Sub
+
+Add these these to your `package.json` scripts block:
 
 ```json
-"sync:aws": "sh node_modules/triplecheck-cli/generate-schemas-from-aws.sh your-registry-name",
-"sync:gcp": "sh node_modules/triplecheck-cli/generate-schemas-from-gcp.sh",
-"merge-schemas": "sh node_modules/triplecheck-cli/merge-schemas.sh existing-contracts-file.json generated-contracts-folder",
+"sync:aws": "sh ./node_modules/triplecheck-cli/generate-schemas-from-aws.sh your-registry-name",
+"sync:gcp": "sh ./node_modules/triplecheck-cli/generate-schemas-from-gcp.sh",
+"merge-schemas": "sh ./node_modules/triplecheck-cli/merge-schemas.sh existing-contracts-file.json generated-contracts-folder"
 ```
 
-Don't forget to change your registry name if you want to use the AWS option.
+Don't forget to change `your-registry-name` if you want to use the AWS option.
 
-Note that the shell scripts have no logic and will not take any options from your TripleCheck configuration. Feel free to copy and modify these shell scripts if you want to extend them with more functionality.
+The `merge-schemas` command also requires your own values, so change that too if you are going to use it.
+
+Note that the shell scripts are entirely separate from TripleCheck, and therefore won't take any options from your configuration file. Feel free to copy and modify these shell scripts if you want to extend them with more functionality.
 
 ### AWS EventBridge example
 
-Save the below content in a schema named `demo-schema`:
+Save the below content in an EventBridge schema named `demo-schema`:
 
 ```json
 {
@@ -249,7 +461,7 @@ Save the below content in a schema named `demo-schema`:
 }
 ```
 
-The above will generate the following file `generated-schemas-aws/demo-schema@1.0.0.contract.json`:
+The above when run with the AWS sync script will generate the following file `generated-schemas-aws/demo-schema@1.0.0.contract.json`:
 
 ```json
 [
@@ -310,7 +522,7 @@ Save the below content in a schema named `sensor-data`:
 }
 ```
 
-The above will generate the following file `generated-schemas-gcp/sensor-data@1.0.0.contract.json`:
+The above when run with the GCP sync script will generate the following file `generated-schemas-gcp/sensor-data@1.0.0.contract.json`:
 
 ```json
 [
@@ -331,6 +543,18 @@ The above will generate the following file `generated-schemas-gcp/sensor-data@1.
   }
 ]
 ```
+
+### Merge scripts example
+
+After generating a contract from your cloud provider's schema service, it's time to put it into your local contracts file.
+
+Given that you ran an AWS sync, that your schemas folder is `generated-schemas-aws`, and that your contracts are located at `contracts.json`, then running the full merge command would look like:
+
+```
+sh ./node_modules/triplecheck-cli/merge-schemas.sh contracts.json generated-schemas-aws
+```
+
+The generated output would simply be a merged JSON file. Now, if you were to run tests, then those contracts would start to be used (pending correct configuration and a set of tests for the services).
 
 ## References
 

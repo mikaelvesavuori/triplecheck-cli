@@ -61,14 +61,27 @@
 				<a href="#triplecheck-cli" id="triplecheck-cli" style="color: inherit; text-decoration: none;">
 					<h1>triplecheck-cli</h1>
 				</a>
-				<a href="#triplecheck-cli--the-easiest-and-fastest-way-to-do-contract-testing" id="triplecheck-cli--the-easiest-and-fastest-way-to-do-contract-testing" style="color: inherit; text-decoration: none;">
-					<h2>TripleCheck CLI — The easiest and fastest way to do contract testing.</h2>
-				</a>
+				<p><img src="readme/triplecheck.png" alt="TripleCheck"></p>
 				<p><img src="https://github.com/mikaelvesavuori/triplecheck-cli/workflows/main/badge.svg" alt="Build Status"></p>
 				<p><a href="https://sonarcloud.io/dashboard?id=mikaelvesavuori_triplecheck-cli"><img src="https://sonarcloud.io/api/project_badges/measure?project=mikaelvesavuori_triplecheck-cli&metric=alert_status" alt="Quality Gate Status"></a></p>
 				<p><a href="https://codescene.io/projects/15674"><img src="https://codescene.io/projects/15674/status-badges/code-health" alt="CodeScene Code Health"></a></p>
 				<p><a href="https://codescene.io/projects/15674"><img src="https://codescene.io/projects/15674/status-badges/system-mastery" alt="CodeScene System Mastery"></a></p>
-				<p>Contract testing should be as easy and painless as unit testing, yet it never really seems to be. TripleCheck tries to remove as much of the pain as possible.</p>
+				<a href="#triplecheck-cli--the-easiest-and-fastest-way-to-do-contract-testing" id="triplecheck-cli--the-easiest-and-fastest-way-to-do-contract-testing" style="color: inherit; text-decoration: none;">
+					<h2>TripleCheck CLI — The easiest and fastest way to do contract testing.</h2>
+				</a>
+				<ul>
+					<li><a href="#design-goals">Design goals</a></li>
+					<li><a href="#installation">Installation</a></li>
+					<li><a href="#starting-triplecheck">Starting TripleCheck</a></li>
+					<li><a href="#configuration">Configuration</a></li>
+					<li><a href="#demo-testing-a-simple-contract">Demo</a></li>
+					<li><a href="#the-broker">The broker</a></li>
+					<li><a href="#working-with-triplecheck">Working with TripleCheck</a></li>
+					<li><a href="#development-flow">Development Flow</a></li>
+					<li><a href="#syncing-schemas-from-aws-eventbridge-and-google-cloud-platform-pubsub">Syncing schemas from AWS EventBridge and Google Cloud Platform Pub/Sub</a></li>
+					<li><a href="#references">References</a></li>
+				</ul>
+				<p>Contract testing should be as easy and painless as unit testing, yet it never really seems to be. TripleCheck tries to remove as much of the pain as possible. The end goal is to <strong>always be able to ensure functionality of what others need of you</strong> and <strong>ensure functionality of what you need of others</strong>.</p>
 				<p>In particular <code>triplecheck-cli</code> helps you with:</p>
 				<ul>
 					<li>Testing contracts (either plain objects or <a href="https://json-schema.org">JSON Schemas</a>);</li>
@@ -81,25 +94,6 @@
 					<li>Broker (&quot;server&quot;) that you can publish contracts and tests to, and acts as an (optional) lightweight API to get a <strong>global collection of all existing tests and contracts</strong>;</li>
 					<li>A set of practically turnkey solutions that are ready-to-go for common modern toolchains/architectures.</li>
 				</ol>
-				<a href="#installation" id="installation" style="color: inherit; text-decoration: none;">
-					<h2>Installation</h2>
-				</a>
-				<a href="#global" id="global" style="color: inherit; text-decoration: none;">
-					<h3>Global</h3>
-				</a>
-				<p>Run <code>npm install triplecheck-cli -g</code> or <code>yarn global add triplecheck-cli</code>.</p>
-				<a href="#local" id="local" style="color: inherit; text-decoration: none;">
-					<h3>Local</h3>
-				</a>
-				<p>Run <code>npm install triplecheck-cli -D</code> or <code>yarn add triplecheck-cli -D</code>.</p>
-				<a href="#configuration" id="configuration" style="color: inherit; text-decoration: none;">
-					<h2>Configuration</h2>
-				</a>
-				<a href="#initialize-a-configuration-file" id="initialize-a-configuration-file" style="color: inherit; text-decoration: none;">
-					<h3>Initialize a configuration file</h3>
-				</a>
-				<p><strong>Global install</strong>: Run <code>x</code>.</p>
-				<p><strong>Local install</strong>: Run <code>x</code>.</p>
 				<a href="#design-goals" id="design-goals" style="color: inherit; text-decoration: none;">
 					<h2>Design goals</h2>
 				</a>
@@ -114,8 +108,219 @@
 					<li>Support any kind of infrastructure and data sources</li>
 				</ul>
 				<p>Compared to <a href="https://pact.io">Pact</a>, TripleCheck cannot make deep semantic asserts (like testing an expected response body), it can only ensure type and schema consistency. <a href="https://docs.microsoft.com/en-us/graph/overview">This is the true scope of contract testing</a>. Tools like Pact are capable but, at least according to me, do too much. If you <em>really</em> want to know more than whether the contracts and tests are compatible, Pact will remain a better fit for you than TripleCheck.</p>
-				<a href="#demo-of-testing-a-simple-contract" id="demo-of-testing-a-simple-contract" style="color: inherit; text-decoration: none;">
-					<h2>Demo of testing a simple contract</h2>
+				<a href="#installation" id="installation" style="color: inherit; text-decoration: none;">
+					<h2>Installation</h2>
+				</a>
+				<a href="#global" id="global" style="color: inherit; text-decoration: none;">
+					<h3>Global</h3>
+				</a>
+				<p>Run <code>npm install triplecheck-cli -g</code> or <code>yarn global add triplecheck-cli</code>.</p>
+				<a href="#local" id="local" style="color: inherit; text-decoration: none;">
+					<h3>Local</h3>
+				</a>
+				<p>Run <code>npm install triplecheck-cli -D</code> or <code>yarn add triplecheck-cli -D</code>.</p>
+				<a href="#starting-triplecheck" id="starting-triplecheck" style="color: inherit; text-decoration: none;">
+					<h2>Starting TripleCheck</h2>
+				</a>
+				<p>Run <code>npx triplecheck-cli</code>.</p>
+				<a href="#configuration" id="configuration" style="color: inherit; text-decoration: none;">
+					<h2>Configuration</h2>
+				</a>
+				<a href="#initialize-a-configuration-file" id="initialize-a-configuration-file" style="color: inherit; text-decoration: none;">
+					<h3>Initialize a configuration file</h3>
+				</a>
+				<p>You can do this manually according to the example below—or make it real simple and just run one of the following commands.</p>
+				<p><strong>Global install</strong>: Run <code>triplecheck init</code>.</p>
+				<p><strong>Local install</strong>: Run <code>npx triplecheck-cli</code>.</p>
+				<a href="#basic-configuration" id="basic-configuration" style="color: inherit; text-decoration: none;">
+					<h3>Basic configuration</h3>
+				</a>
+				<p>This is the configuration that TripleCheck will generate for you (with the identity fields changed, of course ):</p>
+				<pre><code class="language-json"><span style="color: #000000">{</span>
+<span style="color: #000000">  </span><span style="color: #0451A5">&quot;identity&quot;</span><span style="color: #000000">: {</span>
+<span style="color: #000000">    </span><span style="color: #0451A5">&quot;name&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;GENERATED_FROM_PACKAGE_JSON_NAME&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">    </span><span style="color: #0451A5">&quot;version&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;GENERATED_FROM_PACKAGE_JSON_VERSION&quot;</span>
+<span style="color: #000000">  },</span>
+<span style="color: #000000">  </span><span style="color: #0451A5">&quot;dependencies&quot;</span><span style="color: #000000">: [],</span>
+<span style="color: #000000">  </span><span style="color: #0451A5">&quot;tests&quot;</span><span style="color: #000000">: {</span>
+<span style="color: #000000">    </span><span style="color: #0451A5">&quot;include&quot;</span><span style="color: #000000">: [],</span>
+<span style="color: #000000">    </span><span style="color: #0451A5">&quot;skipTestingLocalResources&quot;</span><span style="color: #000000">: </span><span style="color: #0000FF">false</span><span style="color: #000000">,</span>
+<span style="color: #000000">    </span><span style="color: #0451A5">&quot;skipTestingRemoteResources&quot;</span><span style="color: #000000">: </span><span style="color: #0000FF">false</span><span style="color: #000000">,</span>
+<span style="color: #000000">    </span><span style="color: #0451A5">&quot;skipIncludingDependents&quot;</span><span style="color: #000000">: </span><span style="color: #0000FF">false</span>
+<span style="color: #000000">  },</span>
+<span style="color: #000000">  </span><span style="color: #0451A5">&quot;resources&quot;</span><span style="color: #000000">: {</span>
+<span style="color: #000000">    </span><span style="color: #0451A5">&quot;local&quot;</span><span style="color: #000000">: {</span>
+<span style="color: #000000">      </span><span style="color: #0451A5">&quot;contractsPath&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">      </span><span style="color: #0451A5">&quot;testsPath&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;&quot;</span>
+<span style="color: #000000">    },</span>
+<span style="color: #000000">    </span><span style="color: #0451A5">&quot;remote&quot;</span><span style="color: #000000">: {</span>
+<span style="color: #000000">      </span><span style="color: #0451A5">&quot;brokerEndpoint&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;&quot;</span>
+<span style="color: #000000">    }</span>
+<span style="color: #000000">  },</span>
+<span style="color: #000000">  </span><span style="color: #0451A5">&quot;publishing&quot;</span><span style="color: #000000">: {</span>
+<span style="color: #000000">    </span><span style="color: #0451A5">&quot;publishLocalContracts&quot;</span><span style="color: #000000">: </span><span style="color: #0000FF">true</span><span style="color: #000000">,</span>
+<span style="color: #000000">    </span><span style="color: #0451A5">&quot;publishLocalTests&quot;</span><span style="color: #000000">: </span><span style="color: #0000FF">true</span>
+<span style="color: #000000">  }</span>
+<span style="color: #000000">}</span>
+</code></pre>
+				<a href="#recommendations-for-setup" id="recommendations-for-setup" style="color: inherit; text-decoration: none;">
+					<h3>Recommendations for setup</h3>
+				</a>
+				<a href="#deploy-a-broker-and-point-brokerendpoint-to-it" id="deploy-a-broker-and-point-brokerendpoint-to-it" style="color: inherit; text-decoration: none;">
+					<h4>Deploy a broker and point <code>brokerEndpoint</code> to it</h4>
+				</a>
+				<p>Use one of the pre-baked brokers that correspond to your setup and deploy it. Point the config&#39;s <code>resources.remote.brokerEndpoint</code> to it.</p>
+				<a href="#create-a-local-contracts-file-and-point-contractspath-to-it" id="create-a-local-contracts-file-and-point-contractspath-to-it" style="color: inherit; text-decoration: none;">
+					<h4>Create a local contracts file and point <code>contractsPath</code> to it</h4>
+				</a>
+				<p>Create a JSON file in your project folder. This should at least cover your own service. If you don&#39;t have any contracts for services you are dependent on in a broker yet, then ideally write those here as well. The format for a contract is:</p>
+				<pre><code><span style="color: #000000">[</span>
+<span style="color: #000000">  {</span>
+<span style="color: #000000">    </span><span style="color: #A31515">&quot;my-service&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> {</span>
+<span style="color: #000000">      </span><span style="color: #A31515">&quot;1.2.3&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> {</span>
+<span style="color: #000000">        </span><span style="color: #A31515">&quot;fieldName&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;string&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">        </span><span style="color: #A31515">&quot;canBeAnything&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;string&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">        </span><span style="color: #A31515">&quot;canBeAnyBasicType&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> </span><span style="color: #0000FF">false</span>
+<span style="color: #000000">      }</span>
+<span style="color: #000000">    }</span>
+<span style="color: #000000">  }</span>
+<span style="color: #000000">]</span>
+</code></pre>
+				<p>Specify the file and path in the config&#39;s <code>resources.local.contractsPath</code>.</p>
+				<a href="#create-a-local-tests-file-and-point-testspath-to-it" id="create-a-local-tests-file-and-point-testspath-to-it" style="color: inherit; text-decoration: none;">
+					<h4>Create a local tests file and point <code>testsPath</code> to it</h4>
+				</a>
+				<p>Create a JSON file in your project folder. If you don&#39;t have any tests for services you are dependent on in a broker yet, then ideally write those here as well. The format is:</p>
+				<pre><code><span style="color: #000000">[</span>
+<span style="color: #000000">  {</span>
+<span style="color: #000000">    </span><span style="color: #A31515">&quot;my-service&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> {</span>
+<span style="color: #000000">      </span><span style="color: #A31515">&quot;1.2.3&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> [</span>
+<span style="color: #000000">        {</span>
+<span style="color: #000000">          </span><span style="color: #A31515">&quot;The name of your test&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> {</span>
+<span style="color: #000000">            </span><span style="color: #A31515">&quot;fieldName&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;something&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">            </span><span style="color: #A31515">&quot;canBeAnything&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;djsh7-jk383fu-y33h&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">            </span><span style="color: #A31515">&quot;canBeAnyBasicType&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> </span><span style="color: #0000FF">true</span>
+<span style="color: #000000">          }</span>
+<span style="color: #000000">        }</span>
+<span style="color: #000000">      ]</span>
+<span style="color: #000000">    }</span>
+<span style="color: #000000">  }</span>
+<span style="color: #000000">]</span>
+</code></pre>
+				<p>Specify the file and path in the config&#39;s <code>resources.local.testsPath</code>.</p>
+				<a href="#configuration-details" id="configuration-details" style="color: inherit; text-decoration: none;">
+					<h3>Configuration details</h3>
+				</a>
+				<p>Refer to the below type documentation for more details.</p>
+				<pre><code class="language-ts"><span style="color: #AF00DB">export</span><span style="color: #000000"> </span><span style="color: #0000FF">type</span><span style="color: #000000"> </span><span style="color: #267F99">Config</span><span style="color: #000000"> = {</span>
+<span style="color: #000000">  </span><span style="color: #001080">identity</span><span style="color: #000000">: </span><span style="color: #267F99">Identity</span><span style="color: #000000">;</span>
+<span style="color: #000000">  </span><span style="color: #001080">dependencies</span><span style="color: #000000">: </span><span style="color: #267F99">Dependency</span><span style="color: #000000">[];</span>
+<span style="color: #000000">  </span><span style="color: #001080">tests</span><span style="color: #000000">: </span><span style="color: #267F99">Tests</span><span style="color: #000000">;</span>
+<span style="color: #000000">  </span><span style="color: #001080">resources</span><span style="color: #000000">: </span><span style="color: #267F99">Resources</span><span style="color: #000000">;</span>
+<span style="color: #000000">  </span><span style="color: #001080">publishing</span><span style="color: #000000">: </span><span style="color: #267F99">Publishing</span><span style="color: #000000">;</span>
+<span style="color: #000000">};</span>
+
+<span style="color: #008000">/**</span>
+<span style="color: #008000"> * Basic service identity data.</span>
+<span style="color: #008000"> */</span>
+<span style="color: #AF00DB">export</span><span style="color: #000000"> </span><span style="color: #0000FF">type</span><span style="color: #000000"> </span><span style="color: #267F99">Identity</span><span style="color: #000000"> = {</span>
+<span style="color: #000000">  </span><span style="color: #008000">/**</span>
+<span style="color: #008000">   * Name of your service. If you generate a configuration with the &quot;init&quot; flag this will be picked up from</span>
+<span style="color: #008000">   * your package.json file, if you have one.</span>
+<span style="color: #008000">   * </span><span style="color: #0000FF">@example</span><span style="color: #008000"> &quot;my-service&quot;</span>
+<span style="color: #008000">   */</span>
+<span style="color: #000000">  </span><span style="color: #001080">name</span><span style="color: #000000">: </span><span style="color: #267F99">string</span><span style="color: #000000">;</span>
+<span style="color: #000000">  </span><span style="color: #008000">/**</span>
+<span style="color: #008000">   * Version of your service. If you generate a configuration with the `init` flag this will be picked up from</span>
+<span style="color: #008000">   * your package.json file, if you have one.</span>
+<span style="color: #008000">   * </span><span style="color: #0000FF">@example</span><span style="color: #008000"> &quot;1.0.0&quot;</span>
+<span style="color: #008000">   */</span>
+<span style="color: #000000">  </span><span style="color: #001080">version</span><span style="color: #000000">: </span><span style="color: #267F99">string</span><span style="color: #000000">;</span>
+<span style="color: #000000">};</span>
+
+<span style="color: #008000">/**</span>
+<span style="color: #008000"> * A dependency is how we list service we depend on. These will be also be added in addition to anything</span>
+<span style="color: #008000"> * listed in the `tests.include` block. This is a required array—think of this as the long-term way of</span>
+<span style="color: #008000"> * stating dependencies. When you publish, relations _will_ be inferred for/from any services listed here.</span>
+<span style="color: #008000"> * </span><span style="color: #0000FF">@example</span><span style="color: #008000"> [&quot;api-service@1.0.0&quot;, &quot;some-other-service@2.1.5&quot;]</span>
+<span style="color: #008000"> */</span>
+<span style="color: #AF00DB">export</span><span style="color: #000000"> </span><span style="color: #0000FF">type</span><span style="color: #000000"> </span><span style="color: #267F99">Dependency</span><span style="color: #000000"> = </span><span style="color: #267F99">string</span><span style="color: #000000">;</span>
+
+<span style="color: #008000">/**</span>
+<span style="color: #008000"> * Test setup.</span>
+<span style="color: #008000"> */</span>
+<span style="color: #AF00DB">export</span><span style="color: #000000"> </span><span style="color: #0000FF">type</span><span style="color: #000000"> </span><span style="color: #267F99">Tests</span><span style="color: #000000"> = {</span>
+<span style="color: #000000">  </span><span style="color: #008000">/**</span>
+<span style="color: #008000">   * An array of strings that specify what services and versions we want to test. Note that these are _in addition_</span>
+<span style="color: #008000">   * to those listed in `dependencies`. This is an optional array—think of it as a temporary way of adding services</span>
+<span style="color: #008000">   * you want to test, for example in CI. When you publish, the relations will not be inferred from services present</span>
+<span style="color: #008000">   * here.</span>
+<span style="color: #008000">   * </span><span style="color: #0000FF">@example</span><span style="color: #008000"> [&quot;api-service@1.0.0&quot;, &quot;some-other-service@2.1.5&quot;]</span>
+<span style="color: #008000">   */</span>
+<span style="color: #000000">  </span><span style="color: #001080">include</span><span style="color: #000000">?: </span><span style="color: #267F99">string</span><span style="color: #000000">[];</span>
+<span style="color: #000000">  </span><span style="color: #008000">/**</span>
+<span style="color: #008000">   * Should we skip testing tests found on a remote resource?</span>
+<span style="color: #008000">   */</span>
+<span style="color: #000000">  </span><span style="color: #001080">skipTestingRemoteResources</span><span style="color: #000000">?: </span><span style="color: #267F99">boolean</span><span style="color: #000000">;</span>
+<span style="color: #000000">  </span><span style="color: #008000">/**</span>
+<span style="color: #008000">   * Should we skip testing tests found locally?</span>
+<span style="color: #008000">   */</span>
+<span style="color: #000000">  </span><span style="color: #001080">skipTestingLocalResources</span><span style="color: #000000">?: </span><span style="color: #267F99">boolean</span><span style="color: #000000">;</span>
+<span style="color: #000000">  </span><span style="color: #008000">/**</span>
+<span style="color: #008000">   * Should we skip including dependent services from our remote broker?</span>
+<span style="color: #008000">   */</span>
+<span style="color: #000000">  </span><span style="color: #001080">skipIncludingDependents</span><span style="color: #000000">?: </span><span style="color: #267F99">boolean</span><span style="color: #000000">;</span>
+<span style="color: #000000">  </span><span style="color: #008000">/**</span>
+<span style="color: #008000">   * An option to specify what the temporary generated contract file will be prefixed as.</span>
+<span style="color: #008000">   * The contract itself will be generated as a TypeScript (.ts) file.</span>
+<span style="color: #008000">   * You should remove any generated contracts in-between test runs to ensure you have</span>
+<span style="color: #008000">   * no conflicts with old data.</span>
+<span style="color: #008000">   * </span><span style="color: #0000FF">@example</span><span style="color: #008000"> &quot;__quicktype-contract&quot;</span>
+<span style="color: #008000">   */</span>
+<span style="color: #000000">  </span><span style="color: #001080">contractFilePrefix</span><span style="color: #000000">?: </span><span style="color: #267F99">string</span><span style="color: #000000">;</span>
+<span style="color: #000000">};</span>
+
+<span style="color: #008000">/**</span>
+<span style="color: #008000"> * Resources specify where we can find the things we need: local tests/contracts and a broker, for example.</span>
+<span style="color: #008000"> */</span>
+<span style="color: #AF00DB">export</span><span style="color: #000000"> </span><span style="color: #0000FF">type</span><span style="color: #000000"> </span><span style="color: #267F99">Resources</span><span style="color: #000000"> = {</span>
+<span style="color: #000000">  </span><span style="color: #001080">local</span><span style="color: #000000">?: {</span>
+<span style="color: #000000">    </span><span style="color: #008000">/**</span>
+<span style="color: #008000">     * Where are you storing local contracts? These should be stored in an array of objects, all collected in a single file.</span>
+<span style="color: #008000">     * </span><span style="color: #0000FF">@example</span><span style="color: #008000"> &quot;./contracts/contracts.json&quot;</span>
+<span style="color: #008000">     */</span>
+<span style="color: #000000">    </span><span style="color: #001080">contractsPath</span><span style="color: #000000">?: </span><span style="color: #267F99">string</span><span style="color: #000000">;</span>
+<span style="color: #000000">    </span><span style="color: #008000">/**</span>
+<span style="color: #008000">     * Where are you storing local tests? These should be stored in an array of objects, all collected in a single file.</span>
+<span style="color: #008000">     * </span><span style="color: #0000FF">@example</span><span style="color: #008000"> &quot;./tests/tests.json&quot;</span>
+<span style="color: #008000">     */</span>
+<span style="color: #000000">    </span><span style="color: #001080">testsPath</span><span style="color: #000000">?: </span><span style="color: #267F99">string</span><span style="color: #000000">;</span>
+<span style="color: #000000">  };</span>
+<span style="color: #000000">  </span><span style="color: #001080">remote</span><span style="color: #000000">?: {</span>
+<span style="color: #000000">    </span><span style="color: #008000">/**</span>
+<span style="color: #008000">     * Where is the broker located?</span>
+<span style="color: #008000">     * </span><span style="color: #0000FF">@example</span><span style="color: #008000"> &quot;https://my-broker-service.com/api/&quot;</span>
+<span style="color: #008000">     */</span>
+<span style="color: #000000">    </span><span style="color: #001080">brokerEndpoint</span><span style="color: #000000">?: </span><span style="color: #267F99">string</span><span style="color: #000000">;</span>
+<span style="color: #000000">  };</span>
+<span style="color: #000000">};</span>
+
+<span style="color: #008000">/**</span>
+<span style="color: #008000"> * Publishing setup.</span>
+<span style="color: #008000"> */</span>
+<span style="color: #0000FF">type</span><span style="color: #000000"> </span><span style="color: #267F99">Publishing</span><span style="color: #000000"> = {</span>
+<span style="color: #000000">  </span><span style="color: #008000">/**</span>
+<span style="color: #008000">   * Should we publish any contracts we store locally?</span>
+<span style="color: #008000">   */</span>
+<span style="color: #000000">  </span><span style="color: #001080">publishLocalContracts</span><span style="color: #000000">: </span><span style="color: #267F99">boolean</span><span style="color: #000000">;</span>
+<span style="color: #000000">  </span><span style="color: #008000">/**</span>
+<span style="color: #008000">   * Should we publish any tests we store locally?</span>
+<span style="color: #008000">   */</span>
+<span style="color: #000000">  </span><span style="color: #001080">publishLocalTests</span><span style="color: #000000">: </span><span style="color: #267F99">boolean</span><span style="color: #000000">;</span>
+<span style="color: #000000">};</span>
+</code></pre>
+				<a href="#demo-testing-a-simple-contract" id="demo-testing-a-simple-contract" style="color: inherit; text-decoration: none;">
+					<h2>Demo: Testing a simple contract</h2>
 				</a>
 				<p>TripleCheck CLI allows you to run tests by verifying <a href="https://json-schema.org">JSON Schemas</a> and/or plain objects that represent contracts against test objects.</p>
 				<p>An example contract (plain object style) could be:</p>
@@ -168,8 +373,8 @@
 					<h3>When does it make sense to skip the broker?</h3>
 				</a>
 				<p>If you only want to do basic one-way testing (maybe lightweight integration testing), or anything where you are not concerned of a distributed network of functions and APIs calling each other. But then maybe contract testing just isn&#39;t something you should be too concerned about anyway?</p>
-				<a href="#how-do-i-get-started-with-my-own-broker" id="how-do-i-get-started-with-my-own-broker" style="color: inherit; text-decoration: none;">
-					<h3>How do I get started with my own broker?</h3>
+				<a href="#what-is-the-fastest-way-to-get-started-with-the-broker" id="what-is-the-fastest-way-to-get-started-with-the-broker" style="color: inherit; text-decoration: none;">
+					<h3>What is the fastest way to get started with the broker?</h3>
 				</a>
 				<p>There are several broker implementations that you can use right away or as the basis of your own starter kit. The current list is:</p>
 				<ul>
@@ -194,69 +399,63 @@
 					<li><strong>Relations</strong>: There are two types of relations—<em>dependencies</em> (what services a given service depends on) and <em>dependents</em> (what services depend on a given service). Relations allow us to keep up-to-date on whether our work on a given service will break other services.</li>
 				</ul>
 				<a href="#how-relations-work" id="how-relations-work" style="color: inherit; text-decoration: none;">
-					<h2>How relations work</h2>
+					<h3>How relations work</h3>
 				</a>
 				<p>A visual representation:</p>
 				<p><img src="readme/relations.png" alt="How relations work, graphically"></p>
 				<p>And how they would look if you call the broker:</p>
 				<p><img src="readme/relations-lists.png" alt="How relations work, listed"></p>
 				<p>Certainly there can be services that have no dependencies or dependents, or any combination of those.</p>
-				<a href="#what-about-schemas-for-graphql-services-and-apis" id="what-about-schemas-for-graphql-services-and-apis" style="color: inherit; text-decoration: none;">
-					<h2>What about schemas for GraphQL services and APIs?</h2>
-				</a>
-				<p>There&#39;s a few aspects to this. With GraphQL you do get pretty good validation and typing on the service level but not necessarily on the actual managed API.</p>
-				<p>At least I am inclined to think that if you are running a managed API (such as AWS/GCP API Gateway) you will want to have schema validation on it. If you already have that, and are running GraphQL, then that schema should be ready (or nearly ready) to use as a contract with TripleCheck—OpenAPI schemas are after all very similar to JSON Schema. This has worked fine for me with AWS API Gateway, for example.</p>
-				<p>If you want to convert a GraphQL schema you can use a package like <a href="https://www.npmjs.com/package/graphql-2-json-schema">graphql-2-json-schema</a>. You may want to take a look at my own package <a href="https://www.npmjs.com/package/">TODO ADD HERE</a> that provides you that functionality pre-baked in an API that you can call. Frankly I&#39;ve had mixed success, but feel free to try it and do a pull request if you can improve it (either the original base package or my API variant of it).</p>
-				<a href="#workflow" id="workflow" style="color: inherit; text-decoration: none;">
-					<h3>Workflow</h3>
-				</a>
-				<p>Contracts should be &quot;owned&quot; by the respective services. The individual service is primarily responsible for creating, updating and publishing their contract.</p>
-				<p>Tests can be written by anyone who has a dependency toward a given service.</p>
-				<p>Send back data, having resolved dependencies, given that someone has already published contracts and tests (and that dependencies / dependents have been calculated) you&#39;ll get all related data back.</p>
-				<ul>
-					<li><strong>You get back data for your service</strong>: Ensure functionality of what others need of you</li>
-					<li><strong>You get back data for services you depend on</strong>: Ensure functionality of what you need of others</li>
-				</ul>
 				<a href="#development-flow" id="development-flow" style="color: inherit; text-decoration: none;">
 					<h2>Development flow</h2>
 				</a>
-				<p>The approach with TripleCheck may be more naive than with Pact. In TripleCheck, there is no forced two-way verification, so any change you make will not start any other processes. It&#39;s really just like a lightweight mocked integration test.</p>
-				<p>Below I will list two typical cases. Of course a system/service/app/API can have <em>both</em> dependents and dependencies.</p>
+				<p>Contracts should be &quot;owned&quot; by the respective services. The individual service is primarily responsible for creating, updating and publishing their contract.</p>
+				<p>Tests can be written by anyone who has a dependency toward a given service.</p>
 				<a href="#one-contract-per-service" id="one-contract-per-service" style="color: inherit; text-decoration: none;">
 					<h3>One contract per service</h3>
 				</a>
 				<p>Each service should abide by one contract. This contract may have multiple versions.</p>
-				<a href="#one-local-test-file" id="one-local-test-file" style="color: inherit; text-decoration: none;">
-					<h3>One local test file</h3>
+				<a href="#one-local-test-file-and-one-local-contracts-file" id="one-local-test-file-and-one-local-contracts-file" style="color: inherit; text-decoration: none;">
+					<h3>One local test file and one local contracts file</h3>
 				</a>
-				<p>All tests are collected in a single file. This can contain tests for any number of services and versions.</p>
+				<p>Note: This recommendation stands, unless you only use remote data.</p>
+				<p>All tests are collected in a single file. Same goes for the contracts. These can, respectively, contain any number of services and versions.</p>
 				<a href="#use-the-remote-collections-of-tests-and-contracts" id="use-the-remote-collections-of-tests-and-contracts" style="color: inherit; text-decoration: none;">
 					<h3>Use the remote collections of tests and contracts</h3>
 				</a>
 				<p>Make sure to publish collections to the remote data storage. Only keep locally the minimum number of things you need. For a typical provider it would be your own service (provider) contract and your tests.</p>
-				<p>Use <code>testScope</code> and <code>excludeScope</code> in the configuration to decide what you actually need to test.</p>
-				<a href="#consumer-updates-their-application-that-depends-on-an-api" id="consumer-updates-their-application-that-depends-on-an-api" style="color: inherit; text-decoration: none;">
-					<h3>Consumer updates their application that depends on an API</h3>
+				<p>Use <code>tests.include</code> in the configuration to decide what you actually need to test.</p>
+				<a href="#dependent-services-will-be-tested-by-default" id="dependent-services-will-be-tested-by-default" style="color: inherit; text-decoration: none;">
+					<h3>Dependent services will be tested by default</h3>
 				</a>
-				<p>TODO.</p>
-				<a href="#provider-updates-their-api-that-has-several-applications-depending-on-it" id="provider-updates-their-api-that-has-several-applications-depending-on-it" style="color: inherit; text-decoration: none;">
-					<h3>Provider updates their API that has several applications depending on it</h3>
+				<p>If a service X is dependent on you, those tests will be run automatically as well.</p>
+				<p>This can be skipped by setting <code>tests.skipIncludingDependents</code> to <code>true</code>.</p>
+				<a href="#how-do-i-update-or-quotunpublishquot-tests-andor-contracts" id="how-do-i-update-or-quotunpublishquot-tests-andor-contracts" style="color: inherit; text-decoration: none;">
+					<h3>How do I update or &quot;unpublish&quot; tests and/or contracts?</h3>
 				</a>
-				<p>TODO.</p>
-				<a href="#sync-schemas-from-aws-eventbridge-and-google-cloud-platform-pubsub" id="sync-schemas-from-aws-eventbridge-and-google-cloud-platform-pubsub" style="color: inherit; text-decoration: none;">
-					<h2>Sync schemas from AWS EventBridge and Google Cloud Platform Pub/Sub</h2>
+				<p>Any updates will replace the pre-existing data (being &quot;idempotent&quot;).</p>
+				<p>Deleting tests/contracts is currently something you have to do manually by calling the broker API.</p>
+				<a href="#what-about-schemas-for-graphql-services-and-apis" id="what-about-schemas-for-graphql-services-and-apis" style="color: inherit; text-decoration: none;">
+					<h3>What about schemas for GraphQL services and APIs?</h3>
 				</a>
-				<p>Add these these to your <code>package.json</code> scripts:</p>
-				<pre><code class="language-json"><span style="color: #A31515">&quot;sync:aws&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;sh node_modules/triplecheck-cli/generate-schemas-from-aws.sh your-registry-name&quot;</span><span style="color: #000000">,</span>
-<span style="color: #A31515">&quot;sync:gcp&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;sh node_modules/triplecheck-cli/generate-schemas-from-gcp.sh&quot;</span><span style="color: #000000">,</span>
-<span style="color: #A31515">&quot;merge-schemas&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;sh node_modules/triplecheck-cli/merge-schemas.sh existing-contracts-file.json generated-contracts-folder&quot;</span><span style="color: #000000">,</span>
+				<p>There&#39;s a few aspects to this. With GraphQL you do get pretty good validation and typing on the service level but not necessarily on the actual managed API.</p>
+				<p>At least I am inclined to think that if you are running a managed API (such as AWS/GCP API Gateway) you will want to have schema validation on it. If you already have that, and are running GraphQL, then that schema should be ready (or nearly ready) to use as a contract with TripleCheck—OpenAPI schemas are after all very similar to JSON Schema. This has worked fine for me with AWS API Gateway, for example.</p>
+				<p>If you want to convert a GraphQL schema you can use a package like <a href="https://www.npmjs.com/package/graphql-2-json-schema">graphql-2-json-schema</a>. You may also want to take a look at my own API-oriented solution <a href="https://github.com/mikaelvesavuori/convert-gql-to-json">convert-gql-to-json</a> that uses that same package. Frankly I&#39;ve had mixed success, but feel free to try it and do a pull request if you can improve it (either the original base package or my API variant of it).</p>
+				<a href="#syncing-schemas-from-aws-eventbridge-and-google-cloud-platform-pubsub" id="syncing-schemas-from-aws-eventbridge-and-google-cloud-platform-pubsub" style="color: inherit; text-decoration: none;">
+					<h2>Syncing schemas from AWS EventBridge and Google Cloud Platform Pub/Sub</h2>
+				</a>
+				<p>Add these these to your <code>package.json</code> scripts block:</p>
+				<pre><code class="language-json"><span style="color: #A31515">&quot;sync:aws&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;sh ./node_modules/triplecheck-cli/generate-schemas-from-aws.sh your-registry-name&quot;</span><span style="color: #000000">,</span>
+<span style="color: #A31515">&quot;sync:gcp&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;sh ./node_modules/triplecheck-cli/generate-schemas-from-gcp.sh&quot;</span><span style="color: #000000">,</span>
+<span style="color: #A31515">&quot;merge-schemas&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;sh ./node_modules/triplecheck-cli/merge-schemas.sh existing-contracts-file.json generated-contracts-folder&quot;</span>
 </code></pre>
-				<p>Don&#39;t forget to change your registry name if you want to use the AWS option.</p>
-				<p>Note that the shell scripts have no logic and will not take any options from your TripleCheck configuration. Feel free to copy and modify these shell scripts if you want to extend them with more functionality.</p>
+				<p>Don&#39;t forget to change <code>your-registry-name</code> if you want to use the AWS option.</p>
+				<p>The <code>merge-schemas</code> command also requires your own values, so change that too if you are going to use it.</p>
+				<p>Note that the shell scripts are entirely separate from TripleCheck, and therefore won&#39;t take any options from your configuration file. Feel free to copy and modify these shell scripts if you want to extend them with more functionality.</p>
 				<a href="#aws-eventbridge-example" id="aws-eventbridge-example" style="color: inherit; text-decoration: none;">
 					<h3>AWS EventBridge example</h3>
 				</a>
-				<p>Save the below content in a schema named <code>demo-schema</code>:</p>
+				<p>Save the below content in an EventBridge schema named <code>demo-schema</code>:</p>
 				<pre><code class="language-json"><span style="color: #000000">{</span>
 <span style="color: #000000">  </span><span style="color: #0451A5">&quot;$schema&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;http://json-schema.org/draft-04/schema#&quot;</span><span style="color: #000000">,</span>
 <span style="color: #000000">  </span><span style="color: #0451A5">&quot;definitions&quot;</span><span style="color: #000000">: {</span>
@@ -287,7 +486,7 @@
 <span style="color: #000000">  }</span>
 <span style="color: #000000">}</span>
 </code></pre>
-				<p>The above will generate the following file <code>generated-schemas-aws/demo-schema@1.0.0.contract.json</code>:</p>
+				<p>The above when run with the AWS sync script will generate the following file <code>generated-schemas-aws/demo-schema@1.0.0.contract.json</code>:</p>
 				<pre><code class="language-json"><span style="color: #000000">[</span>
 <span style="color: #000000">  {</span>
 <span style="color: #000000">    </span><span style="color: #0451A5">&quot;demo-schema&quot;</span><span style="color: #000000">: {</span>
@@ -343,7 +542,7 @@
 <span style="color: #000000">  ]</span>
 <span style="color: #000000">}</span>
 </code></pre>
-				<p>The above will generate the following file <code>generated-schemas-gcp/sensor-data@1.0.0.contract.json</code>:</p>
+				<p>The above when run with the GCP sync script will generate the following file <code>generated-schemas-gcp/sensor-data@1.0.0.contract.json</code>:</p>
 				<pre><code class="language-json"><span style="color: #000000">[</span>
 <span style="color: #000000">  {</span>
 <span style="color: #000000">    </span><span style="color: #0451A5">&quot;sensor-data&quot;</span><span style="color: #000000">: {</span>
@@ -362,6 +561,14 @@
 <span style="color: #000000">  }</span>
 <span style="color: #000000">]</span>
 </code></pre>
+				<a href="#merge-scripts-example" id="merge-scripts-example" style="color: inherit; text-decoration: none;">
+					<h3>Merge scripts example</h3>
+				</a>
+				<p>After generating a contract from your cloud provider&#39;s schema service, it&#39;s time to put it into your local contracts file.</p>
+				<p>Given that you ran an AWS sync, that your schemas folder is <code>generated-schemas-aws</code>, and that your contracts are located at <code>contracts.json</code>, then running the full merge command would look like:</p>
+				<pre><code><span style="color: #001080">sh</span><span style="color: #000000"> ./</span><span style="color: #001080">node_modules</span><span style="color: #000000">/</span><span style="color: #001080">triplecheck</span><span style="color: #000000">-</span><span style="color: #001080">cli</span><span style="color: #000000">/</span><span style="color: #001080">merge</span><span style="color: #000000">-</span><span style="color: #001080">schemas</span><span style="color: #000000">.</span><span style="color: #001080">sh</span><span style="color: #000000"> </span><span style="color: #001080">contracts</span><span style="color: #000000">.</span><span style="color: #001080">json</span><span style="color: #000000"> </span><span style="color: #001080">generated</span><span style="color: #000000">-</span><span style="color: #001080">schemas</span><span style="color: #000000">-</span><span style="color: #001080">aws</span>
+</code></pre>
+				<p>The generated output would simply be a merged JSON file. Now, if you were to run tests, then those contracts would start to be used (pending correct configuration and a set of tests for the services).</p>
 				<a href="#references" id="references" style="color: inherit; text-decoration: none;">
 					<h2>References</h2>
 				</a>
