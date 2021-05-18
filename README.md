@@ -37,6 +37,18 @@ The three key features of the TripleCheck eco-system are:
 2. Broker ("server") that you can publish contracts and tests to, and acts as an (optional) lightweight API to get a **global collection of all existing tests and contracts**;
 3. A set of practically turnkey solutions that are ready-to-go for common modern toolchains/architectures.
 
+### How relations work
+
+A visual representation:
+
+![How relations work, graphically](readme/relations.png)
+
+And how they would look like if you'd call the broker:
+
+![How relations work, listed](readme/relations-lists.png)
+
+Certainly there can be services that have no dependencies or dependents, or any combination of those.
+
 ## Design goals
 
 - Ease over rich functionality, requires minimal effort to learn and operate
@@ -62,7 +74,7 @@ Run `npm install triplecheck-cli -D` or `yarn add triplecheck-cli -D`.
 
 ## Starting TripleCheck
 
-Run `npx triplecheck-cli`.
+Run `npx triplecheck-cli` for local use or `triplecheck` for global use.
 
 ## Configuration
 
@@ -354,18 +366,6 @@ Read more at the respective links or over at [triplecheck-broker](https://github
 - **Contract**: A document/file that shows the shape of your event/message/API in the form of an object or JSON Schema.
 - **Publish a contract**: When you make a local contract public (adding/updating) into the shared data source (i.e. broker).
 - **Relations**: There are two types of relations—_dependencies_ (what services a given service depends on) and _dependents_ (what services depend on a given service). Relations allow us to keep up-to-date on whether our work on a given service will break other services.
-
-### How relations work
-
-A visual representation:
-
-![How relations work, graphically](readme/relations.png)
-
-And how they would look like if you'd call the broker:
-
-![How relations work, listed](readme/relations-lists.png)
-
-Certainly there can be services that have no dependencies or dependents, or any combination of those.
 
 ## Development flow
 

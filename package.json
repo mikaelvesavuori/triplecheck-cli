@@ -1,8 +1,8 @@
 {
   "name": "triplecheck-cli",
-  "main": "build/index.js",
-  "version": "0.0.12",
+  "version": "1.0.0",
   "description": "The easiest and fastest way to do contract testing.",
+  "main": "build/index.js",
   "keywords": [
     "triplecheck",
     "contract-testing",
@@ -61,6 +61,6 @@
     "ts-node": "^9.1.1",
     "tslib": "^2.2.0",
     "typedoc": "^0.20.36",
-    "typescript": "^4.2.4"
+    "typescript": "^4"
   }
 }
