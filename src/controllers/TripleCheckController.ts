@@ -9,5 +9,5 @@ export async function TripleCheckController(config: Config) {
 
   if (process.env.NODE_ENV === 'test') return tripleCheck;
 
-  //await tripleCheck.publish();
+  await tripleCheck.publish();
 }

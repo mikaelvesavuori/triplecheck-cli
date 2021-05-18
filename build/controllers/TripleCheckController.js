@@ -19,6 +19,7 @@ function TripleCheckController(config) {
             yield tripleCheck.test();
         if (process.env.NODE_ENV === 'test')
             return tripleCheck;
+        yield tripleCheck.publish();
     });
 }
 exports.TripleCheckController = TripleCheckController;
