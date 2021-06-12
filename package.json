@@ -48,7 +48,7 @@
     "@types/urijs": "^1.19.15",
     "arkit": "^1.6.4",
     "babel-loader": "^8.2.2",
-    "eslint": "^7.26.0",
+    "eslint": "^7.27.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^3.4.0",
     "husky": "^6.0.0",
