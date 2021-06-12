@@ -44,7 +44,7 @@
     "@types/jest": "^26.0.23",
     "@types/node": "^15.3.0",
     "@types/node-fetch": "^2.5.10",
-    "@types/readable-stream": "^2.3.9",
+    "@types/readable-stream": "^2.3.10",
     "@types/urijs": "^1.19.15",
     "arkit": "^1.6.4",
     "babel-loader": "^8.2.2",
