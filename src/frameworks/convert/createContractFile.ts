@@ -8,7 +8,7 @@ export async function createContractFile(contract: any, fullFilePath: string): P
   try {
     const quicktypeSchema: any = await convertToQuicktype(JSON.stringify(contract));
     await writeContractToDisk(fullFilePath, quicktypeSchema);
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
   }
 }

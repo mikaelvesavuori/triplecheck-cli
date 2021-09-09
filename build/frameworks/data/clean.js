@@ -8,16 +8,25 @@ function clean(data, include) {
         const obj = {};
         data.forEach((item) => {
             const service = Object.keys(item)[0];
-            if (service === includeService.split('@')[0]) {
+            if (service === includeService || service === includeService.split('@')[0]) {
                 const versions = Object.keys(item[service]);
                 versions.forEach((version) => {
                     const currentServiceVersion = `${service}@${version}`;
-                    if (includeService === currentServiceVersion &&
-                        !included.includes(currentServiceVersion)) {
-                        if (!cleanedData[service])
-                            cleanedData[service] = {};
-                        cleanedData[service][version] = item[service][version];
-                        included.push(currentServiceVersion);
+                    if (!included.includes(currentServiceVersion)) {
+                        const includeServiceVersion = includeService.includes('@')
+                            ? includeService.split('@')[1].replace('^', '')
+                            : '';
+                        if (!version.startsWith(includeServiceVersion))
+                            return;
+                        const requestedVersion = includeService.includes('^')
+                            ? includeService.split('^')[1]
+                            : version;
+                        if (version >= requestedVersion) {
+                            if (!cleanedData[service])
+                                cleanedData[service] = {};
+                            cleanedData[service][version] = item[service][version];
+                            included.push(currentServiceVersion);
+                        }
                     }
                 });
             }

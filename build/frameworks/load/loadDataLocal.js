@@ -24,7 +24,7 @@ const fs = __importStar(require("fs"));
 const messages_1 = require("../../frameworks/text/messages");
 function loadDataLocal(filePath) {
     const path = `${process.cwd()}/${filePath}`;
-    console.log(messages_1.msgLoadingLocal(path));
+    console.log((0, messages_1.msgLoadingLocal)(path));
     let file = fs.readFileSync(path, 'utf8');
     file = isJsonString(file) ? JSON.parse(file) : file;
     if (!file)

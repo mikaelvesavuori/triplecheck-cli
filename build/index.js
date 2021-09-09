@@ -26,15 +26,15 @@ function main() {
         try {
             const [, , ...CLI_ARGS] = process.argv;
             if (((_a = CLI_ARGS[0]) === null || _a === void 0 ? void 0 : _a.toLowerCase()) === 'init') {
-                initConfig_1.initConfig(baseConfig_json_1.default, CONFIG_FILEPATH);
+                (0, initConfig_1.initConfig)(baseConfig_json_1.default, CONFIG_FILEPATH);
                 process.exit(0);
             }
-            if (!checkIfExists_1.checkIfExists(CONFIG_FILEPATH)) {
-                consoleOutput_1.consoleOutput('ConfigNotPresent');
+            if (!(0, checkIfExists_1.checkIfExists)(CONFIG_FILEPATH)) {
+                (0, consoleOutput_1.consoleOutput)('ConfigNotPresent');
                 return;
             }
-            const config = yield loadDataLocal_1.loadDataLocal(CONFIG_FILEPATH);
-            TripleCheckController_1.TripleCheckController(config);
+            const config = yield (0, loadDataLocal_1.loadDataLocal)(CONFIG_FILEPATH);
+            (0, TripleCheckController_1.TripleCheckController)(config);
         }
         catch (error) {
             console.error(error);

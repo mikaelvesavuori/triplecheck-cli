@@ -28,7 +28,7 @@ export function initConfig(file: any, configPath: string): boolean {
           // @ts-ignore
           fileContents = fileContents.replace(`"__VERSION__"`, `"${packageJson.version}"`);
         }
-      } catch (error) {}
+      } catch (error: any) {}
     })();
 
     write(configPath, fileContents);

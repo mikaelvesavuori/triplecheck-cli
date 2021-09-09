@@ -11,7 +11,7 @@ export function getContract(providerContracts: any, contractName: string, versio
     )[0];
     if (!contract) return;
     return contract[contractName][version];
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
   }
 }

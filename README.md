@@ -1,6 +1,6 @@
 # triplecheck-cli
 
-![TripleCheck](readme/triplecheck-cli.png)
+![TripleCheck](images/triplecheck-cli.png)
 
 ![Build Status](https://github.com/mikaelvesavuori/triplecheck-cli/workflows/main/badge.svg)
 
@@ -41,11 +41,11 @@ The three key features of the TripleCheck eco-system are:
 
 A visual representation:
 
-![How relations work, graphically](readme/relations.png)
+![How relations work, graphically](images/relations.png)
 
 And how they would look like if you'd call the broker:
 
-![How relations work, listed](readme/relations-lists.png)
+![How relations work, listed](images/relations-lists.png)
 
 Certainly there can be services that have no dependencies or dependents, or any combination of those.
 
@@ -387,7 +387,12 @@ All tests are collected in a single file. Same goes for the contracts. These can
 
 Make sure to publish collections to the remote data storage. Only keep locally the minimum number of things you need. For a typical provider it would be your own service (provider) contract and your tests.
 
-Use `tests.include` in the configuration to decide what you actually need to test.
+Use `tests.include` in the configuration to decide what you actually need to test. You can match in several ways:
+
+- Direct references, like `my-service@1.2.3`
+- All versions of a service, like `my-service`
+- Loose matches, like `my-service@1.0` (will match all starting with `1.0`)
+- Minimum matches, like `my-service@^1.1.2` (will match `1.1.2` and over)
 
 ### Dependent services will be tested by default
 

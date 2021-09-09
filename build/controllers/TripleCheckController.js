@@ -13,7 +13,7 @@ exports.TripleCheckController = void 0;
 const TripleCheck_1 = require("../entities/TripleCheck");
 function TripleCheckController(config) {
     return __awaiter(this, void 0, void 0, function* () {
-        const tripleCheck = yield TripleCheck_1.createNewTripleCheck(config);
+        const tripleCheck = yield (0, TripleCheck_1.createNewTripleCheck)(config);
         const { skipTestingLocalResources, skipTestingRemoteResources } = tripleCheck.config.tests;
         if (!(skipTestingLocalResources && skipTestingRemoteResources))
             yield tripleCheck.test();

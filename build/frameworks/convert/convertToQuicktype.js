@@ -24,7 +24,7 @@ function convertToQuicktype(schema) {
             const jsonInput = yield generateJsonInput(targetLanguage, name, schema);
             inputData.addInput(jsonInput);
         }
-        return quicktype_core_1.quicktype({
+        return (0, quicktype_core_1.quicktype)({
             inputData,
             lang: targetLanguage
         });
@@ -37,7 +37,7 @@ const generateJsonSchemaInput = (name, schema) => __awaiter(void 0, void 0, void
     return schemaInput;
 });
 const generateJsonInput = (targetLanguage, name, schema) => __awaiter(void 0, void 0, void 0, function* () {
-    const jsonInput = quicktype_core_1.jsonInputForTargetLanguage(targetLanguage);
+    const jsonInput = (0, quicktype_core_1.jsonInputForTargetLanguage)(targetLanguage);
     yield jsonInput.addSource({
         name,
         samples: [schema]

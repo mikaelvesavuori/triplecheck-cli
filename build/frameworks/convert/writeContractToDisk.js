@@ -14,7 +14,7 @@ const fs_1 = require("fs");
 function writeContractToDisk(contractFilePath, quicktypeSchema) {
     return __awaiter(this, void 0, void 0, function* () {
         return new Promise((resolve, reject) => {
-            const writeStream = fs_1.createWriteStream(contractFilePath);
+            const writeStream = (0, fs_1.createWriteStream)(contractFilePath);
             quicktypeSchema.lines.forEach((value) => writeStream.write(`${value}\n`));
             writeStream.on('finish', () => resolve('Done'));
             writeStream.on('error', () => reject());

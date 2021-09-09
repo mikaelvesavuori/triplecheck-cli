@@ -15,8 +15,8 @@ const writeContractToDisk_1 = require("./writeContractToDisk");
 function createContractFile(contract, fullFilePath) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const quicktypeSchema = yield convertToQuicktype_1.convertToQuicktype(JSON.stringify(contract));
-            yield writeContractToDisk_1.writeContractToDisk(fullFilePath, quicktypeSchema);
+            const quicktypeSchema = yield (0, convertToQuicktype_1.convertToQuicktype)(JSON.stringify(contract));
+            yield (0, writeContractToDisk_1.writeContractToDisk)(fullFilePath, quicktypeSchema);
         }
         catch (error) {
             console.error(error);

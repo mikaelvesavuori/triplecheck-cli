@@ -88,7 +88,7 @@ class TripleCheck {
                         throw new Error(messages_1.errorMissingTestsContracts);
                     this.updateLoadedResources(loadedData.consumerTests, loadedData.providerContracts);
                 }
-                if (!validateConfig_1.validateConfig(this.config))
+                if (!(0, validateConfig_1.validateConfig)(this.config))
                     process.exit(1);
             }
             catch (error) {
@@ -118,20 +118,20 @@ class TripleCheck {
                 let consumerTests = {};
                 let providerContracts = {};
                 if (!skipTestingLocalResources && localTests) {
-                    const data = loadDataLocal_1.loadDataLocal(localTests);
-                    consumerTests.local = clean_1.clean(data, include || []);
+                    const data = (0, loadDataLocal_1.loadDataLocal)(localTests);
+                    consumerTests.local = (0, clean_1.clean)(data, include || []);
                 }
                 if (!skipTestingRemoteResources && brokerEndpoint) {
-                    const fetchedTests = yield loadDataRemote_1.loadDataRemote('tests', brokerEndpoint, include);
+                    const fetchedTests = yield (0, loadDataRemote_1.loadDataRemote)('tests', brokerEndpoint, include);
                     if (fetchedTests)
                         consumerTests.remote = fetchedTests;
                 }
                 if (!skipTestingLocalResources && localContracts) {
-                    const data = loadDataLocal_1.loadDataLocal(localContracts);
-                    providerContracts.local = clean_1.clean(data, include || []);
+                    const data = (0, loadDataLocal_1.loadDataLocal)(localContracts);
+                    providerContracts.local = (0, clean_1.clean)(data, include || []);
                 }
                 if (!skipTestingRemoteResources && brokerEndpoint) {
-                    const fetchedContracts = yield loadDataRemote_1.loadDataRemote('contracts', brokerEndpoint, include);
+                    const fetchedContracts = yield (0, loadDataRemote_1.loadDataRemote)('contracts', brokerEndpoint, include);
                     if (fetchedContracts)
                         providerContracts.remote = fetchedContracts;
                 }
@@ -141,14 +141,14 @@ class TripleCheck {
                 };
             }
             catch (error) {
-                console.error(messages_1.errorLoadingData(error.message));
+                console.error((0, messages_1.errorLoadingData)(error.message));
                 return null;
             }
         });
     }
     getDependents(brokerEndpoint, dependencies) {
         return __awaiter(this, void 0, void 0, function* () {
-            return loadDataRemote_1.loadDataRemote('dependents', brokerEndpoint, dependencies);
+            return (0, loadDataRemote_1.loadDataRemote)('dependents', brokerEndpoint, dependencies);
         });
     }
     getCleanedData(onlyLocalData) {
@@ -169,19 +169,19 @@ class TripleCheck {
             }
             const mergedTests = (() => {
                 if (skipTestingLocalResources)
-                    return mergeDatasets_1.mergeDatasets([], consumerTests.remote);
+                    return (0, mergeDatasets_1.mergeDatasets)([], consumerTests.remote);
                 else if (skipTestingRemoteResources)
-                    return mergeDatasets_1.mergeDatasets(consumerTests.local, []);
+                    return (0, mergeDatasets_1.mergeDatasets)(consumerTests.local, []);
                 else
-                    return mergeDatasets_1.mergeDatasets(consumerTests.local, consumerTests.remote);
+                    return (0, mergeDatasets_1.mergeDatasets)(consumerTests.local, consumerTests.remote);
             })();
             const mergedContracts = (() => {
                 if (skipTestingLocalResources)
-                    return mergeDatasets_1.mergeDatasets([], providerContracts.remote);
+                    return (0, mergeDatasets_1.mergeDatasets)([], providerContracts.remote);
                 else if (skipTestingRemoteResources)
-                    return mergeDatasets_1.mergeDatasets(providerContracts.local, []);
+                    return (0, mergeDatasets_1.mergeDatasets)(providerContracts.local, []);
                 else
-                    return mergeDatasets_1.mergeDatasets(providerContracts.local, providerContracts.remote);
+                    return (0, mergeDatasets_1.mergeDatasets)(providerContracts.local, providerContracts.remote);
             })();
             return {
                 tests: mergedTests,
@@ -195,10 +195,10 @@ class TripleCheck {
                 const { contracts, tests } = yield this.getCleanedData();
                 let failedTestCount = 0;
                 if (contracts.length === 0 && tests.length === 0) {
-                    consoleOutput_1.consoleOutput('ContractsAndTestsMissing');
+                    (0, consoleOutput_1.consoleOutput)('ContractsAndTestsMissing');
                     return;
                 }
-                consoleOutput_1.consoleOutput('StartTests');
+                (0, consoleOutput_1.consoleOutput)('StartTests');
                 const _consumerTests = tests.map((test) => __awaiter(this, void 0, void 0, function* () {
                     const serviceName = Object.keys(test)[0];
                     const versions = Object.keys(test[serviceName]);
@@ -206,7 +206,7 @@ class TripleCheck {
                         const serviceTests = test[serviceName][version];
                         if (!serviceTests)
                             throw new Error(messages_1.errorMissingTestsForService);
-                        console.log(messages_1.msgTestingService(serviceName, version));
+                        console.log((0, messages_1.msgTestingService)(serviceName, version));
                         const generated = yield this.generateContractFile(serviceName, version, contracts);
                         if (!generated)
                             return;
@@ -229,14 +229,14 @@ class TripleCheck {
                 }));
                 yield Promise.all(_consumerTests);
                 if (failedTestCount > 0) {
-                    consoleOutput_1.consoleOutput('TestsFailed', failedTestCount);
+                    (0, consoleOutput_1.consoleOutput)('TestsFailed', failedTestCount);
                     process.exit(1);
                 }
-                consoleOutput_1.consoleOutput('TestsFinished');
+                (0, consoleOutput_1.consoleOutput)('TestsFinished');
                 process.exit(0);
             }
             catch (error) {
-                console.error(messages_1.errorWhenTesting(error.message));
+                console.error((0, messages_1.errorWhenTesting)(error.message));
             }
         });
     }
@@ -245,11 +245,11 @@ class TripleCheck {
             const { serviceName, version, consumerName } = callInput;
             try {
                 yield this.callStub(callInput);
-                console.log(messages_1.msgTestPassed(serviceName, version, consumerName));
+                console.log((0, messages_1.msgTestPassed)(serviceName, version, consumerName));
                 return true;
             }
             catch (error) {
-                console.error(messages_1.msgTestFailed(serviceName, version, consumerName, error.message));
+                console.error((0, messages_1.msgTestFailed)(serviceName, version, consumerName, error.message));
                 return false;
             }
         });
@@ -268,13 +268,13 @@ class TripleCheck {
                 console.warn(messages_1.warnMissingContractWhenGeneratingFile);
                 return false;
             }
-            const contract = getContract_1.getContract(contracts, serviceName, version);
+            const contract = (0, getContract_1.getContract)(contracts, serviceName, version);
             if (!contract) {
-                console.warn(messages_1.msgContractFileNotFound(serviceName, version));
+                console.warn((0, messages_1.msgContractFileNotFound)(serviceName, version));
                 return false;
             }
             const FULL_CONTRACT_FILEPATH = `${this.contractFilePrefix}-${serviceName}-${version}.js`;
-            yield createContractFile_1.createContractFile(contract, FULL_CONTRACT_FILEPATH);
+            yield (0, createContractFile_1.createContractFile)(contract, FULL_CONTRACT_FILEPATH);
             return true;
         });
     }
@@ -304,7 +304,7 @@ class TripleCheck {
             };
             if (process.env.NODE_ENV === 'test')
                 process.exit(0);
-            yield node_fetch_1.default(`${brokerEndpoint}/publish`, {
+            yield (0, node_fetch_1.default)(`${brokerEndpoint}/publish`, {
                 method: 'POST',
                 body: JSON.stringify(data)
             })
@@ -312,7 +312,7 @@ class TripleCheck {
                 console.log(messages_1.msgSuccessfullyPublished);
             })
                 .catch((error) => {
-                console.error(messages_1.errorWhenPublishing(error.message));
+                console.error((0, messages_1.errorWhenPublishing)(error.message));
             });
             process.exit(0);
         });

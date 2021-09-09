@@ -17,10 +17,10 @@ const node_fetch_1 = __importDefault(require("node-fetch"));
 const messages_1 = require("../../frameworks/text/messages");
 function loadDataRemote(type, url, include, headers) {
     return __awaiter(this, void 0, void 0, function* () {
-        console.log(messages_1.msgLoadingRemote(url));
+        console.log((0, messages_1.msgLoadingRemote)(url));
         if (include && include.length > 0) {
             const fetchPromises = include.map((service) => __awaiter(this, void 0, void 0, function* () {
-                return node_fetch_1.default(`${url}/${type}?${service}`, { method: 'GET', headers }).then((res) => __awaiter(this, void 0, void 0, function* () { return res.json(); }));
+                return (0, node_fetch_1.default)(`${url}/${type}?${service}`, { method: 'GET', headers }).then((res) => __awaiter(this, void 0, void 0, function* () { return res.json(); }));
             }));
             const resolved = yield Promise.all(fetchPromises);
             if (type === 'dependents')

@@ -28,7 +28,7 @@ async function main() {
 
     const config: any = await loadDataLocal(CONFIG_FILEPATH);
     TripleCheckController(config);
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
   }
 }

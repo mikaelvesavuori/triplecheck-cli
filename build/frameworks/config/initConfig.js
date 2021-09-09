@@ -8,12 +8,12 @@ const messages_1 = require("../text/messages");
 function initConfig(file, configPath) {
     if (!file || !configPath)
         throw new Error('Missing file and/or configPath in initConfig!');
-    const FILE_EXISTS = checkIfExists_1.checkIfExists(configPath);
+    const FILE_EXISTS = (0, checkIfExists_1.checkIfExists)(configPath);
     if (!FILE_EXISTS) {
         let fileContents = JSON.stringify(file, null, ' ');
         (() => {
             try {
-                const packageJson = loadDataLocal_1.loadDataLocal('package.json');
+                const packageJson = (0, loadDataLocal_1.loadDataLocal)('package.json');
                 if (packageJson && packageJson.name && packageJson.version) {
                     fileContents = fileContents.replace(`"__SERVICE__"`, `"${packageJson.name}"`);
                     fileContents = fileContents.replace(`"__VERSION__"`, `"${packageJson.version}"`);
@@ -21,7 +21,7 @@ function initConfig(file, configPath) {
             }
             catch (error) { }
         })();
-        write_1.write(configPath, fileContents);
+        (0, write_1.write)(configPath, fileContents);
         console.log(messages_1.msgJobCompleteInit);
         return true;
     }

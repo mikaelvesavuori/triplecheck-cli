@@ -1,6 +1,6 @@
 {
   "name": "triplecheck-cli",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "The easiest and fastest way to do contract testing.",
   "main": "build/index.js",
   "keywords": [
@@ -16,6 +16,9 @@
     "type": "git",
     "url": "https://github.com/mikaelvesavuori/triplecheck-cli.git"
   },
+  "files": [
+    "build/"
+  ],
   "scripts": {
     "start": "npm run clean && npx ts-node src/index.ts",
     "sync:aws": "sh generate-schemas-from-aws.sh demo-registry",
@@ -36,31 +39,31 @@
     "triplecheck": "build/index.js"
   },
   "dependencies": {
-    "lodash": "^4.17.21",
-    "node-fetch": "^2.6.1",
-    "quicktype-core": "^6.0.70"
+    "lodash": "4",
+    "node-fetch": "2",
+    "quicktype-core": "6"
   },
   "devDependencies": {
-    "@types/jest": "^26.0.23",
-    "@types/node": "^15.3.0",
-    "@types/node-fetch": "^2.5.10",
-    "@types/readable-stream": "^2.3.9",
-    "@types/urijs": "^1.19.15",
-    "arkit": "^1.6.4",
-    "babel-loader": "^8.2.2",
-    "eslint": "^7.26.0",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-prettier": "^3.4.0",
-    "husky": "^6.0.0",
-    "jest": "^26.6.3",
-    "license-compatibility-checker": "^0.3.5",
-    "license-compliance": "^1.2.1",
-    "onchange": "^7.1.0",
-    "prettier": "^2.3.0",
-    "ts-jest": "^26.5.6",
-    "ts-node": "^9.1.1",
-    "tslib": "^2.2.0",
-    "typedoc": "^0.20.36",
-    "typescript": "^4"
+    "@types/jest": "latest",
+    "@types/node": "latest",
+    "@types/node-fetch": "latest",
+    "@types/readable-stream": "latest",
+    "@types/urijs": "latest",
+    "arkit": "1",
+    "babel-loader": "8",
+    "eslint": "7",
+    "eslint-config-prettier": "latest",
+    "eslint-plugin-prettier": "latest",
+    "husky": "7",
+    "jest": "27",
+    "license-compatibility-checker": "latest",
+    "license-compliance": "latest",
+    "onchange": "7",
+    "prettier": "2",
+    "ts-jest": "27",
+    "ts-node": "latest",
+    "tslib": "latest",
+    "typedoc": "latest",
+    "typescript": "4"
   }
 }

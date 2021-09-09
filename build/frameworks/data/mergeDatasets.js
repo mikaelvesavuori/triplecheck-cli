@@ -36,7 +36,7 @@ function mergeDatasets(localData = [], remoteData = []) {
                         const [testName, testData] = Object.entries(test)[0];
                         const IS_TEST_ALREADY_ADDED = listOfAddedTestsForCurrentVersion.includes(testName);
                         if (IS_TEST_ALREADY_ADDED) {
-                            console.log(messages_1.infoSkippingTestBecauseDuplicate(testName));
+                            console.log((0, messages_1.infoSkippingTestBecauseDuplicate)(testName));
                         }
                         else {
                             listOfAddedTestsForCurrentVersion.push(testName);

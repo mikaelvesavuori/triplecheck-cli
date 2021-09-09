@@ -1,3 +1,4 @@
+// @ts-ignore
 import fetch from 'node-fetch';
 
 import { Config, Resources, Tests } from '../contracts/Config';
@@ -102,7 +103,7 @@ export class TripleCheck {
       }
 
       if (!validateConfig(this.config)) process.exit(1);
-    } catch (error) {
+    } catch (error: any) {
       throw new Error(error);
     }
   }
@@ -172,7 +173,7 @@ export class TripleCheck {
         consumerTests,
         providerContracts
       };
-    } catch (error) {
+    } catch (error: any) {
       console.error(errorLoadingData(error.message));
       return null;
     }
@@ -293,7 +294,7 @@ export class TripleCheck {
 
       consoleOutput('TestsFinished');
       process.exit(0);
-    } catch (error) {
+    } catch (error: any) {
       console.error(errorWhenTesting(error.message));
     }
   }
@@ -309,7 +310,7 @@ export class TripleCheck {
       await this.callStub(callInput);
       console.log(msgTestPassed(serviceName, version, consumerName));
       return true;
-    } catch (error) {
+    } catch (error: any) {
       console.error(msgTestFailed(serviceName, version, consumerName, error.message));
       return false;
     }
@@ -391,7 +392,7 @@ export class TripleCheck {
       .then(() => {
         console.log(msgSuccessfullyPublished);
       })
-      .catch((error) => {
+      .catch((error: any) => {
         console.error(errorWhenPublishing(error.message));
       });
 
