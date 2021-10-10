@@ -13,6 +13,7 @@ export const msgContractFileNotFound = (serviceName: string, version: string) =>
 export const msgTestingService = (serviceName: string, version: string) =>
   `Testing ${serviceName}@${version}...`;
 export const msgSuccessfullyPublished = `Successfully published contracts and tests`;
+export const msgErrorWhenPublishing = `Error when publishing`;
 export const msgLoadingLocal = (path: string) => `Loading file from ${path}...`;
 export const msgLoadingRemote = (url: string) => `Loading data from ${url}...`;
 

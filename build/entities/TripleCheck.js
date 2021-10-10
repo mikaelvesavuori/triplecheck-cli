@@ -41,7 +41,6 @@ const loadDataLocal_1 = require("../frameworks/load/loadDataLocal");
 const loadDataRemote_1 = require("../frameworks/load/loadDataRemote");
 const createContractFile_1 = require("../frameworks/convert/createContractFile");
 const consoleOutput_1 = require("../frameworks/text/consoleOutput");
-const mockedLoadedData_1 = require("../frameworks/mock/mockedLoadedData");
 const messages_1 = require("../frameworks/text/messages");
 const createNewTripleCheck = (config) => __awaiter(void 0, void 0, void 0, function* () {
     const tripleCheck = new TripleCheck(config);
@@ -78,16 +77,10 @@ class TripleCheck {
                 }
                 else
                     this.updateTestScopes(include);
-                if (process.env.NODE_ENV === 'test') {
-                    const loadedData = mockedLoadedData_1.mockedLoadedData;
-                    this.updateLoadedResources(loadedData.consumerTests, loadedData.providerContracts);
-                }
-                else {
-                    const loadedData = yield this.loadData(resources, tests);
-                    if (!(loadedData === null || loadedData === void 0 ? void 0 : loadedData.consumerTests) || !(loadedData === null || loadedData === void 0 ? void 0 : loadedData.providerContracts))
-                        throw new Error(messages_1.errorMissingTestsContracts);
-                    this.updateLoadedResources(loadedData.consumerTests, loadedData.providerContracts);
-                }
+                const loadedData = yield this.loadData(resources, tests);
+                if (!(loadedData === null || loadedData === void 0 ? void 0 : loadedData.consumerTests) || !(loadedData === null || loadedData === void 0 ? void 0 : loadedData.providerContracts))
+                    throw new Error(messages_1.errorMissingTestsContracts);
+                this.updateLoadedResources(loadedData.consumerTests, loadedData.providerContracts);
                 if (!(0, validateConfig_1.validateConfig)(this.config))
                     process.exit(1);
             }
@@ -123,7 +116,7 @@ class TripleCheck {
                 }
                 if (!skipTestingRemoteResources && brokerEndpoint) {
                     const fetchedTests = yield (0, loadDataRemote_1.loadDataRemote)('tests', brokerEndpoint, include);
-                    if (fetchedTests)
+                    if (fetchedTests && process.env.NODE_ENV !== 'test')
                         consumerTests.remote = fetchedTests;
                 }
                 if (!skipTestingLocalResources && localContracts) {
@@ -132,7 +125,7 @@ class TripleCheck {
                 }
                 if (!skipTestingRemoteResources && brokerEndpoint) {
                     const fetchedContracts = yield (0, loadDataRemote_1.loadDataRemote)('contracts', brokerEndpoint, include);
-                    if (fetchedContracts)
+                    if (fetchedContracts && process.env.NODE_ENV !== 'test')
                         providerContracts.remote = fetchedContracts;
                 }
                 return {
@@ -233,7 +226,6 @@ class TripleCheck {
                     process.exit(1);
                 }
                 (0, consoleOutput_1.consoleOutput)('TestsFinished');
-                process.exit(0);
             }
             catch (error) {
                 console.error((0, messages_1.errorWhenTesting)(error.message));
@@ -282,8 +274,8 @@ class TripleCheck {
         return __awaiter(this, void 0, void 0, function* () {
             const name = this.serviceName;
             const version = this.serviceVersion;
-            const { resources, publishing } = this.config;
-            const { brokerEndpoint } = resources.remote;
+            const { resources, publishing, dependencies } = this.config;
+            let { brokerEndpoint } = resources.remote;
             if (!brokerEndpoint)
                 throw new Error(messages_1.errorMissingPublishEndpoint);
             const { publishLocalContracts, publishLocalTests } = publishing;
@@ -297,24 +289,36 @@ class TripleCheck {
             if (!publishLocalTests)
                 tests = [];
             const data = {
-                version,
-                name,
+                identity: {
+                    name: name,
+                    version: version
+                },
+                dependencies,
                 contracts,
                 tests
             };
             if (process.env.NODE_ENV === 'test')
                 process.exit(0);
+            if (brokerEndpoint.substring(brokerEndpoint.length - 1) === '/')
+                brokerEndpoint = brokerEndpoint.substring(0, brokerEndpoint.length - 1);
+            console.log('Publishing...', data);
             yield (0, node_fetch_1.default)(`${brokerEndpoint}/publish`, {
                 method: 'POST',
                 body: JSON.stringify(data)
             })
-                .then(() => {
+                .then((res) => __awaiter(this, void 0, void 0, function* () {
+                if (res.status >= 200 && res.status < 300)
+                    return yield res.json();
+                else
+                    console.log(`${messages_1.msgErrorWhenPublishing} --> Status: ${res.status}`);
+            }))
+                .then(() => __awaiter(this, void 0, void 0, function* () {
                 console.log(messages_1.msgSuccessfullyPublished);
-            })
+                process.exit(0);
+            }))
                 .catch((error) => {
                 console.error((0, messages_1.errorWhenPublishing)(error.message));
             });
-            process.exit(0);
         });
     }
 }

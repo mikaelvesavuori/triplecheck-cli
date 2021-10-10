@@ -2,15 +2,14 @@ import { createNewTripleCheck } from '../src/entities/TripleCheck';
 import { config } from '../__testdata__/config';
 
 let tripleCheck: any = null;
-let Config: any = null;
-
-beforeEach(async () => {
-  Config = JSON.parse(JSON.stringify(config));
-  // @ts-ignore
-  tripleCheck = await createNewTripleCheck(config);
-});
 
 describe('Failure cases', () => {
+  beforeEach(async () => {
+    const failingConfig = JSON.parse(JSON.stringify(config));
+    failingConfig.resources.local.testsPath = '__testdata__/tests.fail.json';
+    tripleCheck = await createNewTripleCheck(failingConfig);
+  });
+
   test('It should throw an error if no argument is provided', () => {
     expect(() => {
       // @ts-ignore
@@ -23,24 +22,26 @@ describe('Failure cases', () => {
       // @ts-ignore
       const mockExit = jest.spyOn(process, 'exit').mockImplementation(() => {});
       await tripleCheck.test();
-      expect(mockExit).toHaveBeenCalledWith(1);
+      expect(mockExit).toHaveBeenCalledTimes(1);
+      mockExit.mockRestore();
     });
   });
 });
 
 describe('Success cases', () => {
+  beforeEach(async () => {
+    const passingConfig = JSON.parse(JSON.stringify(config));
+    tripleCheck = await createNewTripleCheck(passingConfig);
+  });
+
   describe('It should give correct exit codes for tests', () => {
     // @see https://stackoverflow.com/questions/46148169/stubbing-process-exit-with-jest
     test('It should exit successfully if all tests pass', async () => {
-      let _config: any = Config;
-      // @ts-ignore
-      config.tests.excludeScope = ['asdf-provider'];
-      tripleCheck = await createNewTripleCheck(_config);
-
       // @ts-ignore
       const mockExit = jest.spyOn(process, 'exit').mockImplementation(() => {});
       await tripleCheck.test();
-      expect(mockExit).toHaveBeenCalledWith(0);
+      expect(mockExit).not.toHaveBeenCalled();
+      mockExit.mockRestore();
     });
   });
 
@@ -50,6 +51,7 @@ describe('Success cases', () => {
       const mockExit = jest.spyOn(process, 'exit').mockImplementation(() => {});
       await tripleCheck.publish();
       expect(mockExit).toHaveBeenCalledWith(0);
+      mockExit.mockRestore();
     });
   });
 });

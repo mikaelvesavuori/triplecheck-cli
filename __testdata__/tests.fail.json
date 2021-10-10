@@ -1,0 +1,13 @@
+[
+  {
+    "api-provider": {
+      "1.0.0": [
+        {
+          "Failing test": {
+            "something": false
+          }
+        }
+      ]
+    }
+  }
+]

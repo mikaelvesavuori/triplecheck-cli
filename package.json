@@ -1,6 +1,6 @@
 {
   "name": "triplecheck-cli",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "The easiest and fastest way to do contract testing.",
   "main": "build/index.js",
   "keywords": [
@@ -28,8 +28,8 @@
     "clean:build": "rm -rf build/",
     "build": "npm run clean:build && tsc",
     "build:watch": "onchange 'src/**/*.ts' -- npm run build",
-    "test": "jest --coverage && npm run clean",
-    "test:watch": "jest --coverage --watchAll",
+    "test": "npx jest --coverage && npm run clean",
+    "test:watch": "npx jest --coverage --watchAll",
     "licenses": "npx license-compliance --production --allow 'MIT;ISC;BSD-2-Clause;BSD-3-Clause;0BSD;Apache-2.0;Unlicense'",
     "licenses:checker": "npx license-compatibility-checker",
     "docs": "npx typedoc src && npx arkit",

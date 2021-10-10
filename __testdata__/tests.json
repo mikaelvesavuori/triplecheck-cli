@@ -16,20 +16,7 @@
     "api-provider": {
       "1.0.0": [
         {
-          "Should Take Customer legacy": {
-            "name": "Mikael",
-            "email": "email",
-            "totalPrice": 12345
-          }
-        },
-        {
-          "Should Take Customer fails": {
-            "name": "Mikael",
-            "email": "email"
-          }
-        },
-        {
-          "Should Take Customer works": {
+          "Should Take Customer": {
             "name": "Mikael",
             "email": "email",
             "totalPrice": 12345

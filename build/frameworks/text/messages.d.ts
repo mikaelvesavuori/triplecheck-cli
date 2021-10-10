@@ -5,6 +5,7 @@ export declare const msgTestFailed: (serviceName: string, version: string, consu
 export declare const msgContractFileNotFound: (serviceName: string, version: string) => string;
 export declare const msgTestingService: (serviceName: string, version: string) => string;
 export declare const msgSuccessfullyPublished = "Successfully published contracts and tests";
+export declare const msgErrorWhenPublishing = "Error when publishing";
 export declare const msgLoadingLocal: (path: string) => string;
 export declare const msgLoadingRemote: (url: string) => string;
 export declare const infoSkippingTestBecauseDuplicate: (testName: string) => string;

@@ -14,7 +14,6 @@ import { loadDataLocal } from '../frameworks/load/loadDataLocal';
 import { loadDataRemote } from '../frameworks/load/loadDataRemote';
 import { createContractFile } from '../frameworks/convert/createContractFile';
 import { consoleOutput } from '../frameworks/text/consoleOutput';
-import { mockedLoadedData } from '../frameworks/mock/mockedLoadedData';
 
 import {
   msgTestPassed,
@@ -22,6 +21,7 @@ import {
   msgContractFileNotFound,
   msgTestingService,
   msgSuccessfullyPublished,
+  msgErrorWhenPublishing,
   errorMissingTestsContracts,
   errorMissingTestsForService,
   errorMissingPublishEndpoint,
@@ -87,20 +87,13 @@ export class TripleCheck {
         this.updateTestScopes(dedupedFinalIncludes);
       } else this.updateTestScopes(include);
 
-      // Handle fake data if we are running tests
-      if (process.env.NODE_ENV === 'test') {
-        const loadedData = mockedLoadedData;
-        // @ts-ignore
-        this.updateLoadedResources(loadedData.consumerTests, loadedData.providerContracts);
-      } else {
-        const loadedData = await this.loadData(resources, tests);
+      const loadedData = await this.loadData(resources, tests);
 
-        if (!loadedData?.consumerTests || !loadedData?.providerContracts)
-          throw new Error(errorMissingTestsContracts);
+      if (!loadedData?.consumerTests || !loadedData?.providerContracts)
+        throw new Error(errorMissingTestsContracts);
 
-        // @ts-ignore
-        this.updateLoadedResources(loadedData.consumerTests, loadedData.providerContracts);
-      }
+      // @ts-ignore
+      this.updateLoadedResources(loadedData.consumerTests, loadedData.providerContracts);
 
       if (!validateConfig(this.config)) process.exit(1);
     } catch (error: any) {
@@ -156,7 +149,7 @@ export class TripleCheck {
       }
       if (!skipTestingRemoteResources && brokerEndpoint) {
         const fetchedTests = await loadDataRemote('tests', brokerEndpoint, include);
-        if (fetchedTests) consumerTests.remote = fetchedTests;
+        if (fetchedTests && process.env.NODE_ENV !== 'test') consumerTests.remote = fetchedTests;
       }
 
       // Contracts
@@ -166,7 +159,8 @@ export class TripleCheck {
       }
       if (!skipTestingRemoteResources && brokerEndpoint) {
         const fetchedContracts = await loadDataRemote('contracts', brokerEndpoint, include);
-        if (fetchedContracts) providerContracts.remote = fetchedContracts;
+        if (fetchedContracts && process.env.NODE_ENV !== 'test')
+          providerContracts.remote = fetchedContracts;
       }
 
       return {
@@ -293,7 +287,6 @@ export class TripleCheck {
       }
 
       consoleOutput('TestsFinished');
-      process.exit(0);
     } catch (error: any) {
       console.error(errorWhenTesting(error.message));
     }
@@ -360,10 +353,10 @@ export class TripleCheck {
   public async publish(): Promise<void> {
     const name = this.serviceName;
     const version = this.serviceVersion;
-    const { resources, publishing } = this.config;
+    const { resources, publishing, dependencies } = this.config;
 
     // @ts-ignore
-    const { brokerEndpoint } = resources.remote;
+    let { brokerEndpoint } = resources.remote;
     if (!brokerEndpoint) throw new Error(errorMissingPublishEndpoint);
 
     const { publishLocalContracts, publishLocalTests } = publishing;
@@ -377,25 +370,37 @@ export class TripleCheck {
     if (!publishLocalTests) tests = [];
 
     const data = {
-      version,
-      name,
+      identity: {
+        name: name,
+        version: version
+      },
+      dependencies,
       contracts,
       tests
     };
 
     if (process.env.NODE_ENV === 'test') process.exit(0);
 
+    // Strip trailing slash
+    if (brokerEndpoint.substring(brokerEndpoint.length - 1) === '/')
+      brokerEndpoint = brokerEndpoint.substring(0, brokerEndpoint.length - 1);
+
+    console.log('Publishing...', data);
+
     await fetch(`${brokerEndpoint}/publish`, {
       method: 'POST',
       body: JSON.stringify(data)
     })
-      .then(() => {
+      .then(async (res: any) => {
+        if (res.status >= 200 && res.status < 300) return await res.json();
+        else console.log(`${msgErrorWhenPublishing} --> Status: ${res.status}`);
+      })
+      .then(async () => {
         console.log(msgSuccessfullyPublished);
+        process.exit(0);
       })
       .catch((error: any) => {
         console.error(errorWhenPublishing(error.message));
       });
-
-    process.exit(0);
   }
 }

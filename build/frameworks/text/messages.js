@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.errorWhenPublishing = exports.errorWhenTesting = exports.errorLoadingData = exports.errorInvalidIdentity = exports.errorMissingPublishEndpoint = exports.errorMissingTestsForService = exports.errorMissingTestsContracts = exports.warnPublishingWithNoEndpoint = exports.warnPublishingWithNoLocals = exports.warnNothingToPublish = exports.warnMissingContractWhenGeneratingFile = exports.warnMissingPathToLocalTests = exports.warnMissingPathToLocalContracts = exports.warnMissingConsumerTestData = exports.infoSkippingTestBecauseDuplicate = exports.msgLoadingRemote = exports.msgLoadingLocal = exports.msgSuccessfullyPublished = exports.msgTestingService = exports.msgContractFileNotFound = exports.msgTestFailed = exports.msgTestPassed = exports.msgJobCompleteInitStopped = exports.msgJobCompleteInit = void 0;
+exports.errorWhenPublishing = exports.errorWhenTesting = exports.errorLoadingData = exports.errorInvalidIdentity = exports.errorMissingPublishEndpoint = exports.errorMissingTestsForService = exports.errorMissingTestsContracts = exports.warnPublishingWithNoEndpoint = exports.warnPublishingWithNoLocals = exports.warnNothingToPublish = exports.warnMissingContractWhenGeneratingFile = exports.warnMissingPathToLocalTests = exports.warnMissingPathToLocalContracts = exports.warnMissingConsumerTestData = exports.infoSkippingTestBecauseDuplicate = exports.msgLoadingRemote = exports.msgLoadingLocal = exports.msgErrorWhenPublishing = exports.msgSuccessfullyPublished = exports.msgTestingService = exports.msgContractFileNotFound = exports.msgTestFailed = exports.msgTestPassed = exports.msgJobCompleteInitStopped = exports.msgJobCompleteInit = void 0;
 exports.msgJobCompleteInit = `✅ Created a configuration file you --> triplecheck.config.json`;
 exports.msgJobCompleteInitStopped = `⚠️ Skipping generation of configuration file since one was already present...`;
 const msgTestPassed = (serviceName, version, consumerName) => `✅ Successfully tested ${serviceName}@${version} with ${consumerName}`;
@@ -12,6 +12,7 @@ exports.msgContractFileNotFound = msgContractFileNotFound;
 const msgTestingService = (serviceName, version) => `Testing ${serviceName}@${version}...`;
 exports.msgTestingService = msgTestingService;
 exports.msgSuccessfullyPublished = `Successfully published contracts and tests`;
+exports.msgErrorWhenPublishing = `Error when publishing`;
 const msgLoadingLocal = (path) => `Loading file from ${path}...`;
 exports.msgLoadingLocal = msgLoadingLocal;
 const msgLoadingRemote = (url) => `Loading data from ${url}...`;

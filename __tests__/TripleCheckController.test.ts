@@ -22,6 +22,7 @@ describe('Success cases', () => {
     const mockExit = jest.spyOn(process, 'exit').mockImplementation(() => {});
     const tripleCheck = await TripleCheckController(Config);
     expect(tripleCheck).toBeTruthy();
-    expect(mockExit).toHaveBeenCalledWith(0);
+    expect(mockExit).not.toHaveBeenCalled();
+    mockExit.mockRestore();
   });
 });

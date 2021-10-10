@@ -337,7 +337,7 @@ No.
 
 ### Why would I want a broker?
 
-The broker acts as a central, global resource so you can publish contracts and tests, meaning you create discoverability of what services exist, what their relations are, and because of that allows richer testing facilities. Most importantly this means you can—unless you change the default settings—dynamically test dependents' expectations on your service.
+The broker acts as a central, global resource so you can publish contracts and tests, meaning you create discoverability of what services exist, what their relations are, and because of that allows richer testing facilities.
 
 You also get the obvious benefit of storing contracts and tests somewhere that's not on your disk.
 
