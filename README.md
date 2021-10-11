@@ -84,7 +84,7 @@ You can do this manually according to the example below—or make it real simple
 
 **Global install**: Run `triplecheck init`.
 
-**Local install**: Run `npx triplecheck-cli`.
+**Local install**: Run `npx triplecheck-cli init`.
 
 ### Basic configuration
 
