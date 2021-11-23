@@ -276,9 +276,9 @@ class TripleCheck {
             const version = this.serviceVersion;
             const { resources, publishing, dependencies } = this.config;
             let { brokerEndpoint } = resources.remote;
-            if (!brokerEndpoint)
-                throw new Error(messages_1.errorMissingPublishEndpoint);
             const { publishLocalContracts, publishLocalTests } = publishing;
+            if (!brokerEndpoint && (publishLocalContracts || publishLocalTests))
+                throw new Error(messages_1.errorMissingPublishEndpoint);
             if (!publishLocalContracts && !publishLocalTests) {
                 console.warn(messages_1.warnNothingToPublish);
                 return;

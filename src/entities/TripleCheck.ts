@@ -121,6 +121,7 @@ export class TripleCheck {
 
   /**
    * @description Orchestrator (splitter) method for loading data from remote or local sources.
+   * @todo This does not seem to actually load/test dependencies?
    */
   private async loadData(resources: Resources, tests: Tests): Promise<LoadedData | null> {
     try {
@@ -357,9 +358,10 @@ export class TripleCheck {
 
     // @ts-ignore
     let { brokerEndpoint } = resources.remote;
-    if (!brokerEndpoint) throw new Error(errorMissingPublishEndpoint);
-
     const { publishLocalContracts, publishLocalTests } = publishing;
+    if (!brokerEndpoint && (publishLocalContracts || publishLocalTests))
+      throw new Error(errorMissingPublishEndpoint);
+
     if (!publishLocalContracts && !publishLocalTests) {
       console.warn(warnNothingToPublish);
       return;
