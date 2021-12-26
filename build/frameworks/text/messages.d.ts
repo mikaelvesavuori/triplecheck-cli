@@ -13,7 +13,6 @@ export declare const warnMissingConsumerTestData = "\u26A0\uFE0F Missing consume
 export declare const warnMissingPathToLocalContracts = "\u26A0\uFE0F Missing path to local contracts, skipping publishing these...";
 export declare const warnMissingPathToLocalTests = "\u26A0\uFE0F Missing path to local tests, skipping publishing these...";
 export declare const warnMissingContractWhenGeneratingFile: (serviceName: string, version: string) => string;
-export declare const warnNothingToPublish = "\u26A0\uFE0F Attempting to publish, but there is nothing to publish: The configuration has disabled both publishing local tests and contracts.\nExiting...";
 export declare const warnPublishingWithNoLocals = "\u26A0\uFE0F Attempting to publish, but you are missing \"resources.local\" (and the required \"resources.local.contractsPath\" and \"resources.local.testsPath\") in your configuration. You can only publish local contracts/tests.";
 export declare const warnPublishingWithNoEndpoint = "\u26A0\uFE0F Attempting to publish, but you are missing \"resources.remote\" (and the required \"resources.remote.brokerEndpoint\") in your configuration.";
 export declare const errorMissingTestsContracts = "\u274C Missing consumer tests and/or provider contracts!";

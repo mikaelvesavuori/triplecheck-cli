@@ -29,7 +29,7 @@ function consoleOutput(output, input) {
         console.log(`|-----------------------------------|`);
         console.log(`|--- Configuration not present... --|`);
         console.log(`|-------- Generate one with: -------|`);
-        console.log(`|----- npx triplecheck-cli init ----|`);
+        console.log(`|------- npx triplecheck init ------|`);
         console.log(`|-----------------------------------|`);
     }
 }

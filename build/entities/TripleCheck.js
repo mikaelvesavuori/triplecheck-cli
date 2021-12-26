@@ -72,7 +72,9 @@ class TripleCheck {
                     const dependents = yield this.getDependents(resources.remote.brokerEndpoint, [
                         `${identity.name}@${identity.version}`
                     ]);
-                    const dedupedFinalIncludes = Array.from(new Set([...include, ...dependents]));
+                    const dedupedFinalIncludes = dependents && Object.keys(dependents).length !== 0
+                        ? Array.from(new Set([...include, ...dependents]))
+                        : include;
                     this.updateTestScopes(dedupedFinalIncludes);
                 }
                 else
@@ -279,10 +281,8 @@ class TripleCheck {
             const { publishLocalContracts, publishLocalTests } = publishing;
             if (!brokerEndpoint && (publishLocalContracts || publishLocalTests))
                 throw new Error(messages_1.errorMissingPublishEndpoint);
-            if (!publishLocalContracts && !publishLocalTests) {
-                console.warn(messages_1.warnNothingToPublish);
+            if (!publishLocalContracts && !publishLocalTests)
                 return;
-            }
             let { contracts, tests } = yield this.getCleanedData(true);
             if (!publishLocalContracts)
                 contracts = [];

@@ -29,8 +29,7 @@ import {
   errorWhenTesting,
   errorWhenPublishing,
   warnMissingConsumerTestData,
-  warnMissingContractWhenGeneratingFile,
-  warnNothingToPublish
+  warnMissingContractWhenGeneratingFile
 } from '../frameworks/text/messages';
 
 export const createNewTripleCheck = async (config: Config): Promise<TripleCheck> => {
@@ -83,7 +82,11 @@ export class TripleCheck {
         const dependents: string[] = await this.getDependents(resources.remote.brokerEndpoint, [
           `${identity.name}@${identity.version}`
         ]);
-        const dedupedFinalIncludes = Array.from(new Set([...include, ...dependents]));
+
+        const dedupedFinalIncludes =
+          dependents && Object.keys(dependents).length !== 0
+            ? Array.from(new Set([...include, ...dependents]))
+            : include;
         this.updateTestScopes(dedupedFinalIncludes);
       } else this.updateTestScopes(include);
 
@@ -362,10 +365,8 @@ export class TripleCheck {
     if (!brokerEndpoint && (publishLocalContracts || publishLocalTests))
       throw new Error(errorMissingPublishEndpoint);
 
-    if (!publishLocalContracts && !publishLocalTests) {
-      console.warn(warnNothingToPublish);
-      return;
-    }
+    // The user has deactivated publishing, so just make a clean exit
+    if (!publishLocalContracts && !publishLocalTests) return;
 
     let { contracts, tests } = await this.getCleanedData(true);
     if (!publishLocalContracts) contracts = [];
