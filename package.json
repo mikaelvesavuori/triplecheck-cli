@@ -63,7 +63,7 @@
     "ts-jest": "27",
     "ts-node": "latest",
     "tslib": "latest",
-    "typedoc": "latest",
+    "typedoc": "0.22.10",
     "typescript": "4"
   }
 }
