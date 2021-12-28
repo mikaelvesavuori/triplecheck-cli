@@ -45,7 +45,7 @@
   },
   "devDependencies": {
     "@types/jest": "latest",
-    "@types/node": "latest",
+    "@types/node": "16.11.11",
     "@types/node-fetch": "latest",
     "@types/readable-stream": "latest",
     "@types/urijs": "latest",
