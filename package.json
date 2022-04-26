@@ -64,6 +64,6 @@
     "ts-node": "latest",
     "tslib": "latest",
     "typedoc": "latest",
-    "typescript": "4"
+    "typescript": "4.6.3"
   }
 }
