@@ -55,7 +55,7 @@
     "eslint-config-prettier": "latest",
     "eslint-plugin-prettier": "latest",
     "husky": "7",
-    "jest": "27",
+    "jest": "27.5.1",
     "license-compatibility-checker": "latest",
     "license-compliance": "latest",
     "onchange": "7",
