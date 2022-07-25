@@ -32,16 +32,18 @@ export async function loadDataRemote(
     /**
      * Piece the data together as nested objects.
      */
-    const final: Record<string, unknown> = {};
+    const finalizedData: Record<string, unknown> = {};
     cleaned.forEach((item: any) => {
-      if (final[Object.keys(item)[0]])
-        final[Object.keys(item)[0]] = Object.assign(
-          final[Object.keys(item)[0]],
+      if (finalizedData[Object.keys(item)[0]]) {
+        const existingData: any = finalizedData[Object.keys(item)[0]];
+        finalizedData[Object.keys(item)[0]] = Object.assign(
+          existingData,
           Object.values(item)[0]
         );
-      else final[Object.keys(item)[0]] = Object.values(item)[0];
+      }
+      else finalizedData[Object.keys(item)[0]] = Object.values(item)[0];
     });
 
-    return [final];
+    return [finalizedData];
   }
 }

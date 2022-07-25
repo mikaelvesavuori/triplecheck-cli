@@ -27,14 +27,16 @@ function loadDataRemote(type, url, include, headers) {
                 return resolved[0];
             let cleaned = resolved.map((item) => item[0]);
             cleaned = cleaned.filter((item) => item);
-            const final = {};
+            const finalizedData = {};
             cleaned.forEach((item) => {
-                if (final[Object.keys(item)[0]])
-                    final[Object.keys(item)[0]] = Object.assign(final[Object.keys(item)[0]], Object.values(item)[0]);
+                if (finalizedData[Object.keys(item)[0]]) {
+                    const existingData = finalizedData[Object.keys(item)[0]];
+                    finalizedData[Object.keys(item)[0]] = Object.assign(existingData, Object.values(item)[0]);
+                }
                 else
-                    final[Object.keys(item)[0]] = Object.values(item)[0];
+                    finalizedData[Object.keys(item)[0]] = Object.values(item)[0];
             });
-            return [final];
+            return [finalizedData];
         }
     });
 }
