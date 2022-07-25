@@ -263,7 +263,7 @@ class TripleCheck {
     generateContractFile(serviceName, version, contracts) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!contracts || contracts.length === 0) {
-                console.warn(messages_1.warnMissingContractWhenGeneratingFile);
+                console.warn((0, messages_1.warnMissingContractWhenGeneratingFile)(serviceName, version));
                 return false;
             }
             const contract = (0, getContract_1.getContract)(contracts, serviceName, version);

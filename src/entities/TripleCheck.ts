@@ -334,7 +334,7 @@ export class TripleCheck {
     contracts: any[]
   ): Promise<boolean> {
     if (!contracts || contracts.length === 0) {
-      console.warn(warnMissingContractWhenGeneratingFile);
+      console.warn(warnMissingContractWhenGeneratingFile(serviceName, version));
       return false;
     }
     // Get the right provider contract
