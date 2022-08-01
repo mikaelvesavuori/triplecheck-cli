@@ -39,7 +39,7 @@
     "triplecheck": "build/index.js"
   },
   "dependencies": {
-    "node-fetch": "2",
+    "node-fetch": "3.2.10",
     "quicktype-core": "6"
   },
   "devDependencies": {
