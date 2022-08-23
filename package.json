@@ -50,7 +50,7 @@
     "@types/urijs": "latest",
     "arkit": "1",
     "babel-loader": "8",
-    "eslint": "8",
+    "eslint": "8.21.0",
     "eslint-config-prettier": "latest",
     "eslint-plugin-prettier": "latest",
     "husky": "8",
