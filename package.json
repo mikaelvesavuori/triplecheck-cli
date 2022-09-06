@@ -43,7 +43,7 @@
     "quicktype-core": "6"
   },
   "devDependencies": {
-    "@types/jest": "latest",
+    "@types/jest": "28.1.7",
     "@types/node": "latest",
     "@types/node-fetch": "latest",
     "@types/readable-stream": "latest",
