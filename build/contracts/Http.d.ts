@@ -1,6 +1,6 @@
-export declare type HttpOptions = {
+export type HttpOptions = {
     method: HttpMethod;
     body?: string;
     headers?: any;
 };
-export declare type HttpMethod = 'GET' | 'PUT' | 'POST' | 'DELETE';
+export type HttpMethod = 'GET' | 'PUT' | 'POST' | 'DELETE';

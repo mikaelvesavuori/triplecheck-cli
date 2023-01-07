@@ -254,9 +254,10 @@ class TripleCheck {
     }
     callStub(callInput) {
         return __awaiter(this, void 0, void 0, function* () {
+            var _a;
             const { serviceName, version, payload } = callInput;
             const FULL_CONTRACT_FILEPATH = `${this.contractFilePrefix}-${serviceName}-${version}.js`;
-            const contract = yield Promise.resolve().then(() => __importStar(require(`${process.cwd()}/${FULL_CONTRACT_FILEPATH}`)));
+            const contract = yield (_a = `${process.cwd()}/${FULL_CONTRACT_FILEPATH}`, Promise.resolve().then(() => __importStar(require(_a))));
             contract.toContract(JSON.stringify(payload));
         });
     }

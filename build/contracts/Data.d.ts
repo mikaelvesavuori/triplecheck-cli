@@ -1,4 +1,4 @@
-export declare type LoadedData = {
+export type LoadedData = {
     consumerTests: {
         local: Record<string, unknown>[];
         remote: Record<string, unknown>[];

@@ -1,13 +1,13 @@
-export declare type ConsumerContract = {
+export type ConsumerContract = {
     name: Contract;
 };
-export declare type ProviderContract = {
+export type ProviderContract = {
     name: Contract;
 };
-export declare type ConsumerTest = {
+export type ConsumerTest = {
     name: Contract;
 };
-declare type Contract = {
+type Contract = {
     version: string;
 };
 export {};

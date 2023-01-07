@@ -1,1 +1,1 @@
-export declare type Service = any;
+export type Service = any;

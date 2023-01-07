@@ -1,23 +1,23 @@
-export declare type Config = {
+export type Config = {
     identity: Identity;
     dependencies: Dependency[];
     tests: Tests;
     resources: Resources;
     publishing: Publishing;
 };
-export declare type Identity = {
+export type Identity = {
     name: string;
     version: string;
 };
-export declare type Dependency = string;
-export declare type Tests = {
+export type Dependency = string;
+export type Tests = {
     include?: string[];
     skipTestingRemoteResources?: boolean;
     skipTestingLocalResources?: boolean;
     skipIncludingDependents?: boolean;
     contractFilePrefix?: string;
 };
-export declare type Resources = {
+export type Resources = {
     local?: {
         contractsPath?: string;
         testsPath?: string;
@@ -26,7 +26,7 @@ export declare type Resources = {
         brokerEndpoint?: string;
     };
 };
-declare type Publishing = {
+type Publishing = {
     publishLocalContracts: boolean;
     publishLocalTests: boolean;
 };
