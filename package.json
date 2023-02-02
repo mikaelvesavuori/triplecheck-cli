@@ -59,7 +59,7 @@
     "license-compliance": "latest",
     "onchange": "7",
     "prettier": "2",
-    "ts-jest": "29",
+    "ts-jest": "29.0.4",
     "ts-node": "latest",
     "tslib": "latest",
     "typedoc": "latest",
