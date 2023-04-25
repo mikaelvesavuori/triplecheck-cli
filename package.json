@@ -40,7 +40,7 @@
   },
   "dependencies": {
     "node-fetch": "2",
-    "quicktype-core": "6"
+    "quicktype-core": "20.0.5"
   },
   "devDependencies": {
     "@types/jest": "latest",
